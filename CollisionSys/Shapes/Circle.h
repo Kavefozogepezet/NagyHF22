@@ -8,11 +8,9 @@ namespace CollSys {
 	public:
 		Circle(float radius = 0.5f);
 
-		sf::Vector2f support(const sf::Vector2f& direction) const;
-		double influenceRange() const;
+		sf::Vector2f support(const sf::Vector2f& direction) const override;
 	protected:
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	private:
-		sf::VertexArray points;
+		virtual void build() override;
+		float refreshInfRng() override;
 	};
 }

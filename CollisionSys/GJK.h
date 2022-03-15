@@ -29,6 +29,9 @@ namespace CollSys::GJK {
 		const AbstractShape& actor1, &actor2;
 	};
 
+	class Solver {
+	};
+
 	/*
 	* @brief Az összes paraméterként kapott síkidomra teszteli, hogy azok érintkeznek e.
 	* @params shapes - A síkidomok listája
@@ -54,11 +57,12 @@ namespace CollSys::GJK {
 	bool checkOverlapping(const AbstractShape& shape1, const AbstractShape& shape2);
 
 	/*
-	* @brief Megvizsgálja hogy két síkidom átfedi e egymást
+	* @brief Megvizsgálja hogy két síkidom átfedi e egymást, ha igen, kiszámolja az érintkezés pontját
 	* @param shape1 - Az egyik síkidom
 	* @param shape2 - A másik síkidom
-	* @return true: 
+	* @param collData - Ha 
+	* @return true: true: a síkidomok érintkeznek; false:nem érintkeznek
 	*/
-	const Collision checkCollision(const AbstractShape& shape1, const AbstractShape& shape2);
+	bool checkCollision(const AbstractShape& shape1, const AbstractShape& shape2, Collision& collData);
 }
 

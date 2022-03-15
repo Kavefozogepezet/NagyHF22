@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="debug\memtrace.cpp" />
+    <ClCompile Include="Shapes\Ellipse.cpp" />
     <ClCompile Include="Shapes\Circle.cpp" />
     <ClCompile Include="GJK.cpp" />
     <ClCompile Include="Shapes\AbstractShape.cpp" />
@@ -26,6 +28,12 @@
     <ClCompile Include="Shapes\Polygon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="debug\gtest_lite.h" />
+    <ClInclude Include="debug\memtrace.h" />
+    <ClInclude Include="general\glib\array.h" />
+    <ClInclude Include="general\glib\list.h" />
+    <ClInclude Include="general\glib\string.h" />
+    <ClInclude Include="Shapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\AlResource.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\Export.hpp" />
