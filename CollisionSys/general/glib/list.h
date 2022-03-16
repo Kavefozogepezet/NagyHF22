@@ -1,49 +1,71 @@
-#pragma once
+﻿#pragma once
 
 #include <stdexcept>
 
 namespace glib {
+	/*
+	* @brief Egy duplán láncolt lista egy eleme.
+	* @param T - A tárolt adat típusa
+	*/
 	template <typename T>
-	class node {
+	class listNode {
 		template <typename T> friend class list;
 	public:
 		T item;
 
-		node(node* prev = nullptr, node* next = nullptr) :
+		listNode(const T& data, listNode* prev = nullptr, listNode* next = nullptr) :
+			item(data),
 			p(prev),
 			n(next)
 		{}
 
-		inline node<T>* prev() { return this->p; }
-
-		inline node<T>* next() { return this->n; }
+		/** @retruns Lista előző eleme*/
+		inline listNode<T>* prev() { return this->p; }
+		/** @returns Lista következő eleme*/
+		inline listNode<T>* next() { return this->n; }
 	private:
-		node* p, * n;
+		listNode* p, * n;
+
+		static inline void connect(listNode* n1, listNode* n2) {
+			n1->n = n2;
+			n2->p = n1;
+		}
 	};
 
+	/*
+	* @brief Lista iterator alap osztálya.
+	* @param T - Egy lista<Type> típus
+	*/
 	template <typename T>
 	class listIterator {
 	public:
 		using Type = typename T::Type;
-		using NodeType = node<Type>;
+		using NodeType = listNode<Type>;
 
 		listIterator(NodeType* ptr) : item_ptr(ptr) {}
+
+		listIterator(const listIterator& other) : item_ptr(other.item_ptr) {}
 
 		listIterator& operator = (const listIterator& other) {
 			this->item_ptr = other.item_ptr;
 		}
 
+		/** @returns Aktuális elem által tárolt adatra mutató ptr.*/
 		Type* operator -> () { return &this->item_ptr->item; }
 
+		/** @returns Aktuális elem által tárolt adat referenciája */
 		Type& operator * () { return this->item_ptr->item; }
 
 		bool operator == (const listIterator<T>& other) { return this->item_ptr == other.item_ptr; }
 
 		bool operator != (const listIterator<T>& other) { return this->item_ptr != other.item_ptr; }
-	private:
+
+		inline NodeType* getPtr() { return this->item_ptr; }
+	protected:
 		NodeType* item_ptr;
 	};
 
+	/** @brief Lista iterator. Bejárás a lista elejétől a végéig. */
 	template <typename T>
 	class forwardListIt : public listIterator<T> {
 	public:
@@ -60,18 +82,19 @@ namespace glib {
 		}
 
 		forwardListIt operator ++ (int) {
-			listIterator it = *this;
+			forwardListIt it = *this;
 			++(*this);
 			return it;
 		}
 
 		forwardListIt operator -- (int) {
-			listIterator it = *this;
+			forwardListIt it = *this;
 			--(*this);
 			return it;
 		}
 	};
 
+	/** @brief Lista iterator. Bejárás a lista végétől az elejéig. */
 	template <typename T>
 	class reverseListIt : public listIterator<T> {
 	public:
@@ -88,39 +111,127 @@ namespace glib {
 		}
 
 		reverseListIt operator ++ (int) {
-			listIterator it = *this;
+			reverseListIt it = *this;
 			++(*this);
 			return it;
 		}
 
 		reverseListIt operator -- (int) {
-			listIterator it = *this;
+			reverseListIt it = *this;
 			--(*this);
 			return it;
 		}
 	};
 
+	/* 
+	* @brief Duplán láncolt lista.
+	* @param T - A lista által tárolt adat típusa
+	*/
 	template <typename T>
 	class list {
+	private:
+		using iterator = listIterator<list<T>>;
 	public:
 		using Type = T;
-		using forwardIt = forwardListIt<list<T>>;
-		using reverseIt = reverseListIt<list<T>>;
+		using NodeType = listNode<Type>;
+		using forwardIt = forwardListIt<list<Type>>;
+		using reverseIt = reverseListIt<list<Type>>;
 	public:
-		list() :
-			head(nullptr),
-			tail(nullptr)
-		{}
+		list() {
+			this->head = (NodeType*) operator new(2 * sizeof(NodeType));
+			this->tail = head + 1;
+			this->head->n = this->tail;
+			this->tail->p = this->head;
+			this->head->p = this->tail->n =  nullptr;
+		}
 
-		inline forwardIt begin() { return forwardIt(this->head); }
+		~list() {
+			delete this->head;
+		}
 
-		inline forwardIt end() { return forwardIt(nullptr); }
+		/** @returns Forward iterator a lista első elemén. */
+		inline forwardIt begin() { return forwardIt(this->head->next()); }
+		
+		/** @returns Forward iterator a lista utolsó eleme után. */
+		inline forwardIt end() { return forwardIt(this->tail); }
 
-		inline reverseIt rbegin() { return reverseIt(this->tail); }
+		/** @returns Reverse iterator a lista első eleme előtt. */
+		inline reverseIt rbegin() { return reverseIt(this->tail->prev()); }
 
-		inline reverseIt rend() { return reverseIt(nullptr); }
+		/** @returns Reverse iterator a lista utolsó elemén. */
+		inline reverseIt rend() { return reverseIt(this->head); }
 
+		/** @returns true: a lista üres; false: nem üres. */
+		bool empty() {
+			return this->head->next() == this->tail();
+		}
+
+		/** @brief Törli a lista összes elemét. */
+		void clear() {
+			this->erase(forwardIt(this->head->next()), forwardIt(this->tail));
+		}
+
+		/*
+		* @brief A lista végére illeszt egy elemet.
+		* @param data - A beilleszteni kívánt adat
+		*/
+		void push_back(const Type& data) {
+			forwardIt it = forwardIt(this->tail);
+			this->insert(it, data);
+		}
+
+		/*
+		* @brief A lista elejére illeszt egy elemet.
+		* @param data - A beilleszteni kívánt adat
+		*/
+		void push_front(const Type& data) {
+			forwardIt it = forwardIt(this->head->next());
+			this->insert(this->head->next());
+		}
+
+		void pop_back() {
+			forwardIt it = forwardIt(this->tail->prev());
+			this->erase(it);
+		}
+
+		void pop_front() {
+			forwardIt it = forwardIt(this->head->next());
+			this->erase(it);
+		}
+
+		iterator insert(iterator pos, const T& data) {
+			NodeType
+				* right = pos.getPtr(),
+				* left = right->prev(),
+				* new_node = new NodeType(data, left, right);
+			left->n = new_node;
+			right->p = new_node;
+			return iterator(new_node);
+		}
+
+		iterator erase(iterator pos) {
+			NodeType
+				* right = pos.getPtr()->next(),
+				* left = pos.getPtr()->prev();
+			delete pos.getPtr();
+			NodeType::connect(left, right);
+			return iterator(right);
+		}
+
+		iterator erase(iterator first, iterator last) {
+			NodeType
+				* left = first.getPtr()->prev(),
+				* right = last.getPtr();
+
+			while (first != last) {
+				NodeType* temp = first.getPtr();
+				++first;
+				delete temp;
+			}
+			listNode::connect(left, right);
+			return iterator(last);
+		}
 	private:
-		node<T>* head, tail;
+		NodeType* head,* tail;
 	};
 }

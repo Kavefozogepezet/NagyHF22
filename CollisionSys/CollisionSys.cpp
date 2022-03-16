@@ -38,6 +38,29 @@ sf::VertexArray* calculateMdiff(const CollSys::AbstractShape& s1, const CollSys:
     return arr;
 }
 
+void calcSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+    sf::Vector2f
+        svec = simplex[0].position - simplex[1].position,
+        origo = sf::Vector2f(0.0f, 0.0f) - simplex[1].position,
+        n = sfmath::normalInDir(svec, origo),
+        new_point = s1.support(n) - s2.support(-n),
+        np0 = new_point - simplex[0].position,
+        np1 = new_point - simplex[1].position;
+    float
+        dot0 = sfmath::dot(np0, origo),
+        dot1 = sfmath::dot(np1, origo);
+    simplex[1].position = new_point;
+}
+
+void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+    sf::Vector2f b = { 1.0f, 0.0f };
+    for (size_t i = 0; i < 2; i++) {
+        if (i == 1) { b = -b; }
+        simplex[i].position = s1.support(b) - s2.support(-b);
+        simplex[i].color = sf::Color::Green;
+    }
+}
+
 void maintest() {
     sf::RenderWindow win(sf::VideoMode(640, 480), "Test");
     win.setFramerateLimit(30);
@@ -47,15 +70,14 @@ void maintest() {
     sf::CircleShape c(0.02f);
     c.setOrigin(0.02f, 0.02f);
     c.setFillColor(sf::Color::Red);
-    CollSys::Polygon t1;
+    CollSys::Polygon t1, t2;
     t1.setPosition({ -1.0, 0.0 });
     t1.setScale({ 0.5f, 0.5f });
     t1.setRotation(30.0f);
-    CollSys::Ellipse t2(0.5f, 0.1f);
-    t2.setPosition({ -0.5f, 0.0f });
-    //t2.setScale({ 0.5f, 0.5f });
+    t2.setScale({ 0.5f, 0.5f });
 
-    sf::VertexArray* Mdif = nullptr;
+    sf::VertexArray simplex(sf::LineStrip, 2), * Mdiff = nullptr;
+    calcFirstSimplex(t1, t2, simplex);
 
     while (win.isOpen()) {
         sf::Event event;
@@ -63,6 +85,14 @@ void maintest() {
         {
             if (event.type == sf::Event::Closed) {
                 win.close();
+            }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::C) {
+                    calcSimplex(t1, t2, simplex);
+                }
+                if (event.key.code == sf::Keyboard::U) {
+                    calcFirstSimplex(t1, t2, simplex);
+                }
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
@@ -84,11 +114,14 @@ void maintest() {
             t2.move(speed, 0.0f);
         }
 
-        if (Mdif) { delete Mdif; }
-        Mdif = calculateMdiff(t1, t2);
+        if (Mdiff) {
+            delete Mdiff;
+        }
+        Mdiff = calculateMdiff(t1, t2);
 
         win.clear(sf::Color::Black);
-        win.draw(*Mdif);
+        win.draw(simplex);
+        win.draw(*Mdiff);
         win.draw(t1);
         win.draw(t2);
         win.draw(c);
@@ -176,11 +209,21 @@ void glib_string_test() {
 }
 
 void glib_list_test() {
-    glib::list<int> x;
+    glib::list<int> l;
+    l.push_back(2);
+    l.push_back(6);
+    l.push_back(12);
+    auto it = l.begin();
+    it++;
+    l.insert(it, 4);
+    l.erase(l.rbegin());
 
-    glib::list<int>::forwardIt it = x.begin();
+    for (auto item : l) {
+        std::cout << item << std::endl;
+    }
 }
 
 int main() {
+    maintest();
     return 0;
 }

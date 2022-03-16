@@ -65,6 +65,13 @@ namespace sfmath {
 		);
 	}
 
+	template <typename T>
+	sf::Vector2<T> normalInDir(const sf::Vector2<T>& vec, const sf::Vector2<T> dir) {
+		sf::Vector2<T> n = { vec.y, -vec.x };
+		if (dot(n, dir) < 0) { n = -n; }
+		return n;
+	}
+
 	/*
 	* @brief Egy Vektor2 objektumot Vektor3 objektummá egészít ki
 	* @param vec - A kiegészítendő vektor
