@@ -21,63 +21,103 @@
 const float speed = 0.02f;
 const float angular = 2.0f;
 
-sf::VertexArray* calculateMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, size_t r = 64) {
-    sf::VertexArray* arr = new sf::VertexArray(sf::LineStrip, r);
+void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 64) {
+    arr.resize(r);
     float angle = 360.0f / static_cast<float>(r);
     sf::Vector2f dir(1.0, 0.0);
 
     for (size_t i = 0; i < r; i++) {
-        (*arr)[i].color = sf::Color::Green;
+        arr[i].color = sf::Color(100, 100, 100);
 
         sf::Vector2f p1 = s1.support(dir);
         sf::Vector2f p2 = s2.support(-dir);
-        (*arr)[i].position = p1 - p2;
+        arr[i].position = p1 - p2;
 
         dir = sfmath::rotate(dir, 360.0f / 32.0f);
     }
-    return arr;
+}
+
+bool calcSupPoint(
+    const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2,
+    const sf::Vector2f& dir, sf::Vector2f& point )
+{
+    point = s1.support(dir) - s2.support(-dir);
+    return sfmath::dot(point, dir) > 0.0f;
 }
 
 void calcSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+    sf::Color col = sf::Color::Yellow;
     sf::Vector2f
         svec = simplex[0].position - simplex[1].position,
         origo = sf::Vector2f(0.0f, 0.0f) - simplex[1].position,
         n = sfmath::normalInDir(svec, origo),
-        new_point = s1.support(n) - s2.support(-n),
-        np0 = new_point - simplex[0].position,
-        np1 = new_point - simplex[1].position;
-    float
-        dot0 = sfmath::dot(np0, origo),
-        dot1 = sfmath::dot(np1, origo);
-    simplex[1].position = new_point;
-}
-
-void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
-    sf::Vector2f b = { 1.0f, 0.0f };
-    for (size_t i = 0; i < 2; i++) {
-        if (i == 1) { b = -b; }
-        simplex[i].position = s1.support(b) - s2.support(-b);
-        simplex[i].color = sf::Color::Green;
+        new_point;
+    if (!calcSupPoint(s1, s2, n, new_point)) {
+        col = sf::Color::Red;
+    }
+    sf::Vector2f
+        dir1 = sfmath::normalInDir(simplex[0].position - new_point, -(simplex[1].position - new_point)),
+        dir2 = sfmath::normalInDir(simplex[1].position - new_point, -(simplex[0].position - new_point)),
+        np2o = -new_point;
+    if (sfmath::dot(dir1, np2o) > 0.0f) {
+        simplex[1] = new_point;
+    }
+    else if (sfmath::dot(dir2, np2o) > 0.0f) {
+        simplex[0] = new_point;
+    }
+    else {
+        std::cout << "jeee" << std::endl; 
+        simplex.resize(3);
+        simplex.setPrimitiveType(sf::Triangles);
+        simplex[2].position = new_point;
+        col = sf::Color::Green;
+    }
+    for (size_t i = 0; i < simplex.getVertexCount(); i++) {
+        simplex[i].color = col;
     }
 }
 
-void maintest() {
+void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+    simplex.resize(2);
+    simplex.setPrimitiveType(sf::LineStrip);
+    
+    sf::Color col = sf::Color::Yellow;
+    sf::Vector2f b = { 1.0f, 0.0f };
+    if (!calcSupPoint(s1, s2, b, simplex[0].position)) {
+        col = sf::Color::Red;
+    }
+    b = sf::Vector2f(0.0f, 0.0f) - simplex[0].position;
+    if (!calcSupPoint(s1, s2, b, simplex[1].position)) {
+        col = sf::Color::Red;
+    }
+    simplex[0].color = simplex[1].color = col;
+}
+
+void main_test() {
     sf::RenderWindow win(sf::VideoMode(640, 480), "Test");
     win.setFramerateLimit(30);
-    sf::View view({ 0.0f, 0.0f }, { 4.0f, 4.0f });
+    sf::View view({ 0.0f, 0.0f }, { 8.0f, 8.0f });
     win.setView(view);
+
+    glib::list<sf::Drawable*> objs;
 
     sf::CircleShape c(0.02f);
     c.setOrigin(0.02f, 0.02f);
     c.setFillColor(sf::Color::Red);
+    objs.push_back(&c);
+
     CollSys::Polygon t1, t2;
     t1.setPosition({ -1.0, 0.0 });
     t1.setScale({ 0.5f, 0.5f });
     t1.setRotation(30.0f);
     t2.setScale({ 0.5f, 0.5f });
+    objs.push_back(&t1);
+    objs.push_back(&t2);
 
-    sf::VertexArray simplex(sf::LineStrip, 2), * Mdiff = nullptr;
+    sf::VertexArray simplex(sf::LineStrip, 2), Mdiff(sf::LineStrip, 0);
     calcFirstSimplex(t1, t2, simplex);
+    objs.push_back(&Mdiff);
+    objs.push_back(&simplex);
 
     while (win.isOpen()) {
         sf::Event event;
@@ -113,117 +153,18 @@ void maintest() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             t2.move(speed, 0.0f);
         }
-
-        if (Mdiff) {
-            delete Mdiff;
-        }
-        Mdiff = calculateMdiff(t1, t2);
+        calcMdiff(t1, t2, Mdiff);
 
         win.clear(sf::Color::Black);
-        win.draw(simplex);
-        win.draw(*Mdiff);
-        win.draw(t1);
-        win.draw(t2);
-        win.draw(c);
+        for (auto obj : objs) {
+            win.draw(*obj);
+        }
         win.display();
     }
     win.close();
 }
 
-void glib_string_test() {
-    glib::string str1 = "apple",
-                 str2 = "peach";
-
-    GTINIT(std::cin);
-
-    TEST(glib, string) {
-        EXPECT_STREQ("apple", str1.c_str());
-        EXPECT_STREQ("peach", str2.c_str());
-    } END;
-
-    TEST(glib, string_ctor) {
-        EXPECT_STREQ("apple", glib::string(str1).c_str());
-        EXPECT_THROW(glib::string((const char*)nullptr).c_str(), std::invalid_argument);
-        EXPECT_STREQ("book", glib::string("book").c_str());
-    } END;
-
-    TEST(glib, string_subscript) {
-        EXPECT_NO_THROW(str1[0]);
-        EXPECT_EQ('p', str1[1]);
-        EXPECT_THROW(str1[5], std::out_of_range);
-        EXPECT_THROW(str1[6], std::out_of_range);
-    } END;
-
-    TEST(glib, string_assign) {
-        glib::string str3;
-        str3 = str2;
-        EXPECT_STREQ("peach", str3.c_str());
-        str3 = "door";
-        EXPECT_STREQ("door", str3.c_str());
-    } END;
-
-    TEST(glib, string_add) {
-        glib::string str3;
-
-        str3 = str1 + str2;
-        EXPECT_STREQ("applepeach", str3.c_str());
-
-        str3 = str1 + " pie";
-        EXPECT_STREQ("apple pie", str3.c_str());
-        str3 = "green " + str1;
-        EXPECT_STREQ("green apple", str3.c_str());
-
-        str3 = str1 + 's';
-        EXPECT_STREQ("apples", str3.c_str());
-        str3 = 'a' + str1;
-        EXPECT_STREQ("aapple", str3.c_str());
-    } END;
-
-    TEST(glib, string_pluseq) {
-        glib::string str3 = str1;
-
-        str3 += str2;
-        EXPECT_STREQ("applepeach", str3.c_str());
-        str3 += " what";
-        EXPECT_STREQ("applepeach what", str3.c_str());
-        str3 += '?';
-        EXPECT_STREQ("applepeach what?", str3.c_str());
-    } END;
-
-    TEST(glib, string_eq) {
-        EXPECT_TRUE(str1 == "apple");
-        EXPECT_TRUE(str1 != str2);
-        EXPECT_FALSE("peac" == str2);
-    } END;
-
-    std::cout << str1 << ' ' << str2 << std::endl;
-
-    glib::string str3, str4;
-    std::cin >> str3 >> str4;
-    std::cout << str3 << ", " << str4 << std::endl;
-
-    glib::getline(std::cin, str3);
-    std::cout << str3 << std::endl;
-
-    GTEND(std::cerr);
-}
-
-void glib_list_test() {
-    glib::list<int> l;
-    l.push_back(2);
-    l.push_back(6);
-    l.push_back(12);
-    auto it = l.begin();
-    it++;
-    l.insert(it, 4);
-    l.erase(l.rbegin());
-
-    for (auto item : l) {
-        std::cout << item << std::endl;
-    }
-}
-
 int main() {
-    maintest();
+    main_test();
     return 0;
 }

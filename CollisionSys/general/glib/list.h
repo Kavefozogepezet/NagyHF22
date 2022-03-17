@@ -20,9 +20,9 @@ namespace glib {
 		{}
 
 		/** @retruns Lista előző eleme*/
-		inline listNode<T>* prev() { return this->p; }
+		inline listNode<T>* prev() const { return this->p; }
 		/** @returns Lista következő eleme*/
-		inline listNode<T>* next() { return this->n; }
+		inline listNode<T>* next() const { return this->n; }
 	private:
 		listNode* p, * n;
 
@@ -51,16 +51,16 @@ namespace glib {
 		}
 
 		/** @returns Aktuális elem által tárolt adatra mutató ptr.*/
-		Type* operator -> () { return &this->item_ptr->item; }
+		Type* operator -> () const { return &this->item_ptr->item; }
 
 		/** @returns Aktuális elem által tárolt adat referenciája */
-		Type& operator * () { return this->item_ptr->item; }
+		Type& operator * () const { return this->item_ptr->item; }
 
-		bool operator == (const listIterator<T>& other) { return this->item_ptr == other.item_ptr; }
+		bool operator == (const listIterator<T>& other) const { return this->item_ptr == other.item_ptr; }
 
-		bool operator != (const listIterator<T>& other) { return this->item_ptr != other.item_ptr; }
+		bool operator != (const listIterator<T>& other) const { return this->item_ptr != other.item_ptr; }
 
-		inline NodeType* getPtr() { return this->item_ptr; }
+		inline NodeType* getPtr() const { return this->item_ptr; }
 	protected:
 		NodeType* item_ptr;
 	};
@@ -138,15 +138,15 @@ namespace glib {
 		using reverseIt = reverseListIt<list<Type>>;
 	public:
 		list() {
-			this->head = (NodeType*) operator new(2 * sizeof(NodeType));
+			this->head = (NodeType*) malloc(2 * sizeof(NodeType));
 			this->tail = head + 1;
-			this->head->n = this->tail;
-			this->tail->p = this->head;
+			NodeType::connect(this->head, this->tail);
 			this->head->p = this->tail->n =  nullptr;
 		}
 
 		~list() {
-			delete this->head;
+			this->clear();
+			free(this->head);
 		}
 
 		/** @returns Forward iterator a lista első elemén. */
@@ -162,9 +162,7 @@ namespace glib {
 		inline reverseIt rend() { return reverseIt(this->head); }
 
 		/** @returns true: a lista üres; false: nem üres. */
-		bool empty() {
-			return this->head->next() == this->tail();
-		}
+		bool empty() const { return this->head->next() == this->tail(); }
 
 		/** @brief Törli a lista összes elemét. */
 		void clear() {
@@ -189,16 +187,18 @@ namespace glib {
 			this->insert(this->head->next());
 		}
 
-		void pop_back() {
-			forwardIt it = forwardIt(this->tail->prev());
-			this->erase(it);
-		}
+		/** @brief Törli a lista utolsó elemét. */
+		void pop_back() { this->erase(this->rbegin()); }
 
-		void pop_front() {
-			forwardIt it = forwardIt(this->head->next());
-			this->erase(it);
-		}
+		/** @brief Törli a lista első elemét. */
+		void pop_front() { this->erase(this->begin()); }
 
+		/*
+		* @brief Beilleszt egy elemet a listába a megadott helyre.
+		* @param pos - Az iterator ami elé az új elem kerül
+		* @param data - A beilleszteni kívánt adat
+		* @return Iterator mely a beillesztett elemre mutat
+		*/
 		iterator insert(iterator pos, const T& data) {
 			NodeType
 				* right = pos.getPtr(),
@@ -209,6 +209,11 @@ namespace glib {
 			return iterator(new_node);
 		}
 
+		/*
+		* @brief Eltávolít egy elemet a listából.
+		* @param pos - Az eltávolítandó elemre mutató iterator
+		* @return Az eltávolított elem utáni elemre mutató iterator
+		*/
 		iterator erase(iterator pos) {
 			NodeType
 				* right = pos.getPtr()->next(),
@@ -218,17 +223,25 @@ namespace glib {
 			return iterator(right);
 		}
 
+		/*
+		* @brief Eltávolít intervallumon belüli elemeket a listából. [first, last)
+		* @param first - Az intervallum eleje - zárt
+		* @param last - Az intervallum vége - nyitott
+		* @return Az eltávolított elemek utáni első elemre mutató iterator
+		*/
 		iterator erase(iterator first, iterator last) {
 			NodeType
 				* left = first.getPtr()->prev(),
 				* right = last.getPtr();
 
-			while (first != last) {
-				NodeType* temp = first.getPtr();
-				++first;
+			forwardIt ff(first.getPtr()), fl(last.getPtr());
+
+			while (ff != fl) {
+				NodeType* temp = ff.getPtr();
+				++ff;
 				delete temp;
 			}
-			listNode::connect(left, right);
+			NodeType::connect(left, right);
 			return iterator(last);
 		}
 	private:
