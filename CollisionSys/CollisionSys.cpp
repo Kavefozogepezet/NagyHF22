@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <iostream>
 
 #include "debug/memtrace.h"
 #include "debug/gtest_lite.h"
@@ -13,10 +14,10 @@
 #include "Shapes/Ellipse.h"
 #include "general/sfmlmath.h"
 
-#include "general/glib/string.h"
+#include "general/string.h"
 
-#include "general/glib/list.h"
-#include <list>
+#include "general/list.h"
+#include "general/vec2.h"
 
 const float speed = 0.02f;
 const float angular = 2.0f;
@@ -94,7 +95,7 @@ void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractS
 }
 
 void main_test() {
-    sf::RenderWindow win(sf::VideoMode(640, 480), "Test");
+    sf::RenderWindow win(sf::VideoMode(800, 800), "Test");
     win.setFramerateLimit(30);
     sf::View view({ 0.0f, 0.0f }, { 8.0f, 8.0f });
     win.setView(view);
@@ -164,7 +165,29 @@ void main_test() {
     win.close();
 }
 
+inline void printVertexArray(glib::VertexArray& arr) {
+    for(glib::vec2d& v : arr) {
+        std::cout << "vec:" << v.x << " " << v.y << std::endl;
+    }
+}
+
+void array_test() {
+    glib::VertexArray va(2);
+    va.resize(3);
+    for (auto& v : va) {
+        v = { 1.0, 1.1 };
+    }
+
+    /*
+    for (size_t i = 0; i < 3; i++) {
+        double d = static_cast<double>(i);
+        va[i] = glib::vec2d(d, d);
+    }
+    */
+    printVertexArray(va);
+}
+
 int main() {
-    main_test();
+    array_test();
     return 0;
 }

@@ -5,6 +5,8 @@
 #include <cctype>
 #include <iostream>
 
+#include "../debug/memtrace.h"
+
 #define _CRT_SECURE_NO_WARNINGS
 
 namespace glib {

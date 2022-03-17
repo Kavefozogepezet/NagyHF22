@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include "../debug/memtrace.h"
+
 namespace glib {
 	/*
 	* @brief Egy duplán láncolt lista egy eleme.
@@ -34,7 +36,7 @@ namespace glib {
 
 	/*
 	* @brief Lista iterator alap osztálya.
-	* @param T - Egy lista<Type> típus
+	* @param T - Egy list<Type> típus
 	*/
 	template <typename T>
 	class listIterator {
@@ -56,9 +58,9 @@ namespace glib {
 		/** @returns Aktuális elem által tárolt adat referenciája */
 		Type& operator * () const { return this->item_ptr->item; }
 
-		bool operator == (const listIterator<T>& other) const { return this->item_ptr == other.item_ptr; }
+		bool operator == (const listIterator& other) const { return this->item_ptr == other.item_ptr; }
 
-		bool operator != (const listIterator<T>& other) const { return this->item_ptr != other.item_ptr; }
+		bool operator != (const listIterator& other) const { return this->item_ptr != other.item_ptr; }
 
 		inline NodeType* getPtr() const { return this->item_ptr; }
 	protected:

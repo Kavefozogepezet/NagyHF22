@@ -22,9 +22,11 @@
   <ItemGroup>
     <ClInclude Include="debug\gtest_lite.h" />
     <ClInclude Include="debug\memtrace.h" />
-    <ClInclude Include="general\glib\array.h" />
-    <ClInclude Include="general\glib\list.h" />
-    <ClInclude Include="general\glib\string.h" />
+    <ClInclude Include="general\array.h" />
+    <ClInclude Include="general\list.h" />
+    <ClInclude Include="general\string.h" />
+    <ClInclude Include="general\sfmlmath.h" />
+    <ClInclude Include="general\vec2.h" />
     <ClInclude Include="Shapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\AlResource.hpp" />
@@ -126,7 +128,6 @@
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="Shapes\Circle.h" />
     <ClInclude Include="GJK.h" />
-    <ClInclude Include="general\sfmlmath.h" />
     <ClInclude Include="Shapes\AbstractShape.h" />
     <ClInclude Include="Shapes\Polygon.h" />
   </ItemGroup>

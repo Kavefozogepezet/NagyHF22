@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+#ifndef ABC
+
 namespace sfmath {
 	/*
 	* @brief Sablon két sfml Vector2 skaláris szorzatának kiszámítására
@@ -92,3 +94,4 @@ namespace sfmath {
 	}
 }
 
+#endif
