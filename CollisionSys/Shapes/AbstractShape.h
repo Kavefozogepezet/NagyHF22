@@ -2,10 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../general/vec2.h"
+
 namespace CollSys {
 	/*
 	* @brief Ez az absztrakt osztály deklarálja azt az alap funkcionalitást amely szükséges a GJK algoritmushoz.
-	* Deklarál továbbá olyan segédfüggvényeket, melyek megkönnyítik egy síkidom karbantartását.
 	*/
 	class AbstractShape : public sf::Drawable, public sf::Transformable
 	{
@@ -17,7 +18,7 @@ namespace CollSys {
 		* @param direction - Az irány, amelyben a legmesszebbi pontot keressük
 		* @return - A legmesszebb pont koordinátája
 		*/
-		virtual sf::Vector2f support(const sf::Vector2f& direction) const = 0;
+		virtual glib::vec2d support(const glib::vec2d& direction) const = 0;
 		
 		/*
 		* @brief Megadja azt a legkisebb sugarú, síkidom középpontjával egyező középpontú
@@ -26,22 +27,17 @@ namespace CollSys {
 		*/
 		double influenceRange() const;
 	protected:
-		/** @brief Tárolja a befolyási kör sugarának hosszát. A gyerek osztályok maguk frissítik.*/
-		float inf_rng;
+		/** @brief Tárolja a befolyási kör sugarának hosszát. Az osztály gyerekei maguk kezelik az értékét.*/
+		double inf_rng;
 		/** @brief Első sorban a változó a síkidom megjelenítésére szolgál, közelíti a síkidom körvonalait.*/
-		sf::VertexArray shape;
-
-		/*
-		* @brief A build tagfüggvényben ajánlott feltölteni a shape változót a síkidomot közelítő körvonallal. Használata opcionális.
-		*/
-		virtual void build() {};
+		glib::VertexArray shape;
 
 		/*
 		* @brief Akkor hívandó meg, amikor a síkidom dimenziói változnak.
-		* Frissíti a befolyási kör sugarát tartalmazó inf_rng változót.
+		* Frissítenie kell a befolyási kör sugarát tartalmazó inf_rng változót.
 		* @return Az új befolyási kör sugarának hossza.
 		*/
-		virtual float refreshInfRng() = 0;
+		virtual double refreshInfRng() = 0;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};

@@ -2,11 +2,12 @@
 
 #define _USE_MATH_DEFINES
 
-#include <cmath>
+#include <math.h>
 #include <SFML/Graphics/VertexArray.hpp>
 
 #include "../debug/gtest_lite.h"
 #include "array.h"
+#include "list.h"
 
 namespace glib {
 	/*
@@ -45,13 +46,13 @@ namespace glib {
 			return *this;
 		}
 
-		bool operator == (const _MyVec2& other) {
+		bool operator == (const _MyVec2& other) const {
 			return
 				gtest_lite::almostEQ(this->x, other.x) &&
 				gtest_lite::almostEQ(this->y, other.y);
 		}
 
-		bool operator != (const _MyVec2& other) {
+		bool operator != (const _MyVec2& other) const {
 			return !(*this == other);
 		}
 
@@ -99,24 +100,24 @@ namespace glib {
 			return *this;
 		}
 
-		_MyVec2& operator *= (Base value) const {
+		_MyVec2& operator *= (Base value) {
 			this->x *= value;
 			this->y *= value;
 			return *this;
 		}
 
-		_MyVec2& operator /= (Base value) const {
+		_MyVec2& operator /= (Base value) {
 			this->x /= value;
 			this->y /= value;
 			return *this;
 		}
 
-		Base operator * (const _MyVec2& other) {
+		Base operator * (const _MyVec2& other) const {
 			return this->x * other.x + this->y * other.y;
 		}
 
 		/** @return A vektor hossza */
-		Base length() {
+		Base length() const {
 			return sqrt(this->x * this->x + this->y * this->y);
 		}
 
@@ -145,8 +146,21 @@ namespace glib {
 			*this = { x_rot, y_rot };
 			return *this;
 		}
+
+		/*
+		* @brief A vektor x és y komponensét szorozza a megadott értékekkel.
+		* @param scale_x - Az érték amivel az x komponens szorzódik
+		* @param scale_y - Az érték amivel az y komponens szorzódik
+		* @return referencia saját magára
+		*/
+		_MyVec2& scale(Base scale_x, Base scale_y) {
+			this->x *= scale_x;
+			this->y *= scale_y;
+			return *this;
+		}
 	};
 
+	/** @return Negált vektor */
 	template <typename Base>
 	vec2<Base> operator - (const vec2<Base>& vec) {
 		return vec2<Base>(-vec.x, -vec.y);
@@ -154,8 +168,8 @@ namespace glib {
 
 
 	template <typename Base>
-	vec2<Base> operator * (Base, const vec2<Base>& vec) {
-		return vec * Base;
+	vec2<Base> operator * (Base value, const vec2<Base>& vec) {
+		return vec * value;
 	}
 
 	/*
@@ -182,6 +196,18 @@ namespace glib {
 	}
 
 	/*
+	* @brief Létrehoz egy vektort amely x és y komponense egy minta vektor x és y komponensének szorzata a megadott értékekkel.
+	* @param scale_x - Az érték amivel az x komponens szorzódik
+	* @param scale_y - Az érték amivel az y komponens szorzódik
+	* @return Az átméretezett vektor
+	*/
+	template <typename Base>
+	vec2<Base> scale(const vec2<Base>& vec, Base scale_x, Base scale_y) {
+		vec2<Base> tmp = vec;
+		return tmp.scale(scale_x, scale_y);
+	}
+
+	/*
 	* Létrehoz egy minta vektorra merőleges vektort úgy, hogy az új vektor a mintához képest jobbra mutat.
 	* @param vec - A minta vektor
 	* @return A mintára merőleges vektor
@@ -201,7 +227,7 @@ namespace glib {
 	template <typename Base>
 	vec2<Base> getNormal(const vec2<Base>& vec, const vec2<Base>& side) {
 		vec2<Base> n = getNormal(vec);
-		bool dir = n * dir < static_cast<Base>(0);
+		bool dir = (n * side) < static_cast<Base>(0);
 		return dir ? -n : n;
 	}
 
@@ -211,6 +237,14 @@ namespace glib {
 	typedef glib::array<vec2f>  VertexArrayf;
 	typedef glib::array<vec2d> VertexArray;
 
+	typedef glib::list<vec2f> VertexListf;
+	typedef glib::list<vec2d> VertexList;
+
+	/*
+	* @brief Egy vec2<Base> típusú vektort átalakít sf:Vector2f típusúvá
+	* @param vec - Az átalakítandó vektor
+	* @returns Átalakított vektor
+	*/
 	template<typename Base>
 	sf::Vector2f VectorCast(const vec2<Base>& vec) {
 		return sf::Vector2f(
@@ -219,18 +253,59 @@ namespace glib {
 		);
 	}
 
-	//template <typename T>
+	/*
+	* @brief Egy vec2<Base> típusú vektort átalakít sf:Vector2f típusúvá
+	* @param vec - Az átalakítandó vektor
+	* @returns Átalakított vektor
+	*/
+	template<typename Base>
+	vec2<Base> VectorCast(const sf::Vector2f& vec) {
+		return vec2<Base>(
+			static_cast<Base>(vec.x),
+			static_cast<Base>(vec.y)
+		);
+	}
+
+	/*
+	* @brief Feltölt egy sfml formátumú vertex array-t egy glib formátumú tartalmával.
+	* @param dest - Ebbe másol
+	* @param src - Innen másol
+	* @param color - A pontok színe
+	* @param type - A primitív alakzat típusa amit az array tárol
+	*/
+	template <typename Base>
 	void VertexArrayCast(
-		glib::array<vec2<double>>& src,
 		sf::VertexArray& dest,
-		sf::PrimitiveType type = sf::LineStrip,
+		const glib::array<vec2<Base>>& src,
+		sf::Color color = sf::Color::White,
+		sf::PrimitiveType type = sf::LineStrip
+	) {
+		dest.clear();
+		dest.setPrimitiveType(type);
+		dest.resize(src.size());
+		for (size_t i = 0; i < src.size(); i++) {
+			dest[i].position = VectorCast(src[i]);
+		}
+	}
+
+	template <typename Base>
+	void OutlineCast(
+		sf::VertexArray& dest,
+		const glib::array<vec2<Base>>& src,
 		sf::Color color = sf::Color::White
 	) {
 		dest.clear();
-		dest.resize(src.size());
-		for (auto vec : src) {
-			sf::Vector2f temp = VectorCast(vec);
-			dest.append(sf::Vertex(temp, color));
+		dest.setPrimitiveType(sf::LineStrip);
+		dest.resize(src.size() + 1);
+		for (size_t i = 0; i < src.size(); i++) {
+			dest[i].position = VectorCast(src[i]);
 		}
+		dest[dest.getVertexCount() - 1].position = src[0];
+	}
+
+	template <typename Base>
+	vec2<Base> operator * (const sf::Transform& transform, vec2<Base> vec) {
+		sf::Vector2f temp = transform * VectorCast(vec);
+		return VectorCast<Base>(temp);
 	}
 }

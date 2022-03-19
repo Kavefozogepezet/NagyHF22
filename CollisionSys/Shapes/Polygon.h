@@ -7,10 +7,15 @@ namespace CollSys {
 	{
 	public:
 		Polygon();
+		/*
+		Polygon(int point_count);
 
-		sf::Vector2f support(const sf::Vector2f& direction) const override;
+		Polygon(std::initializer_list<glib::vec2d> points);
+		*/
+
+		glib::vec2d support(const glib::vec2d& direction) const override;
 	protected:
-		virtual void build() override;
-		float refreshInfRng() override;
+		void build();
+		double refreshInfRng() override;
 	};
 }

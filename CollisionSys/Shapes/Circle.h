@@ -6,11 +6,11 @@ namespace CollSys {
 	class Circle : public AbstractShape
 	{
 	public:
-		Circle(float radius = 0.5f);
+		Circle(double radius = 0.5f);
 
-		sf::Vector2f support(const sf::Vector2f& direction) const override;
+		glib::vec2d support(const glib::vec2d& direction) const override;
 	protected:
-		virtual void build() override;
-		float refreshInfRng() override;
+		void build();
+		double refreshInfRng() override;
 	};
 }

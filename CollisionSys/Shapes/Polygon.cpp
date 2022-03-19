@@ -9,14 +9,14 @@ namespace CollSys {
 		this->refreshInfRng();
 	}
 
-	sf::Vector2f Polygon::support(const sf::Vector2f& dir) const {
-		sf::Vector2f tdir = sfmath::rotate(dir, -this->getRotation());
-		float max_distance = sfmath::dot(this->shape[0].position, tdir);
-		sf::Vector2f point = this->shape[0].position;
+	glib::vec2d Polygon::support(const glib::vec2d& dir) const {
+		glib::vec2d tdir = glib::rotate(dir, -static_cast<double>(this->getRotation()));
+		double max_distance = this->shape[0] * tdir;
+		glib::vec2d point = this->shape[0];
 
-		for (size_t i = 1; i < this->shape.getVertexCount() - 1; i++) {
-			const sf::Vector2f& p = this->shape[i].position;
-			float dot_product = sfmath::dot(p, tdir);
+		for (size_t i = 1; i < this->shape.size() - 1; i++) {
+			const glib::vec2d& p = this->shape[i];
+			double dot_product = p * tdir;
 
 			if (dot_product > max_distance) {
 				max_distance = dot_product;
@@ -29,18 +29,18 @@ namespace CollSys {
 	void Polygon::build() {
 		this->shape.resize(6);
 
-		this->shape[0].position = sf::Vector2f(-1.0f, 1.0f);
-		this->shape[1].position = sf::Vector2f(1.0f, 1.0f);
-		this->shape[2].position = sf::Vector2f(1.53f, -0.4f);
-		this->shape[3].position = sf::Vector2f(0.8f, -1.74f);
-		this->shape[4].position = sf::Vector2f(-1.0f, -1.0f);
-		this->shape[5].position = sf::Vector2f(-1.0f, 1.0f);
+		this->shape[0] = glib::vec2d(-1.0f, 1.0f);
+		this->shape[1] = glib::vec2d(1.0f, 1.0f);
+		this->shape[2] = glib::vec2d(1.53f, -0.4f);
+		this->shape[3] = glib::vec2d(0.8f, -1.74f);
+		this->shape[4] = glib::vec2d(-1.0f, -1.0f);
+		this->shape[5] = glib::vec2d(-1.0f, 1.0f);
 	}
 
-	float Polygon::refreshInfRng() {
-		for (size_t i = 0; i < this->shape.getVertexCount() - 1; i++) {
-			const sf::Vector2f& p = this->shape[i].position;
-			float distance = sfmath::length(p);
+	double Polygon::refreshInfRng() {
+		for (size_t i = 0; i < this->shape.size() - 1; i++) {
+			const glib::vec2d& p = this->shape[i];
+			double distance = p.length();
 
 			if (distance > this->inf_rng) {
 				this->inf_rng = distance;

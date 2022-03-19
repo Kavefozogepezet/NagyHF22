@@ -8,13 +8,13 @@ namespace CollSys {
 	class Ellipse : public AbstractShape
 	{
 	public:
-		Ellipse(float a = 0.5f, float b = 0.25f);
+		Ellipse(double a = 0.5f, double b = 0.25f);
 
-		sf::Vector2f support(const sf::Vector2f& direction) const override;
+		glib::vec2d support(const glib::vec2d& direction) const override;
 	protected:
-		virtual void build() override;
-		float refreshInfRng() override;
+		void build();
+		double refreshInfRng() override;
 	private:
-		float a, b;
+		double a, b;
 	};
 }

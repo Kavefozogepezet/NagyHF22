@@ -7,6 +7,8 @@
 #include <iostream>
 
 #include "debug/memtrace.h"
+
+#include "debug/memtrace.h"
 #include "debug/gtest_lite.h"
 
 #include "Shapes/Polygon.h"
@@ -19,58 +21,63 @@
 #include "general/list.h"
 #include "general/vec2.h"
 
-const float speed = 0.02f;
+const float speed = 0.002f;
 const float angular = 2.0f;
 
-void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 64) {
-    arr.resize(r);
+void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 512) {
+    glib::VertexArray temp(r);
     float angle = 360.0f / static_cast<float>(r);
-    sf::Vector2f dir(1.0, 0.0);
+    glib::vec2d dir(1.0, 0.0);
 
     for (size_t i = 0; i < r; i++) {
-        arr[i].color = sf::Color(100, 100, 100);
-
-        sf::Vector2f p1 = s1.support(dir);
-        sf::Vector2f p2 = s2.support(-dir);
-        arr[i].position = p1 - p2;
-
-        dir = sfmath::rotate(dir, 360.0f / 32.0f);
+        glib::vec2d p1 = s1.support(dir);
+        glib::vec2d p2 = s2.support(-dir);
+        temp[i] = p1 - p2;
+        dir.rotate(360.0 / static_cast<double>(r));
     }
+    glib::VertexArrayCast(arr, temp, sf::Color(100, 100, 100));
 }
 
 bool calcSupPoint(
     const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2,
-    const sf::Vector2f& dir, sf::Vector2f& point )
+    const glib::vec2d& dir, glib::vec2d& point )
 {
     point = s1.support(dir) - s2.support(-dir);
-    return sfmath::dot(point, dir) > 0.0f;
+    return (point * dir) > 0.0f;
 }
 
 void calcSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+    if (simplex.getVertexCount() == 3 || simplex[0].color == sf::Color::Red) {
+        return;
+    }
     sf::Color col = sf::Color::Yellow;
-    sf::Vector2f
-        svec = simplex[0].position - simplex[1].position,
-        origo = sf::Vector2f(0.0f, 0.0f) - simplex[1].position,
-        n = sfmath::normalInDir(svec, origo),
+    glib::vec2d
+        svec = glib::VectorCast<double>(simplex[0].position - simplex[1].position),
+        origo = glib::VectorCast<double>(sf::Vector2f(0.0f, 0.0f) - simplex[1].position),
+        n = glib::getNormal(svec, origo),
         new_point;
     if (!calcSupPoint(s1, s2, n, new_point)) {
         col = sf::Color::Red;
     }
-    sf::Vector2f
-        dir1 = sfmath::normalInDir(simplex[0].position - new_point, -(simplex[1].position - new_point)),
-        dir2 = sfmath::normalInDir(simplex[1].position - new_point, -(simplex[0].position - new_point)),
+    glib::vec2d
+        dir1 = glib::getNormal(
+            glib::VectorCast<double>(simplex[0].position) - new_point, 
+            -(glib::VectorCast<double>(simplex[1].position) - new_point)),
+        dir2 = glib::getNormal(
+            glib::VectorCast<double>(simplex[1].position) - new_point,
+            -(glib::VectorCast<double>(simplex[0].position) - new_point)),
         np2o = -new_point;
-    if (sfmath::dot(dir1, np2o) > 0.0f) {
-        simplex[1] = new_point;
+    if ((dir1 * np2o) > 0.0f) {
+        simplex[1] = glib::VectorCast(new_point);
     }
-    else if (sfmath::dot(dir2, np2o) > 0.0f) {
-        simplex[0] = new_point;
+    else if ((dir2 * np2o) > 0.0f) {
+        simplex[0] = glib::VectorCast(new_point);
     }
     else {
         std::cout << "jeee" << std::endl; 
         simplex.resize(3);
         simplex.setPrimitiveType(sf::Triangles);
-        simplex[2].position = new_point;
+        simplex[2].position = glib::VectorCast(new_point);
         col = sf::Color::Green;
     }
     for (size_t i = 0; i < simplex.getVertexCount(); i++) {
@@ -83,35 +90,40 @@ void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractS
     simplex.setPrimitiveType(sf::LineStrip);
     
     sf::Color col = sf::Color::Yellow;
-    sf::Vector2f b = { 1.0f, 0.0f };
-    if (!calcSupPoint(s1, s2, b, simplex[0].position)) {
+    glib::vec2d b = { 1.0f, 0.0f }, temp;
+    if (!calcSupPoint(s1, s2, b, temp)) {
         col = sf::Color::Red;
     }
-    b = sf::Vector2f(0.0f, 0.0f) - simplex[0].position;
-    if (!calcSupPoint(s1, s2, b, simplex[1].position)) {
+    simplex[0].position = glib::VectorCast<double>(temp);
+
+    b = glib::vec2d(0.0f, 0.0f) - glib::VectorCast<double>(simplex[0].position);
+    if (!calcSupPoint(s1, s2, b, temp)) {
         col = sf::Color::Red;
     }
+    simplex[1].position = glib::VectorCast<double>(temp);
+
     simplex[0].color = simplex[1].color = col;
 }
 
 void main_test() {
     sf::RenderWindow win(sf::VideoMode(800, 800), "Test");
     win.setFramerateLimit(30);
-    sf::View view({ 0.0f, 0.0f }, { 8.0f, 8.0f });
+    sf::View view({ 0.0f, 0.0f }, { 3.0f, 3.0f });
     win.setView(view);
 
     glib::list<sf::Drawable*> objs;
 
-    sf::CircleShape c(0.02f);
-    c.setOrigin(0.02f, 0.02f);
-    c.setFillColor(sf::Color::Red);
-    objs.push_back(&c);
+    sf::CircleShape centre(0.005f);
+    centre.setOrigin(0.005f, 0.005f);
+    centre.setFillColor(sf::Color::Red);
+    objs.push_back(&centre);
 
-    CollSys::Polygon t1, t2;
+    CollSys::Polygon t1;
+    CollSys::Ellipse t2;
     t1.setPosition({ -1.0, 0.0 });
-    t1.setScale({ 0.5f, 0.5f });
+    t1.setScale({ 0.4f, 0.4f });
     t1.setRotation(30.0f);
-    t2.setScale({ 0.5f, 0.5f });
+    //t2.setScale({ 0.5f, 0.5f });
     objs.push_back(&t1);
     objs.push_back(&t2);
 
@@ -188,6 +200,6 @@ void array_test() {
 }
 
 int main() {
-    array_test();
+    main_test();
     return 0;
 }
