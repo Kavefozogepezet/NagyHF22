@@ -21,7 +21,9 @@
 #include "general/list.h"
 #include "general/vec2.h"
 
-const float speed = 0.002f;
+#include "GJK.h"
+
+const float speed = 0.005f;
 const float angular = 2.0f;
 
 void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 512) {
@@ -108,7 +110,7 @@ void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractS
 void main_test() {
     sf::RenderWindow win(sf::VideoMode(800, 800), "Test");
     win.setFramerateLimit(30);
-    sf::View view({ 0.0f, 0.0f }, { 3.0f, 3.0f });
+    sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
     win.setView(view);
 
     glib::list<sf::Drawable*> objs;
@@ -116,21 +118,25 @@ void main_test() {
     sf::CircleShape centre(0.005f);
     centre.setOrigin(0.005f, 0.005f);
     centre.setFillColor(sf::Color::Red);
-    objs.push_back(&centre);
+    //objs.push_back(&centre);
 
-    CollSys::Polygon t1;
-    CollSys::Ellipse t2;
-    t1.setPosition({ -1.0, 0.0 });
-    t1.setScale({ 0.4f, 0.4f });
-    t1.setRotation(30.0f);
-    //t2.setScale({ 0.5f, 0.5f });
+    CollSys::Ellipse t1;
+    CollSys::Polygon t2 = {
+        { -1.0, 0.0 },
+        { 0.0, 0.5 },
+        { 1.0, 0.1 },
+        { 0.5, -0.5 }
+    };
+
+    t1.setPosition({ -0.4, 0.0 }).setScale({ 0.4f, 0.4f }).setRotation(30.0f);
+    t2.setScale({ 0.4f, 0.4f });
     objs.push_back(&t1);
     objs.push_back(&t2);
 
     sf::VertexArray simplex(sf::LineStrip, 2), Mdiff(sf::LineStrip, 0);
     calcFirstSimplex(t1, t2, simplex);
-    objs.push_back(&Mdiff);
-    objs.push_back(&simplex);
+    //objs.push_back(&Mdiff);
+    //objs.push_back(&simplex);
 
     while (win.isOpen()) {
         sf::Event event;
@@ -167,6 +173,16 @@ void main_test() {
             t2.move(speed, 0.0f);
         }
         calcMdiff(t1, t2, Mdiff);
+
+        CollSys::GJKSolver gjk_test(t1, t2);
+        if (gjk_test.isContact()) {
+            t1.setColor(sf::Color::Red);
+            t2.setColor(sf::Color::Red);
+        }
+        else {
+            t1.setColor(sf::Color::White);
+            t2.setColor(sf::Color::White);
+        }
 
         win.clear(sf::Color::Black);
         for (auto obj : objs) {

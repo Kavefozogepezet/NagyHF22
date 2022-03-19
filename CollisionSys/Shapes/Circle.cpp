@@ -4,24 +4,23 @@
 #include "../general/sfmlmath.h"
 
 namespace CollSys {
-	Circle::Circle(double r) {
-		this->inf_rng = r; 
+	Circle::Circle(double radius) :
+		r(radius)
+	{ 
 		this->build();
 	}
 
 	glib::vec2d Circle::support(const glib::vec2d& dir) const {
-		glib::vec2d tdir = glib::rotate(glib::normalize(dir), -static_cast<double>(this->getRotation()));
-		return this->getTransform() * (this->inf_rng * tdir);
+		glib::vec2d tdir = glib::rotate(glib::normalize(dir), -this->getRotation());
+		return this->getTransform() * (this->r * tdir);
 	}
 
 	void Circle::build() {
 		this->shape.resize(33);
 		for (size_t i = 0; i < 33; i++) {
-			float angle = 2.0f * (float)M_PI * static_cast<float>(i) / 32.0f;
+			double angle = 2.0f * M_PI * static_cast<double>(i) / 32.0;
 			glib::vec2d d(std::cos(angle), std::sin(angle));
-			this->shape[i] = this->inf_rng * d;
+			this->shape[i] = this->r * d;
 		}
 	}
-
-	double Circle::refreshInfRng() { return this->inf_rng; }
 }

@@ -8,12 +8,11 @@ namespace CollSys {
 	Ellipse::Ellipse(double a, double b) :
 		a(a), b(b)
 	{
-		this->refreshInfRng();
 		this->build();
 	}
 
 	glib::vec2d Ellipse::support(const glib::vec2d& dir) const {
-		glib::vec2d tdir = glib::rotate(dir, -static_cast<double>(this->getRotation()));
+		glib::vec2d tdir = glib::rotate(dir, -this->getRotation());
 		double a2 = this->a * this->a,
 			sqr = (tdir.y / tdir.x) * (this->b / a2),
 			x = 1.0f / std::sqrt(sqr * sqr + 1 / a2),
@@ -28,20 +27,10 @@ namespace CollSys {
 	void Ellipse::build() {
 		this->shape.resize(33);
 		for (size_t i = 0; i < 33; i++) {
-			float angle = 2.0f * (float)M_PI * static_cast<float>(i) / 32.0f;
+			double angle = 2.0f * M_PI * static_cast<double>(i) / 32.0f;
 			glib::vec2d d(std::cos(angle), std::sin(angle));
 			glib::vec2d p = this->support(d);
 			this->shape[i] = p;
 		}
-	}
-
-	double Ellipse::refreshInfRng() {
-		if (this->b > this->a) {
-			this->inf_rng = this->b;
-		}
-		else {
-			this->inf_rng = this->a;
-		}
-		return this->inf_rng;
 	}
 }

@@ -4,21 +4,26 @@
 
 #include "Shapes/AbstractShape.h"
 
-namespace CollSys::GJK {
+namespace CollSys {
 	/*
 	* @brief Két síkidom érintkezését leíró osztály.
 	*/
-	class Collision {
+	class Contact {
+		friend class GJKSolver;
 	public:
-		const sf::Vector2f point;
-		const sf::Vector2f normal;
-
-		Collision(
-			const AbstractShape& shape1,
-			const AbstractShape& shape2,
-			sf::Vector2f contactPoint = sf::Vector2f(0.0f, 0.0f),
-			sf::Vector2f normal = sf::Vector2f(1.0f, 0.0f)
+		Contact(
+			AbstractShape& shape1,
+			AbstractShape& shape2,
+			const glib::vec2d& contactPoint,
+			const glib::vec2d& contactnormal
 		);
+
+		Contact(
+			AbstractShape& shape1,
+			AbstractShape& shape2
+		);
+
+		Contact(const Contact& other);
 
 		/*
 		* @brief Egy Collision típusú objektumot 0-1-el indexelve visszatér az egyik résztvevő síkidommal.
@@ -26,10 +31,33 @@ namespace CollSys::GJK {
 		*/
 		const AbstractShape& operator [] (size_t idx);
 	private:
-		const AbstractShape& actor1, &actor2;
+		AbstractShape& actor1, &actor2;
+		glib::vec2d point, normal;
 	};
 
-	class Solver {
+	class GJKSolver {
+	public:
+		GJKSolver(AbstractShape& shape1, AbstractShape& shape2);
+
+		bool isContact();
+		const Contact& getContact();
+
+	private:
+		AbstractShape& s1, & s2;
+
+		bool is_contact;
+		Contact contact;
+	private:
+		glib::VertexArray simplex;
+		glib::VertexList polytope;
+
+		bool getSupportPoint(const glib::vec2d& direction, glib::vec2d& point);
+
+		bool findFirstSimplex();
+		bool findNextPoint(glib::vec2d& point);
+
+		void checkOverlap();
+		void calcContact();
 	};
 
 	/*
@@ -39,14 +67,6 @@ namespace CollSys::GJK {
 	* @todo - Rendes listát írni, azt használni paraméterként
 	*/
 	void checkCollisions(AbstractShape* shapes, size_t n);
-
-	/*
-	* @brief Megvizsgálja hogy két síkidom befolyási köre metszi e egymást.
-	* @param shape1 - Az egyik síkidom
-	* @param shape2 - A másik síkidom
-	* @return true: a körök metszik egymást; false: nem metszik egymást
-	*/
-	bool checkInfluenceRange(const AbstractShape& shape1, const AbstractShape& shape2);
 
 	/*
 	* @brief Megvizsgálja hogy két síkidom átfedi e egymást
@@ -63,6 +83,6 @@ namespace CollSys::GJK {
 	* @param collData - Ha 
 	* @return true: true: a síkidomok érintkeznek; false:nem érintkeznek
 	*/
-	bool checkCollision(const AbstractShape& shape1, const AbstractShape& shape2, Collision& collData);
+	bool checkCollision(const AbstractShape& shape1, const AbstractShape& shape2, Contact& collData);
 }
 

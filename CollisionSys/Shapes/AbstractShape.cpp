@@ -4,16 +4,18 @@
 
 namespace CollSys {
 	AbstractShape::AbstractShape() :
-		inf_rng(0.0f),
-		shape()
+		shape(),
+		displayColor(sf::Color::White)
 	{}
 
-	double AbstractShape::influenceRange() const { return this->inf_rng; }
+	void AbstractShape::setColor(sf::Color color) {
+		this->displayColor = color;
+	}
 
 	void AbstractShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		states.transform *= this->getTransform();
 		sf::VertexArray temp;
-		glib::VertexArrayCast(temp, this->shape);
+		glib::OutlineCast(temp, this->shape, this->displayColor);
 		target.draw(temp, states);
 	}
 }

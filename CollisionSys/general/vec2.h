@@ -158,6 +158,17 @@ namespace glib {
 			this->y *= scale_y;
 			return *this;
 		}
+
+		/*
+		* @brief A vektor x és y komponensét szorozza a megadott értékekkel.
+		* @param scale_xy - A vektor amely komponensenként szorzódik
+		* @return referencia saját magára
+		*/
+		_MyVec2& scale(const _MyVec2& scale_xy) {
+			this->x *= scale_xy.x;
+			this->y *= scale_xy.y;
+			return *this;
+		}
 	};
 
 	/** @return Negált vektor */
@@ -285,6 +296,7 @@ namespace glib {
 		dest.resize(src.size());
 		for (size_t i = 0; i < src.size(); i++) {
 			dest[i].position = VectorCast(src[i]);
+			dest[i].color = color;
 		}
 	}
 
@@ -299,8 +311,10 @@ namespace glib {
 		dest.resize(src.size() + 1);
 		for (size_t i = 0; i < src.size(); i++) {
 			dest[i].position = VectorCast(src[i]);
+			dest[i].color = color;
 		}
-		dest[dest.getVertexCount() - 1].position = src[0];
+		dest[dest.getVertexCount() - 1].position = VectorCast(src[0]);
+		dest[dest.getVertexCount() - 1].color = color;
 	}
 
 	template <typename Base>

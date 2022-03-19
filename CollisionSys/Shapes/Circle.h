@@ -11,6 +11,7 @@ namespace CollSys {
 		glib::vec2d support(const glib::vec2d& direction) const override;
 	protected:
 		void build();
-		double refreshInfRng() override;
+	private:
+		double r;
 	};
 }

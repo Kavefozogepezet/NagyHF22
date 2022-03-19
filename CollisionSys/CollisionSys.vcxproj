@@ -18,6 +18,7 @@
     <ClCompile Include="Shapes\AbstractShape.cpp" />
     <ClCompile Include="CollisionSys.cpp" />
     <ClCompile Include="Shapes\Polygon.cpp" />
+    <ClCompile Include="Shapes\Transformable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug\gtest_lite.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="GJK.h" />
     <ClInclude Include="Shapes\AbstractShape.h" />
     <ClInclude Include="Shapes\Polygon.h" />
+    <ClInclude Include="Shapes\Transformable.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\SFML-2.5.1\lib\flac.lib" />
