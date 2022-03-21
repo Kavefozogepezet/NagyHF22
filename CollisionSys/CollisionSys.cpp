@@ -17,7 +17,7 @@
 
 #include "GJK.h"
 
-const float speed = 0.005f;
+const float speed = 0.02f;
 const float angular = 2.0f;
 
 void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 512) {
@@ -101,24 +101,51 @@ void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractS
     simplex[0].color = simplex[1].color = col;
 }
 
+void RenderPass(sf::RenderWindow& win, glib::list<CollSys::AbstractShape*>& objs, sf::VertexArray& debug) {
+    win.clear(sf::Color::Black);
+    for (auto obj : objs) {
+        win.draw(*obj);
+    }
+    win.draw(debug);
+    win.display();
+}
+
+void ContactPass(glib::list<CollSys::AbstractShape*>& objs) {
+    for (auto obj : objs) {
+        obj->setColor(sf::Color::White);
+    }
+
+    for (auto obj1 : objs) {
+        for (auto obj2 : objs) {
+            if (obj1 != obj2) {
+                CollSys::GJKSolver gjk_test(*obj1, *obj2);
+                if (gjk_test.isContact()) {
+                    obj1->setColor(sf::Color::Red);
+                    obj2->setColor(sf::Color::Red);
+                }
+            }
+        }
+    }
+}
+
 void main_test() {
     sf::RenderWindow win(sf::VideoMode(800, 800), "Test");
     win.setFramerateLimit(30);
     sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
     win.setView(view);
 
-    glib::list<sf::Drawable*> objs;
+    glib::list<CollSys::AbstractShape*> objs;
 
     CollSys::Ellipse t1;
-    CollSys::Point t2(0.4, 0.2);
-    /*
-    CollSys::Polygon t2 = {
+    CollSys::Circle t2(0.4);
+    CollSys::Polygon t3;
+    CollSys::Polygon t4 = {
         { -1.0, 0.0 },
         { 0.0, 0.5 },
         { 1.0, 0.1 },
         { 0.5, -0.5 }
     };
-    */
+    
     
     /*
     t1.setPosition({ -0.4, 0.0 }).setScale({ 0.4f, 0.4f }).setRotation(30.0f);
@@ -126,23 +153,22 @@ void main_test() {
     */
     objs.push_back(&t1);
     objs.push_back(&t2);
-
+    objs.push_back(&t3);
+    objs.push_back(&t4);
+    
     sf::VertexArray simplex(sf::LineStrip, 2), Mdiff(sf::LineStrip, 0);
-    calcFirstSimplex(t1, t2, simplex);
-    objs.push_back(&Mdiff);
-    objs.push_back(&simplex);
-
+    calcFirstSimplex(t3, t4, simplex);
+    
     sf::CircleShape centre(0.005f);
     centre.setOrigin(0.005f, 0.005f);
     centre.setFillColor(sf::Color::Red);
-    objs.push_back(&centre);
-
+    /*
     sf::CircleShape centre2(0.005f);
     centre2.setOrigin(0.005f, 0.005f);
     centre2.setFillColor(sf::Color::Green);
     objs.push_back(&centre2);
-
-    glib::vec2d dir(1.0, 0.0);
+    */
+    CollSys::AbstractShape* selected = nullptr;
 
     while (win.isOpen()) {
         sf::Event event;
@@ -151,62 +177,44 @@ void main_test() {
             if (event.type == sf::Event::Closed) {
                 win.close();
             }
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::C) {
-                    calcSimplex(t1, t2, simplex);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(win);
+                    glib::vec2d worldPos = glib::VectorCast<double>(win.mapPixelToCoords(pixelPos));
+                    CollSys::Point point(worldPos);
+
+                    for (auto obj : objs) {
+                        CollSys::GJKSolver point_test(*obj, point);
+                        if (point_test.isContact()) {
+                            selected = obj;
+                            break;
+                        }
+                    }
                 }
-                if (event.key.code == sf::Keyboard::U) {
-                    calcFirstSimplex(t1, t2, simplex);
+                else if (event.mouseButton.button == sf::Mouse::Right) {
+                    selected = nullptr;
                 }
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            t2.rotate(angular);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            t2.rotate(-angular);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            t2.move(-speed, 0.0f);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            t2.move(0.0f, -speed);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            t2.move(0.0f, speed);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            t2.move(speed, 0.0f);
-        }        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
-            t2.scale(1.0, 0.96);
-        }        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
-            t2.scale(1.0, 1.04);
-        }        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-            t2.scale(0.96, 1.0);
-        }        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
-            t2.scale(1.04, 1.0);
-        }
-        
-        calcMdiff(t1, t2, Mdiff);
-        
-        CollSys::GJKSolver gjk_test(t1, t2);
-        if (gjk_test.isContact()) {
-            t1.setColor(sf::Color::Red);
-            t2.setColor(sf::Color::Red);
-        }
-        else {
-            t1.setColor(sf::Color::White);
-            t2.setColor(sf::Color::White);
+        if (selected) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { selected->rotate(angular); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { selected->rotate(-angular); }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { selected->move(-speed, 0.0f); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { selected->move(0.0f, -speed); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { selected->move(0.0f, speed); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { selected->move(speed, 0.0f); }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { selected->scale(1.0, 0.96); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { selected->scale(1.0, 1.04); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) { selected->scale(0.96, 1.0); }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) { selected->scale(1.04, 1.0); }
         }
 
-        centre.setPosition(glib::VectorCast(t2.support(dir)));
-        centre2.setPosition(glib::VectorCast(t1.support(dir)));
-        dir.rotate(angular);
-
+        ContactPass(objs);
+        if (selected) {
+            selected->setColor(sf::Color::Yellow);
+        }
         win.clear(sf::Color::Black);
         for (auto obj : objs) {
             win.draw(*obj);

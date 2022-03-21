@@ -58,49 +58,53 @@ namespace glib {
 		}
 
 		string operator + (const string& other) const {
-			string str;
 			size_t size = this->length() + other.length() + 1;
-			str.data = new char[size];
-			strcpy_s(str.data, size, this->data);
-			strcat_s(str.data, size, other.data);
+			char* str_ptr = new char[size];
+			strcpy_s(str_ptr, size, this->data);
+			strcat_s(str_ptr, size, other.data);
+			string str(str_ptr);
+			delete[] str_ptr;
 			return str;
 		}
 
 		string operator + (const char* other) const {
-			string str;
 			size_t size = this->length() + strlen(other) + 1;
-			str.data = new char[size];
-			strcpy_s(str.data, size, this->data);
-			strcat_s(str.data, size, other);
+			char* str_ptr = new char[size];
+			strcpy_s(str_ptr, size, this->data);
+			strcat_s(str_ptr, size, other);
+			string str(str_ptr);
+			delete[] str_ptr;
 			return str;
 		}
 
 		friend string operator + (const char* str1, const string& str2) {
-			string str;
 			size_t size = str2.length() + strlen(str1) + 1;
-			str.data = new char[size];
-			strcpy_s(str.data, size, str1);
-			strcat_s(str.data, size, str2.data);
+			char* str_ptr = new char[size];
+			strcpy_s(str_ptr, size, str1);
+			strcat_s(str_ptr, size, str2.data);
+			string str(str_ptr);
+			delete[] str_ptr;
 			return str;
 		}
 
 		string operator + (char c) const {
-			string str;
 			size_t size = this->length() + 2;
-			str.data = new char[size];
-			strcpy_s(str.data, size, this->data);
-			str.data[size - 2] = c;
-			str.data[size - 1] = 0;
+			char* str_ptr = new char[size];
+			strcpy_s(str_ptr, size, this->data);
+			str_ptr[size - 2] = c;
+			str_ptr[size - 1] = 0;
+			string str(str_ptr);
+			delete[] str_ptr;
 			return str;
 		}
 
 		friend string operator + (char c, const string& str2) {
-			string str;
 			size_t size = str2.length() + 2;
-			str.data = new char[size];
-			str.data[0] = c;
-			str.data[1] = 0;
-			strcat_s(str.data, size, str2.data);
+			char* str_ptr = new char[size];
+			str_ptr[0] = c;
+			strcat_s(str_ptr + 1, size, str2.data);
+			string str(str_ptr);
+			delete[] str_ptr;
 			return str;
 		}
 
@@ -161,17 +165,16 @@ namespace glib {
 
 		friend std::istream& operator >> (std::istream& stream, string& str) {
 			char temp;
-			bool nsf = true;
+			bool is_eof = false;
 			str.clear();
 
-			while (nsf) {
-				stream.get(temp);
-				if (std::isspace(temp)) {
-					nsf = false;
-				}
-				else {
-					str += temp;
-				}
+			do {
+				is_eof = stream.get(temp).eof();
+			} while (std::isspace(temp) && !is_eof);
+
+			while (!(std::isspace(temp) || is_eof)) {
+				str += temp;
+				is_eof = stream.get(temp).eof();
 			}
 			return stream;
 		}
@@ -196,15 +199,14 @@ namespace glib {
 
 	std::istream& getline(std::istream& stream, string& str) {
 		char temp;
-		bool nelf = true;
+		bool neol = true;
 		str.clear();
 
-		while (nelf) {
-			stream.get(temp);
-			if (temp == '\n') {
-				nelf = false;
+		while (neol) {
+			if (stream.get(temp).eof() || temp == '\n') {
+				neol = false;
 			}
-			else {
+			if(neol) {
 				str += temp;
 			}
 		}

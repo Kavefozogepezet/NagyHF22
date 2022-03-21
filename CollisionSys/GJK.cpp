@@ -101,25 +101,27 @@ namespace CollSys {
 		do {
 			foundValidPoint = this->findNextPoint(next_point);
 
-			glib::vec2d
-				normal1 = glib::getNormal(
-					this->simplex[0] - next_point,
-					next_point - this->simplex[1]
-				),
-				normal2 = glib::getNormal(
-					this->simplex[1] - next_point,
-					next_point - this->simplex[0]
-				),
-				np_to_origin = -next_point;
+			if (foundValidPoint) {
+				glib::vec2d
+					normal1 = glib::getNormal(
+						this->simplex[0] - next_point,
+						next_point - this->simplex[1]
+					),
+					normal2 = glib::getNormal(
+						this->simplex[1] - next_point,
+						next_point - this->simplex[0]
+					),
+					np_to_origin = -next_point;
 
-			if (normal1 * np_to_origin > 0.0) {
-				this->simplex[1] = next_point;
-			}
-			else if (normal2 * np_to_origin > 0.0) {
-				this->simplex[0] = next_point;
-			}
-			else {
-				foundTriangle = true;
+				if (normal1 * np_to_origin > 0.0) {
+					this->simplex[1] = next_point;
+				}
+				else if (normal2 * np_to_origin > 0.0) {
+					this->simplex[0] = next_point;
+				}
+				else {
+					foundTriangle = true;
+				}
 			}
 		} while (foundValidPoint && !foundTriangle);
 
