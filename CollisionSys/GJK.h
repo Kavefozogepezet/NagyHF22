@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Shapes/AbstractShape.h"
+#include "Shapes/Shapes.h"
 
 namespace CollSys {
 	/*

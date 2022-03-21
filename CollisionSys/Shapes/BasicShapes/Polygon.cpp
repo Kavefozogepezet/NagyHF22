@@ -1,7 +1,6 @@
 #include "Polygon.h"
 
-#include "../debug/memtrace.h"
-#include "../general/sfmlmath.h"
+#include "../../debug/memtrace.h"
 
 namespace CollSys {
 	Polygon::Polygon() {
@@ -18,21 +17,20 @@ namespace CollSys {
 		this->build(points);
 	}
 
-	glib::vec2d Polygon::support(const glib::vec2d& dir) const {
-		glib::vec2d tdir = glib::rotate(dir, -this->getRotation());
-		double max_distance = this->shape[0] * tdir;
+	glib::vec2d Polygon::objSpaceSupport(const glib::vec2d& dir) const {
+		double max_distance = this->shape[0] * dir;
 		glib::vec2d point = this->shape[0];
 
 		for (size_t i = 1; i < this->shape.size(); i++) {
 			const glib::vec2d& p = this->shape[i];
-			double dot_product = p * tdir;
+			double dot_product = p * dir;
 
 			if (dot_product > max_distance) {
 				max_distance = dot_product;
 				point = p;
 			}
 		}
-		return this->getTransform() * point;
+		return point;
 	}
 
 	void Polygon::build(const std::initializer_list<glib::vec2d>& points) {

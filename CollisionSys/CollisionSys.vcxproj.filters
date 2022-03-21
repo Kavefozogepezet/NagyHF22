@@ -18,39 +18,42 @@
     <ClCompile Include="CollisionSys.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shapes\AbstractShape.cpp">
+    <ClCompile Include="Shapes\Bases\AbstractShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GJK.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shapes\Polygon.cpp">
+    <ClCompile Include="Shapes\BasicShapes\Polygon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shapes\Circle.cpp">
+    <ClCompile Include="Shapes\BasicShapes\Circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shapes\Ellipse.cpp">
+    <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="debug\memtrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shapes\Transformable.cpp">
+    <ClCompile Include="Shapes\Bases\Transformable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shapes\BasicShapes\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shapes\AbstractShape.h">
+    <ClInclude Include="Shapes\Bases\AbstractShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GJK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shapes\Polygon.h">
+    <ClInclude Include="Shapes\BasicShapes\Polygon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shapes\Circle.h">
+    <ClInclude Include="Shapes\BasicShapes\Circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\AlResource.hpp">
@@ -347,7 +350,7 @@
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shapes\Ellipse.h">
+    <ClInclude Include="Shapes\BasicShapes\Ellipse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="general\string.h">
@@ -368,10 +371,13 @@
     <ClInclude Include="general\vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="general\sfmlmath.h">
+    <ClInclude Include="Shapes\Bases\Transformable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shapes\Transformable.h">
+    <ClInclude Include="Shapes\Shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shapes\BasicShapes\Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,13 +12,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\memtrace.cpp" />
-    <ClCompile Include="Shapes\Ellipse.cpp" />
-    <ClCompile Include="Shapes\Circle.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\Point.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\Circle.cpp" />
     <ClCompile Include="GJK.cpp" />
-    <ClCompile Include="Shapes\AbstractShape.cpp" />
+    <ClCompile Include="Shapes\Bases\AbstractShape.cpp" />
     <ClCompile Include="CollisionSys.cpp" />
-    <ClCompile Include="Shapes\Polygon.cpp" />
-    <ClCompile Include="Shapes\Transformable.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\Polygon.cpp" />
+    <ClCompile Include="Shapes\Bases\Transformable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug\gtest_lite.h" />
@@ -26,9 +27,9 @@
     <ClInclude Include="general\array.h" />
     <ClInclude Include="general\list.h" />
     <ClInclude Include="general\string.h" />
-    <ClInclude Include="general\sfmlmath.h" />
     <ClInclude Include="general\vec2.h" />
-    <ClInclude Include="Shapes\Ellipse.h" />
+    <ClInclude Include="Shapes\BasicShapes\Point.h" />
+    <ClInclude Include="Shapes\BasicShapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\AlResource.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio\Export.hpp" />
@@ -127,11 +128,12 @@
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window\Window.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window\WindowStyle.hpp" />
-    <ClInclude Include="Shapes\Circle.h" />
+    <ClInclude Include="Shapes\BasicShapes\Circle.h" />
     <ClInclude Include="GJK.h" />
-    <ClInclude Include="Shapes\AbstractShape.h" />
-    <ClInclude Include="Shapes\Polygon.h" />
-    <ClInclude Include="Shapes\Transformable.h" />
+    <ClInclude Include="Shapes\Bases\AbstractShape.h" />
+    <ClInclude Include="Shapes\BasicShapes\Polygon.h" />
+    <ClInclude Include="Shapes\Bases\Transformable.h" />
+    <ClInclude Include="Shapes\Shapes.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\SFML-2.5.1\lib\flac.lib" />

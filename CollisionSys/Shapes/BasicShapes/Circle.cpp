@@ -1,7 +1,6 @@
 #include "Circle.h"
 
-#include "../debug/memtrace.h"
-#include "../general/sfmlmath.h"
+#include "../../debug/memtrace.h"
 
 namespace CollSys {
 	Circle::Circle(double radius) :
@@ -10,9 +9,9 @@ namespace CollSys {
 		this->build();
 	}
 
-	glib::vec2d Circle::support(const glib::vec2d& dir) const {
-		glib::vec2d tdir = glib::rotate(glib::normalize(dir), -this->getRotation());
-		return this->getTransform() * (this->r * tdir);
+	glib::vec2d Circle::objSpaceSupport(const glib::vec2d& dir) const {
+		glib::vec2d normalized = glib::normalize(dir);
+		return this->r * normalized;
 	}
 
 	void Circle::build() {

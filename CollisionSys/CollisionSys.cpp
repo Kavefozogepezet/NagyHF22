@@ -7,17 +7,11 @@
 #include <iostream>
 
 #include "debug/memtrace.h"
-
-#include "debug/memtrace.h"
 #include "debug/gtest_lite.h"
 
-#include "Shapes/Polygon.h"
-#include "Shapes/Circle.h"
-#include "Shapes/Ellipse.h"
-#include "general/sfmlmath.h"
+#include "Shapes/Shapes.h"
 
 #include "general/string.h"
-
 #include "general/list.h"
 #include "general/vec2.h"
 
@@ -115,28 +109,40 @@ void main_test() {
 
     glib::list<sf::Drawable*> objs;
 
-    sf::CircleShape centre(0.005f);
-    centre.setOrigin(0.005f, 0.005f);
-    centre.setFillColor(sf::Color::Red);
-    //objs.push_back(&centre);
-
     CollSys::Ellipse t1;
+    CollSys::Point t2(0.4, 0.2);
+    /*
     CollSys::Polygon t2 = {
         { -1.0, 0.0 },
         { 0.0, 0.5 },
         { 1.0, 0.1 },
         { 0.5, -0.5 }
     };
-
+    */
+    
+    /*
     t1.setPosition({ -0.4, 0.0 }).setScale({ 0.4f, 0.4f }).setRotation(30.0f);
     t2.setScale({ 0.4f, 0.4f });
+    */
     objs.push_back(&t1);
     objs.push_back(&t2);
 
     sf::VertexArray simplex(sf::LineStrip, 2), Mdiff(sf::LineStrip, 0);
     calcFirstSimplex(t1, t2, simplex);
-    //objs.push_back(&Mdiff);
-    //objs.push_back(&simplex);
+    objs.push_back(&Mdiff);
+    objs.push_back(&simplex);
+
+    sf::CircleShape centre(0.005f);
+    centre.setOrigin(0.005f, 0.005f);
+    centre.setFillColor(sf::Color::Red);
+    objs.push_back(&centre);
+
+    sf::CircleShape centre2(0.005f);
+    centre2.setOrigin(0.005f, 0.005f);
+    centre2.setFillColor(sf::Color::Green);
+    objs.push_back(&centre2);
+
+    glib::vec2d dir(1.0, 0.0);
 
     while (win.isOpen()) {
         sf::Event event;
@@ -171,9 +177,22 @@ void main_test() {
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             t2.move(speed, 0.0f);
+        }        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+            t2.scale(1.0, 0.96);
+        }        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
+            t2.scale(1.0, 1.04);
+        }        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
+            t2.scale(0.96, 1.0);
+        }        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+            t2.scale(1.04, 1.0);
         }
+        
         calcMdiff(t1, t2, Mdiff);
-
+        
         CollSys::GJKSolver gjk_test(t1, t2);
         if (gjk_test.isContact()) {
             t1.setColor(sf::Color::Red);
@@ -183,6 +202,10 @@ void main_test() {
             t1.setColor(sf::Color::White);
             t2.setColor(sf::Color::White);
         }
+
+        centre.setPosition(glib::VectorCast(t2.support(dir)));
+        centre2.setPosition(glib::VectorCast(t1.support(dir)));
+        dir.rotate(angular);
 
         win.clear(sf::Color::Black);
         for (auto obj : objs) {

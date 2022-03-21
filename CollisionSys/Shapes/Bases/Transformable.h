@@ -2,7 +2,7 @@
 
 #include "SFML/Graphics/Transform.hpp"
 
-#include "../general/vec2.h"
+#include "../../general/vec2.h"
 
 namespace CollSys {
 	class Transformable

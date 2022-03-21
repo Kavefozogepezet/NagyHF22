@@ -1,7 +1,6 @@
 #include "Ellipse.h"
 
-#include "../debug/memtrace.h"
-#include "../general/sfmlmath.h"
+#include "../../debug/memtrace.h"
 
 
 namespace CollSys {
@@ -11,17 +10,16 @@ namespace CollSys {
 		this->build();
 	}
 
-	glib::vec2d Ellipse::support(const glib::vec2d& dir) const {
-		glib::vec2d tdir = glib::rotate(dir, -this->getRotation());
+	glib::vec2d Ellipse::objSpaceSupport(const glib::vec2d& dir) const {
 		double a2 = this->a * this->a,
-			sqr = (tdir.y / tdir.x) * (this->b / a2),
+			sqr = (dir.y / dir.x) * (this->b / a2),
 			x = 1.0f / std::sqrt(sqr * sqr + 1 / a2),
 			y = this->b * std::sqrt(1 - (x * x) / a2);
 
-		if (tdir.x < 0) { x = -x; }
-		if (tdir.y < 0) { y = -y; }
+		if (dir.x < 0) { x = -x; }
+		if (dir.y < 0) { y = -y; }
 
-		return this->getTransform() * glib::vec2d(x, y);
+		return glib::vec2d(x, y);
 	}
 
 	void Ellipse::build() {

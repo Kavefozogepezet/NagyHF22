@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "AbstractShape.h"
+#include "../Bases/AbstractShape.h"
 
 namespace CollSys {
 	class Ellipse : public AbstractShape
@@ -10,7 +10,7 @@ namespace CollSys {
 	public:
 		Ellipse(double a = 0.5f, double b = 0.25f);
 
-		glib::vec2d support(const glib::vec2d& direction) const override;
+		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 	protected:
 		void build();
 	private:
