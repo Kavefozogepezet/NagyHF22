@@ -2,11 +2,13 @@
 
 namespace CollSys {
 	Point::Point(double X, double Y) {
+		this->name = "Point";
 		this->shape.resize(1);
 		this->shape[0] = { X, Y };
 	}
 
 	Point::Point(const glib::vec2d& point) {
+		this->name = "Point";
 		this->shape.resize(1);
 		this->shape[0] = point;
 	}

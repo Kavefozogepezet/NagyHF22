@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\memtrace.cpp" />
+    <ClCompile Include="general\linebuffer.cpp" />
+    <ClCompile Include="Sandbox.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Point.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Circle.cpp" />
@@ -28,6 +30,9 @@
     <ClInclude Include="general\list.h" />
     <ClInclude Include="general\string.h" />
     <ClInclude Include="general\vec2.h" />
+    <ClInclude Include="general\registry.h" />
+    <ClInclude Include="general\linebuffer.h" />
+    <ClInclude Include="Sandbox.h" />
     <ClInclude Include="Shapes\BasicShapes\Point.h" />
     <ClInclude Include="Shapes\BasicShapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />
@@ -134,6 +139,7 @@
     <ClInclude Include="Shapes\BasicShapes\Polygon.h" />
     <ClInclude Include="Shapes\Bases\Transformable.h" />
     <ClInclude Include="Shapes\Shapes.h" />
+    <ClInclude Include="tests.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\SFML-2.5.1\lib\flac.lib" />

@@ -7,6 +7,7 @@ namespace CollSys {
 	Ellipse::Ellipse(double a, double b) :
 		a(a), b(b)
 	{
+		this->name = "Ellipse";
 		this->build();
 	}
 

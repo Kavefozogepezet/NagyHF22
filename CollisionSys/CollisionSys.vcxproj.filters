@@ -42,6 +42,12 @@
     <ClCompile Include="Shapes\BasicShapes\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sandbox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="general\linebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shapes\Bases\AbstractShape.h">
@@ -378,6 +384,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shapes\BasicShapes\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sandbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="general\registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="general\linebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

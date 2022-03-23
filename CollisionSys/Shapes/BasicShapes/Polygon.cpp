@@ -4,6 +4,7 @@
 
 namespace CollSys {
 	Polygon::Polygon() {
+		this->name = "Polygon";
 		this->build({
 			{ -1.0f, 1.0f },
 			{ 1.0f, 1.0f },
@@ -14,6 +15,7 @@ namespace CollSys {
 	}
 
 	Polygon::Polygon(std::initializer_list<glib::vec2d> points) {
+		this->name = "Polygon";
 		this->build(points);
 	}
 

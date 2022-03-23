@@ -4,6 +4,7 @@
 
 #include "../../general/vec2.h"
 #include "Transformable.h"
+#include "../../general/string.h"
 
 namespace CollSys {
 	// Contact osztály előre deklarálása.
@@ -26,13 +27,23 @@ namespace CollSys {
 		*/
 		glib::vec2d support(const glib::vec2d& direction) const;
 
+		/*
+		* @brief Beállítja a síkidom renderelési színét.
+		* @param color - Ilyen színű lesz a síkidom.
+		*/
 		void setColor(sf::Color color);
+
+		/** @returns Az objektum neve */
+		const glib::string& getName();
 	protected:
 		/** @brief Első sorban a változó a síkidom megjelenítésére szolgál, közelíti a síkidom körvonalait.*/
 		glib::VertexArray shape;
 
 		/** @brief A síkidom ezzel a színnel lesz a képernyőre rajzolva.*/
 		sf::Color displayColor;
+
+		/** @brief A síkidom neve */
+		glib::string name;
 
 		/*
 		* @brief Megkeresi a síkidom legtávolabbi pontját egy adott irányban. Nem veszi figyelembe a síkidomon végzett transzformációkat

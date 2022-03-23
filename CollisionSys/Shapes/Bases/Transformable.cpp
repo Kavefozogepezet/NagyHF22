@@ -12,7 +12,7 @@ namespace CollSys {
 
 	Transformable& Transformable::setPosition(const glib::vec2d& position) {
 		this->_position = position;
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
@@ -22,7 +22,7 @@ namespace CollSys {
 
 	Transformable& Transformable::setScale(const glib::vec2d& scale) {
 		this->_scale = scale;
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
@@ -32,13 +32,13 @@ namespace CollSys {
 
 	Transformable& Transformable::setRotation(double angle) {
 		this->_rotation = angle;
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
 	Transformable& Transformable::move(const glib::vec2d& position) {
 		this->_position += position;
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
@@ -48,7 +48,7 @@ namespace CollSys {
 
 	Transformable& Transformable::scale(const glib::vec2d& scale) {
 		this->_scale.scale(scale);
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
@@ -58,7 +58,7 @@ namespace CollSys {
 
 	Transformable& Transformable::rotate(double angle) {
 		this->_rotation += angle;
-		this->changed = true;
+		this->transform_update = true;
 		return *this;
 	}
 
@@ -75,7 +75,7 @@ namespace CollSys {
 	}
 
 	const sf::Transform& Transformable::getTransform() const {
-		if (this->changed) {
+		if (this->transform_update) {
 			this->recalculateTransform();
 		}
 		return this->transform;

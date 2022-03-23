@@ -35,7 +35,7 @@ namespace CollSys {
 		glib::vec2d _position, _scale;
 		double _rotation;
 
-		mutable bool changed;
+		mutable bool transform_update;
 		mutable sf::Transform transform;
 
 		void recalculateTransform() const;

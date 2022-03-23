@@ -7,7 +7,7 @@
 
 #include "../debug/memtrace.h"
 
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 
 namespace glib {
 	class string {
@@ -196,7 +196,7 @@ namespace glib {
 	private:
 		char* data;
 	};
-
+	/*
 	std::istream& getline(std::istream& stream, string& str) {
 		char temp;
 		bool neol = true;
@@ -212,4 +212,5 @@ namespace glib {
 		}
 		return stream;
 	}
+	*/
 }

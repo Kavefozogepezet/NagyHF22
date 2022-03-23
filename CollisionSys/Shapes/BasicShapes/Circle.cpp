@@ -5,7 +5,8 @@
 namespace CollSys {
 	Circle::Circle(double radius) :
 		r(radius)
-	{ 
+	{
+		this->name = "Circle";
 		this->build();
 	}
 

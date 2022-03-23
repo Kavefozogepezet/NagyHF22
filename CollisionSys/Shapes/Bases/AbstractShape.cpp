@@ -6,7 +6,8 @@
 namespace CollSys {
 	AbstractShape::AbstractShape() :
 		shape(),
-		displayColor(sf::Color::White)
+		displayColor(sf::Color::White),
+		name("Abstract Shape")
 	{}
 
 	glib::vec2d AbstractShape::support(const glib::vec2d& direction) const {
@@ -20,6 +21,10 @@ namespace CollSys {
 
 	void AbstractShape::setColor(sf::Color color) {
 		this->displayColor = color;
+	}
+
+	const glib::string& AbstractShape::getName() {
+		return this->name;
 	}
 
 	void AbstractShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
