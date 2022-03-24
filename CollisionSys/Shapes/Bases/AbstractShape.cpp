@@ -1,4 +1,3 @@
-
 #include "AbstractShape.h"
 
 #include "../../debug/memtrace.h"
@@ -9,6 +8,8 @@ namespace CollSys {
 		displayColor(sf::Color::White),
 		name("Abstract Shape")
 	{}
+
+	AbstractShape::~AbstractShape() {}
 
 	glib::vec2d AbstractShape::support(const glib::vec2d& direction) const {
 		if (this->getScale() == glib::vec2d(0.0, 0.0)) {

@@ -210,9 +210,10 @@ void operator delete[](void * p) THROW_NOTHING;
 void operator delete(void *p, int, const char *) THROW_NOTHING;
 void operator delete[](void *p, int, const char *) THROW_NOTHING;
 
-
+/*
 #define new new(__LINE__, __FILE__)
 #define delete memtrace::set_delete_call(__LINE__, __FILE__),delete
+*/
 
 #ifdef CPORTA
 #define system(...)  // system(__VA_ARGS__)

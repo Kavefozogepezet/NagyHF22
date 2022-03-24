@@ -1,5 +1,6 @@
-
 #include "Transformable.h"
+
+#include "../../debug/memtrace.h"
 
 namespace CollSys {
 	Transformable::Transformable() :
@@ -9,6 +10,8 @@ namespace CollSys {
 	{
 		this->recalculateTransform();
 	}
+
+	Transformable::~Transformable() {}
 
 	Transformable& Transformable::setPosition(const glib::vec2d& position) {
 		this->_position = position;

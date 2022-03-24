@@ -18,6 +18,8 @@ namespace CollSys {
 	public:
 		AbstractShape();
 
+		virtual ~AbstractShape();
+
 		/*
 		* @brief A support függvény a keresés irányának vektorán elvégzi a síkidomon végzett transzformációk inverzét,
 		* majd az így keletkező vektorral meghívja az objSpaceSupport tagfüggvényt. Így a gyerekosztályoknak csak az

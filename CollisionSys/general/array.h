@@ -1,9 +1,5 @@
 ﻿#pragma once
 
-#include "../debug/memtrace.h"
-
-#include <array>
-
 namespace glib {
 	/*
 	* @brief Array iterator alap osztálya.

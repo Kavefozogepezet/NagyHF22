@@ -10,6 +10,8 @@ namespace CollSys {
 	public:
 		Transformable();
 
+		virtual ~Transformable();
+
 		Transformable& setPosition(const glib::vec2d& position);
 		Transformable& setPosition(double x, double y);
 

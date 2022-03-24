@@ -1,10 +1,10 @@
 #include "Sandbox.h"
 
-#include "debug/memtrace.h"
-
+#include "GJK.h"
 #include "general/string.h"
 #include "general/linebuffer.h"
-#include "GJK.h"
+
+#include "debug/memtrace.h"
 
 namespace CollSys {
 	int cs_main(int argc, char** argv) {
@@ -18,22 +18,30 @@ namespace CollSys {
 	double Sandbox::angular_speed = 2.0;
 
 	Sandbox::Sandbox() :
-		registry(),
+		s_registry(),
 		shapes(),
 		selected(nullptr),
 		is_running(true),
 		is_win_open(false),
 		window(nullptr)
 	{
-		this->registry.add("polygon", lambdaMaker<Polygon>());
-		this->registry.add("circle", lambdaMaker<Circle>());
-		this->registry.add("ellipse", lambdaMaker<Ellipse>());
-		this->registry.add("point", lambdaMaker<Point>());
+		this->s_registry.add("polygon", lambdaMaker<Polygon>());
+		this->s_registry.add("circle", lambdaMaker<Circle>());
+		this->s_registry.add("ellipse", lambdaMaker<Ellipse>());
+		this->s_registry.add("point", lambdaMaker<Point>());
+
+		this->cmd_registry.add("help", new Help(*this));
+		this->cmd_registry.add("openwin", new Openwin(*this));
+		this->cmd_registry.add("create", new Create(*this));
+		this->cmd_registry.add("exit", new Exit(*this));
 	}
 
 	Sandbox::~Sandbox() {
-		for (auto shape : shapes) {
+		for (auto shape : this->shapes) {
 			delete shape;
+		}
+		for (auto& cmd : this->cmd_registry) {
+			delete cmd.second;
 		}
 	}
 
@@ -48,8 +56,39 @@ namespace CollSys {
 		}
 	}
 
+	void Sandbox::stop() {
+		this->is_running = false;
+		if (this->is_win_open) {
+			this->closeWindow();
+		}
+	}
+
+	void Sandbox::openWindow() {
+		if (this->is_win_open) {
+			return;
+		}
+		this->window = new sf::RenderWindow(sf::VideoMode(800, 800), "CollSys Sandbox");
+		this->window->setFramerateLimit(30);
+		sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
+		this->window->setView(view);
+		this->is_win_open = true;
+	}
+
+	void Sandbox::closeWindow() {
+		if (!this->is_win_open) {
+			return;
+		}
+		this->window->close();
+		delete this->window;
+		this->is_win_open = false;
+	}
+
+	Sandbox::CmdReg& Sandbox::getCmdReg() {
+		return this->cmd_registry;
+	}
+
 	Sandbox::ShapeReg& Sandbox::getShapeReg() {
-		return this->registry;
+		return this->s_registry;
 	}
 
 	Sandbox::ShapeList& Sandbox::getShapeList() {
@@ -62,9 +101,7 @@ namespace CollSys {
 		while (this->window->pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) {
-				this->window->close();
-				delete this->window;
-				this->is_win_open = false;
+				this->closeWindow();
 				return;
 			}
 			else if (event.type == sf::Event::MouseButtonPressed) {
@@ -126,32 +163,25 @@ namespace CollSys {
 		glib::string cmd;
 		lbuff >> cmd;
 
-		if (cmd == "showwin") {
-			this->window = new sf::RenderWindow(sf::VideoMode(800, 800), "CollSys Sandbox");
-			this->window->setFramerateLimit(30);
-			sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
-			this->window->setView(view);
-			this->is_win_open = true;
-		}
-		else if (cmd == "create") {
-			glib::string shape_key;
-			lbuff >> shape_key;
-			auto it = this->registry.get(shape_key);
-			if (it != this->registry.end()) {
-				this->shapes.push_back(it->second());
-				std::cout << " A \"" << shape_key << "\" sikidom elkeszult." << std::endl << std::endl;
+		bool cmd_found = false;
+
+		auto it = this->cmd_registry.get(cmd);
+		if (it != this->cmd_registry.end()) {
+			it->second->execute(lbuff);
+			glib::string str;
+			lbuff >> str;
+			if (str != "") {
+				std::cout << "\033[93mA parancs nem olvasta vegig a sort, ezek a parameterek elvesztek: \033[0m";
+				do {
+					std::cout << str << " ";
+					lbuff >> str;
+				} while (!lbuff.eol());
+				std::cout << std::endl << std::endl;
 			}
-			else {
-				std::cout << "Nem letezik \"" << shape_key << "\" sikidom." << std::endl << std::endl;
-			}
-		}
-		else if (cmd == "exit") {
-			this->is_running = false;
-			return;
 		}
 		else {
-			std::cout << "A \"" << cmd << 
-				"\" parancs nem letezik. Hasznalja a help parancsot tobb informacioert." 
+			std::cout << "\033[31mA \"" << cmd <<
+				"\" parancs nem letezik. Hasznalja a help parancsot tobb informacioert.\033[0m"
 				<< std::endl << std::endl;
 		}
 

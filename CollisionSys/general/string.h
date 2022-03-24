@@ -1,11 +1,8 @@
 #pragma once
 
-#include <string.h>
 #include <stdexcept>
 #include <cctype>
 #include <iostream>
-
-#include "../debug/memtrace.h"
 
 //#define _CRT_SECURE_NO_WARNINGS
 
@@ -51,7 +48,7 @@ namespace glib {
 		}
 
 		const char& operator [] (size_t idx) const {
-			if (idx >= this->length()) {
+			if (idx > this->length()) {
 				throw std::out_of_range("invalid string subscript.");
 			}
 			return this->data[idx];

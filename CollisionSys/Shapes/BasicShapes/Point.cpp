@@ -1,5 +1,7 @@
 #include "Point.h"
 
+#include "../../debug/memtrace.h"
+
 namespace CollSys {
 	Point::Point(double X, double Y) {
 		this->name = "Point";

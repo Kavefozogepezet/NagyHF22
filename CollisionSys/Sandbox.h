@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Shapes/Shapes.h"
+#include "Commands/Commands.h"
 #include "general/list.h"
 #include "general/registry.h"
 
@@ -13,6 +14,7 @@ namespace CollSys {
 	public:
 		using LambdaType = std::function<AbstractShape* ()>;
 
+		using CmdReg = glib::registry<glib::string, Command*>;
 		using ShapeReg = glib::registry<glib::string, LambdaType>;
 		using ShapeList = glib::list<AbstractShape*>;
 	public:
@@ -21,7 +23,7 @@ namespace CollSys {
 
 		template<typename Shape>
 		static LambdaType lambdaMaker() {
-			return []() -> AbstractShape* { return new Shape; };
+			return []() { return new Shape(); };
 		}
 
 	public:
@@ -31,11 +33,20 @@ namespace CollSys {
 
 		void run();
 
+		void stop();
+
+		void openWindow();
+
+		void closeWindow();
+
+		CmdReg& getCmdReg();
 		ShapeReg& getShapeReg();
 
 		ShapeList& getShapeList();
 	private:
-		ShapeReg registry;
+		CmdReg cmd_registry;
+		ShapeReg s_registry;
+
 		ShapeList shapes;
 
 		AbstractShape* selected;

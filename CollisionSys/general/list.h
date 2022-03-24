@@ -2,8 +2,6 @@
 
 #include <stdexcept>
 
-#include "../debug/memtrace.h"
-
 namespace glib {
 	/*
 	* @brief Egy duplán láncolt lista egy eleme.

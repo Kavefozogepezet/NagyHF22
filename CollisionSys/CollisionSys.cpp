@@ -3,6 +3,8 @@
 
 #define COLLSYS_MAIN
 
+#include "debug/memtrace.h"
+
 #include "tests.h"
 #include "Sandbox.h"
 

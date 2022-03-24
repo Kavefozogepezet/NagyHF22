@@ -1,5 +1,7 @@
 #include "linebuffer.h"
 
+#include "../debug/memtrace.h"
+
 namespace glib {
 	glib::linebuffer::linebuffer() :
 		end_of_line(true),
@@ -16,7 +18,7 @@ namespace glib {
 			return *this;
 		}
 		char temp = this->line[this->line_idx++];
-		if (temp == '\n') {
+		if (temp == 0) {
 			this->end_of_line = true;
 			return *this;
 		}
@@ -67,14 +69,14 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& glib::operator>>(linebuffer& buff, char& c) {
+	linebuffer& glib::operator >> (linebuffer& buff, char& c) {
 		do {
 			buff.get(c);
 		} while (buff && isspace(c));
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, int& i) {
+	linebuffer& operator >> (linebuffer& buff, int& i) {
 		string temp;
 		if (buff >> temp) {
 			i = atoi(temp.c_str());
@@ -82,7 +84,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, long long& ll) {
+	linebuffer& operator >> (linebuffer& buff, long long& ll) {
 		string temp;
 		if (buff >> temp) {
 			ll = atoll(temp.c_str());
@@ -90,7 +92,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, float& f) {
+	linebuffer& operator >> (linebuffer& buff, float& f) {
 		string temp;
 		if (buff >> temp) {
 			f = atof(temp.c_str());
@@ -98,14 +100,14 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, unsigned char& uc) {
+	linebuffer& operator >> (linebuffer& buff, unsigned char& uc) {
 		char temp;
 		buff >> temp;
 		uc = static_cast<unsigned char>(temp);
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, unsigned int& ui) {
+	linebuffer& operator >> (linebuffer& buff, unsigned int& ui) {
 		long long temp;
 		if (buff >> temp) {
 			ui = static_cast<unsigned int>(temp);
@@ -113,7 +115,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, short int& si) {
+	linebuffer& operator >> (linebuffer& buff, short int& si) {
 		int temp;
 		if (buff >> temp) {
 			si = static_cast<short int>(temp);
@@ -121,7 +123,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, unsigned short int& usi) {
+	linebuffer& operator >> (linebuffer& buff, unsigned short int& usi) {
 		int temp;
 		if (buff >> temp) {
 			usi = static_cast<unsigned short int>(temp);
@@ -129,7 +131,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, long int& li) {
+	linebuffer& operator >> (linebuffer& buff, long int& li) {
 		long long temp;
 		if (buff >> temp) {
 			li = static_cast<long int>(temp);
@@ -137,7 +139,15 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, unsigned long int& uli) {
+	linebuffer& operator >> (linebuffer& buff, unsigned long long& ull) {
+		long long temp;
+		if (buff >> temp) {
+			ull = static_cast<unsigned long int>(temp);
+		}
+		return buff;
+	}
+
+	linebuffer& operator >> (linebuffer& buff, unsigned long int& uli) {
 		long long temp;
 		if (buff >> temp) {
 			uli = static_cast<unsigned long int>(temp);
@@ -145,7 +155,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, double& d) {
+	linebuffer& operator >> (linebuffer& buff, double& d) {
 		float temp;
 		if (buff >> temp) {
 			d = static_cast<double>(temp);
@@ -153,7 +163,7 @@ namespace glib {
 		return buff;
 	}
 
-	linebuffer& operator>>(linebuffer& buff, long double& ld) {
+	linebuffer& operator >> (linebuffer& buff, long double& ld) {
 		float temp;
 		if (buff >> temp) {
 			ld = static_cast<long double>(temp);
