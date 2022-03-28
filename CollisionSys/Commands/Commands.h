@@ -10,10 +10,31 @@ namespace CollSys {
 		bool execute(glib::linebuffer& input);
 	};
 
+	class ListShapes : public Command
+	{
+	public:
+		ListShapes(Sandbox& sandbox);
+		bool execute(glib::linebuffer& input);
+	};
+
 	class Create : public Command
 	{
 	public:
 		Create(Sandbox& sandbox);
+		bool execute(glib::linebuffer& input);
+	};
+
+	class Move : public TransformCommand
+	{
+	public:
+		Move(Sandbox& sandbox);
+		bool execute(glib::linebuffer& input);
+	};
+
+	class Rotate : public TransformCommand
+	{
+	public:
+		Rotate(Sandbox& sandbox);
 		bool execute(glib::linebuffer& input);
 	};
 

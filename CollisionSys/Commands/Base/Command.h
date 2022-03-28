@@ -5,19 +5,30 @@
 
 namespace CollSys {
 	class Sandbox;
+	class AbstractShape;
 
 	class Command
 	{
 	public:
 		Command(Sandbox& sandbox);
 
-		virtual ~Command();
+		virtual ~Command() = default;
 
 		virtual bool execute(glib::linebuffer& input) = 0;
 
 		friend std::ostream& operator << (std::ostream& stream, const Command& cmd);
 	protected:
-		Sandbox& owner;
+		Sandbox& reciever;
 		glib::string desc;
+	};
+
+	class TransformCommand : public Command
+	{
+	public:
+		TransformCommand(Sandbox& sandbox);
+
+		virtual ~TransformCommand() = default;
+	protected:
+		AbstractShape* readShape(glib::linebuffer& input);
 	};
 }

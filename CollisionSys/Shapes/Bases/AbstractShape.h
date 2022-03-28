@@ -2,9 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../../general/vec2.h"
+#include "general/vec2.h"
 #include "Transformable.h"
-#include "../../general/string.h"
+#include "general/string.h"
+#include "general/linebuffer.h"
 
 namespace CollSys {
 	// Contact osztály előre deklarálása.
@@ -34,6 +35,8 @@ namespace CollSys {
 		* @param color - Ilyen színű lesz a síkidom.
 		*/
 		void setColor(sf::Color color);
+
+		virtual bool read(glib::linebuffer& buff);
 
 		/** @returns Az objektum neve */
 		const glib::string& getName();

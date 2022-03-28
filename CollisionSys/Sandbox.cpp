@@ -3,8 +3,11 @@
 #include "GJK.h"
 #include "general/string.h"
 #include "general/linebuffer.h"
+#include "general/consoleStyle.h"
 
 #include "debug/memtrace.h"
+
+using cStyle = glib::consoleStyle;
 
 namespace CollSys {
 	int cs_main(int argc, char** argv) {
@@ -32,7 +35,10 @@ namespace CollSys {
 
 		this->cmd_registry.add("help", new Help(*this));
 		this->cmd_registry.add("openwin", new Openwin(*this));
+		this->cmd_registry.add("shapes", new ListShapes(*this));
 		this->cmd_registry.add("create", new Create(*this));
+		this->cmd_registry.add("move", new Move(*this));
+		this->cmd_registry.add("rotate", new Rotate(*this));
 		this->cmd_registry.add("exit", new Exit(*this));
 	}
 
@@ -170,21 +176,21 @@ namespace CollSys {
 			it->second->execute(lbuff);
 			glib::string str;
 			lbuff >> str;
-			if (str != "") {
-				std::cout << "\033[93mA parancs nem olvasta vegig a sort, ezek a parameterek elvesztek: \033[0m";
+			if (!lbuff.eol()) {
+				std::cout << cStyle::warn << "A parancs nem olvasta vegig a sort, ezek a parameterek elvesztek : " << cStyle::none;
 				do {
 					std::cout << str << " ";
 					lbuff >> str;
 				} while (!lbuff.eol());
-				std::cout << std::endl << std::endl;
+				std::cout << std::endl;
 			}
 		}
 		else {
-			std::cout << "\033[31mA \"" << cmd <<
-				"\" parancs nem letezik. Hasznalja a help parancsot tobb informacioert.\033[0m"
-				<< std::endl << std::endl;
+			std::cout << cStyle::error << "A \"" << cmd <<
+				"\" parancs nem letezik. Hasznalja a help parancsot tobb informacioert" <<
+				cStyle::none << std::endl;
 		}
-
+		std::cout << std::endl;
 		this->contactCheck();
 	}
 
@@ -192,6 +198,7 @@ namespace CollSys {
 		for (auto shape : this->shapes) {
 			shape->setColor(sf::Color::White);
 		}
+		cStyle contact_style = cStyle().fg(cStyle::GREEN);
 		for (auto it1 = this->shapes.begin(); it1 != this->shapes.end(); ++it1) {
 			AbstractShape* shape1 = *it1;
 			auto it2 = it1; it2++;
@@ -202,8 +209,8 @@ namespace CollSys {
 					shape1->setColor(sf::Color::Red);
 					shape2->setColor(sf::Color::Red);
 					if (!this->is_win_open) {
-						std::cout << "Ez a ket objektum erintkezik: " <<
-							shape1->getName() << "; " << shape2->getName() << std::endl;
+						std::cout << contact_style << "Ez a ket objektum erintkezik: " <<
+							shape1->getName() << "; " << shape2->getName() << cStyle::none << std::endl << std::endl;
 					}
 				}
 			}

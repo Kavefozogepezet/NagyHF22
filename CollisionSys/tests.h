@@ -258,7 +258,7 @@ void linebuff_test() {
 
 #ifndef COLLSYS_MAIN
 int main() {
-    linebuff_test();
+    main_test();
     return 0;
 }
 #endif

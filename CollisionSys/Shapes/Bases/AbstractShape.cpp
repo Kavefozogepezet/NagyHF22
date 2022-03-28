@@ -1,6 +1,7 @@
 #include "AbstractShape.h"
 
-#include "../../debug/memtrace.h"
+#include "debug/memtrace.h"
+#include "general/consoleStyle.h"
 
 namespace CollSys {
 	AbstractShape::AbstractShape() :
@@ -22,6 +23,17 @@ namespace CollSys {
 
 	void AbstractShape::setColor(sf::Color color) {
 		this->displayColor = color;
+	}
+
+	bool AbstractShape::read(glib::linebuffer& buff) {
+		buff >> name;
+		if (buff.eol()) {
+			std::cout << glib::consoleStyle::error <<
+				"Nem adott nevet a sikidomnak." <<
+				glib::consoleStyle::none << std::endl;
+			return false;
+		}
+		return true;
 	}
 
 	const glib::string& AbstractShape::getName() {

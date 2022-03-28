@@ -242,6 +242,12 @@ namespace glib {
 		return dir ? -n : n;
 	}
 
+	template <typename Base>
+	std::ostream& operator << (std::ostream& stream, const vec2<Base>& vec) {
+		stream << "{ " << vec.x << ", " << vec.y << " }";
+		return stream;
+	}
+
 	typedef vec2<float>	 vec2f;
 	typedef vec2<double> vec2d;
 

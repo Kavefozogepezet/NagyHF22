@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Commands\Base\Command.cpp" />
     <ClCompile Include="Commands\Commands.cpp" />
+    <ClCompile Include="general\consoleStyle.cpp" />
     <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="general\linebuffer.cpp" />
     <ClCompile Include="Sandbox.cpp" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="Commands\Base\Command.h" />
     <ClInclude Include="Commands\Commands.h" />
+    <ClInclude Include="general\consoleStyle.h" />
     <ClInclude Include="debug\gtest_lite.h" />
     <ClInclude Include="debug\memtrace.h" />
     <ClInclude Include="general\array.h" />
