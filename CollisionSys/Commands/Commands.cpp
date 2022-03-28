@@ -108,7 +108,7 @@ namespace CollSys {
 			return false;
 		}
 		if (!vec.x && !vec.y) {
-			std::cout << cStyle::warn << "A mozgatas vektora { 0, 0 }. Lehetseges, hogy helytelenul adta meg a komponenseket." << std::endl;
+			std::cout << cStyle::warn << "A mozgatas vektora { 0, 0 }. Lehetseges, hogy helytelenul adta meg a komponenseket." << cStyle::none << std::endl;
 			return false;
 		}
 		shape->move(vec);
@@ -140,7 +140,7 @@ namespace CollSys {
 			return false;
 		}
 		if (!angle) {
-			std::cout << cStyle::warn << "A forgatas szoge 0 fok. Lehetseges, hogy helytelenul adta meg a szoget." << std::endl;
+			std::cout << cStyle::warn << "A forgatas szoge 0 fok. Lehetseges, hogy helytelenul adta meg a szoget." << cStyle::none << std::endl;
 			return false;
 		}
 		shape->rotate(angle);
