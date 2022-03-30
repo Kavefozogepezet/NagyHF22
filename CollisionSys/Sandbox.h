@@ -12,7 +12,7 @@ namespace CollSys {
 	class Sandbox
 	{
 	public:
-		using LambdaType = std::function<AbstractShape* ()>;
+		using LambdaType = std::function<AbstractShape* (const glib::string&)>;
 
 		using CmdReg = glib::registry<glib::string, Command*>;
 		using ShapeReg = glib::registry<glib::string, LambdaType>;
@@ -23,7 +23,7 @@ namespace CollSys {
 
 		template<typename Shape>
 		static LambdaType lambdaMaker() {
-			return []() { return new Shape(); };
+			return [](const glib::string& type) { return new Shape(type); };
 		}
 
 	public:

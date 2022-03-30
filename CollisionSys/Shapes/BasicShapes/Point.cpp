@@ -3,13 +3,17 @@
 #include "../../debug/memtrace.h"
 
 namespace CollSys {
-	Point::Point(double X, double Y) {
+	Point::Point(const glib::string& type, double X, double Y) :
+		AbstractShape(type)
+	{
 		this->name = "Point";
 		this->shape.resize(1);
 		this->shape[0] = { X, Y };
 	}
 
-	Point::Point(const glib::vec2d& point) {
+	Point::Point(const glib::string& type, const glib::vec2d& point) :
+		AbstractShape(type)
+	{
 		this->name = "Point";
 		this->shape.resize(1);
 		this->shape[0] = point;

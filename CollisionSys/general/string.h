@@ -34,6 +34,10 @@ namespace glib {
 			delete[] this->data;
 		}
 
+		bool empty() const {
+			return this->data[0] == 0;
+		}
+
 		string& operator = (const string& other) {
 			size_t size = other.length() + 1;
 			delete[] this->data;

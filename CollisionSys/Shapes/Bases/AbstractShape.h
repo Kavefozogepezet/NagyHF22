@@ -17,7 +17,7 @@ namespace CollSys {
 	class AbstractShape : public sf::Drawable, public Transformable
 	{
 	public:
-		AbstractShape();
+		AbstractShape(const glib::string& type);
 
 		virtual ~AbstractShape();
 
@@ -36,6 +36,10 @@ namespace CollSys {
 		*/
 		void setColor(sf::Color color);
 
+		const glib::string& getType();
+
+		virtual void write(std::ostream& stream) const;
+
 		virtual bool read(glib::linebuffer& buff);
 
 		/** @returns Az objektum neve */
@@ -49,6 +53,8 @@ namespace CollSys {
 
 		/** @brief A síkidom neve */
 		glib::string name;
+		
+		glib::string my_type;
 
 		/*
 		* @brief Megkeresi a síkidom legtávolabbi pontját egy adott irányban. Nem veszi figyelembe a síkidomon végzett transzformációkat

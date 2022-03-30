@@ -6,9 +6,9 @@ namespace CollSys {
 	class Point : public AbstractShape
 	{
 	public:
-		Point(double X = 0.0, double Y = 0.0);
+		Point(const glib::string& type, double X = 0.0, double Y = 0.0);
 
-		Point(const glib::vec2d& point);
+		Point(const glib::string& type, const glib::vec2d& point);
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 

@@ -3,7 +3,8 @@
 #include "../../debug/memtrace.h"
 
 namespace CollSys {
-	Circle::Circle(double radius) :
+	Circle::Circle(const glib::string& type, double radius) :
+		AbstractShape(type),
 		r(radius)
 	{
 		this->name = "Circle";

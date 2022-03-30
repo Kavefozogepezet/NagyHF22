@@ -4,8 +4,10 @@
 
 
 namespace CollSys {
-	Ellipse::Ellipse(double a, double b) :
-		a(a), b(b)
+	Ellipse::Ellipse(const glib::string& type, double a, double b) :
+		AbstractShape(type),
+		a(a),
+		b(b)
 	{
 		this->name = "Ellipse";
 		this->build();

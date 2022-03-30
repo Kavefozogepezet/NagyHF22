@@ -35,10 +35,13 @@ namespace CollSys {
 
 		this->cmd_registry.add("help", new Help(*this));
 		this->cmd_registry.add("openwin", new Openwin(*this));
-		this->cmd_registry.add("shapes", new ListShapes(*this));
+		this->cmd_registry.add("shapetypes", new ListShapes(*this));
 		this->cmd_registry.add("create", new Create(*this));
 		this->cmd_registry.add("move", new Move(*this));
 		this->cmd_registry.add("rotate", new Rotate(*this));
+		this->cmd_registry.add("scale", new Scale(*this));
+		this->cmd_registry.add("contacts", new CheckContacts(*this));
+		this->cmd_registry.add("saveas", new SaveAs(*this));
 		this->cmd_registry.add("exit", new Exit(*this));
 	}
 
@@ -114,7 +117,7 @@ namespace CollSys {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					sf::Vector2i pixelPos = sf::Mouse::getPosition(*this->window);
 					glib::vec2d worldPos = glib::VectorCast<double>(this->window->mapPixelToCoords(pixelPos));
-					CollSys::Point point(worldPos);
+					CollSys::Point point("click", worldPos);
 					this->selected = nullptr;
 
 					for (auto shape : this->shapes) {
@@ -191,7 +194,6 @@ namespace CollSys {
 				cStyle::none << std::endl;
 		}
 		std::cout << std::endl;
-		this->contactCheck();
 	}
 
 	void Sandbox::contactCheck() {

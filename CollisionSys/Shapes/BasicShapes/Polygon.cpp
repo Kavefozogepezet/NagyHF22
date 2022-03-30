@@ -3,7 +3,9 @@
 #include "../../debug/memtrace.h"
 
 namespace CollSys {
-	Polygon::Polygon() {
+	Polygon::Polygon(const glib::string& type) :
+		AbstractShape(type)
+	{
 		this->name = "Polygon";
 		this->build({
 			{ -1.0f, 1.0f },
@@ -14,7 +16,9 @@ namespace CollSys {
 		} );
 	}
 
-	Polygon::Polygon(std::initializer_list<glib::vec2d> points) {
+	Polygon::Polygon(const glib::string& type, std::initializer_list<glib::vec2d> points) :
+		AbstractShape(type)
+	{
 		this->name = "Polygon";
 		this->build(points);
 	}

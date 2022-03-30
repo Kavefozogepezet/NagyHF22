@@ -6,9 +6,9 @@ namespace CollSys {
 	class Polygon : public AbstractShape
 	{
 	public:
-		Polygon();
+		Polygon(const glib::string& type);
 
-		Polygon(std::initializer_list<glib::vec2d> points);
+		Polygon(const glib::string& type, std::initializer_list<glib::vec2d> points);
 		
 
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;

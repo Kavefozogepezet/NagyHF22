@@ -11,11 +11,24 @@ using cStyle = glib::consoleStyle;
 namespace CollSys {
 	Command::Command(Sandbox& sandbox) :
 		reciever(sandbox),
-		desc()
+		desc(),
+		params()
 	{}
+
+	bool Command::postInputCheck(glib::linebuffer& input) const {
+		if (input.eol()) {
+			std::cout << cStyle::error << "Nem adott meg eleg parametert." << std::endl <<
+				"A paramcs parameterlistaja: " << this->params << cStyle::none << std::endl;
+			return false;
+		}
+		return true;
+	}
 
 	std::ostream& operator << (std::ostream& stream, const Command& cmd) {
 		stream << cmd.desc;
+		if (!cmd.params.empty()) {
+			std::cout << std::endl << "parameterek: " << cmd.params;
+		}
 		return stream;
 	}
 
@@ -23,15 +36,7 @@ namespace CollSys {
 		Command(sandbox)
 	{}
 
-	AbstractShape* TransformCommand::readShape(glib::linebuffer & input) {
-		glib::string name;
-		input >> name;
-
-		if (input.eol()) {
-			std::cout << cStyle::error << "Nem adta meg a sikidom nevet." << cStyle::none << std::endl;
-			return nullptr;
-		}
-
+	AbstractShape* TransformCommand::getShape(glib::string& name) const {
 		bool found_shape = false;
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto s : shapes) {

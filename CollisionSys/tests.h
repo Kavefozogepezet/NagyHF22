@@ -134,16 +134,16 @@ void main_test() {
 
     glib::list<CollSys::AbstractShape*> objs;
 
-    CollSys::Ellipse t1;
-    CollSys::Circle t2(0.4);
-    CollSys::Polygon t3;
-    CollSys::Polygon t4 = {
+    CollSys::Ellipse t1("");
+    CollSys::Circle t2("", 0.4);
+    CollSys::Polygon t3("");
+    CollSys::Polygon t4("", {
         { -1.0, 0.0 },
         { 0.0, 0.5 },
         { 1.0, 0.1 },
         { 0.5, -0.5 }
-    };
-
+    });
+    
 
     /*
     t1.setPosition({ -0.4, 0.0 }).setScale({ 0.4f, 0.4f }).setRotation(30.0f);
@@ -179,7 +179,7 @@ void main_test() {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2i pixelPos = sf::Mouse::getPosition(win);
                     glib::vec2d worldPos = glib::VectorCast<double>(win.mapPixelToCoords(pixelPos));
-                    CollSys::Point point(worldPos);
+                    CollSys::Point point("click", worldPos);
 
                     for (auto obj : objs) {
                         CollSys::GJKSolver point_test(*obj, point);
@@ -256,9 +256,31 @@ void linebuff_test() {
     std::cout << c1 << " " << c2 << " " << str << std::endl;
 }
 
+class A
+{
+    friend std::ostream& operator << (std::ostream& stream, const A& a) {
+        stream << "hello from A";
+        return stream;
+    }
+};
+
+class B : public A
+{
+    friend std::ostream& operator << (std::ostream& stream, const B& b) {
+        stream << "hello from B";
+        return stream;
+    }
+};
+
+void misc_test() {
+    B obj;
+    A* obj_ptr = &obj;
+    std::cout << *obj_ptr << std::endl;
+}
+
 #ifndef COLLSYS_MAIN
 int main() {
-    main_test();
+    misc_test();
     return 0;
 }
 #endif

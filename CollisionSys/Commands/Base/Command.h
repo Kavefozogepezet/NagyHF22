@@ -14,12 +14,14 @@ namespace CollSys {
 
 		virtual ~Command() = default;
 
-		virtual bool execute(glib::linebuffer& input) = 0;
+		virtual bool execute(glib::linebuffer& input) const = 0;
 
 		friend std::ostream& operator << (std::ostream& stream, const Command& cmd);
 	protected:
+		bool postInputCheck(glib::linebuffer& input) const;
+
 		Sandbox& reciever;
-		glib::string desc;
+		glib::string desc, params;
 	};
 
 	class TransformCommand : public Command
@@ -29,6 +31,6 @@ namespace CollSys {
 
 		virtual ~TransformCommand() = default;
 	protected:
-		AbstractShape* readShape(glib::linebuffer& input);
+		AbstractShape* getShape(glib::string& name) const;
 	};
 }

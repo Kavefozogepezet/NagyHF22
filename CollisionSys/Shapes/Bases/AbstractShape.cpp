@@ -4,10 +4,11 @@
 #include "general/consoleStyle.h"
 
 namespace CollSys {
-	AbstractShape::AbstractShape() :
+	AbstractShape::AbstractShape(const glib::string& type) :
 		shape(),
 		displayColor(sf::Color::White),
-		name("Abstract Shape")
+		name(),
+		my_type(type)
 	{}
 
 	AbstractShape::~AbstractShape() {}
@@ -23,6 +24,14 @@ namespace CollSys {
 
 	void AbstractShape::setColor(sf::Color color) {
 		this->displayColor = color;
+	}
+
+	const glib::string& AbstractShape::getType() {
+		return this->my_type;
+	}
+
+	void AbstractShape::write(std::ostream& stream) const {
+		stream << this->my_type << ' ' << this->name;
 	}
 
 	bool AbstractShape::read(glib::linebuffer& buff) {
