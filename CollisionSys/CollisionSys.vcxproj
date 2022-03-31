@@ -17,6 +17,7 @@
     <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="general\linebuffer.cpp" />
     <ClCompile Include="Sandbox.cpp" />
+    <ClCompile Include="Shapes\Bases\iocapable.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Point.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Circle.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="general\registry.h" />
     <ClInclude Include="general\linebuffer.h" />
     <ClInclude Include="Sandbox.h" />
+    <ClInclude Include="Shapes\Bases\iocapable.h" />
     <ClInclude Include="Shapes\BasicShapes\Point.h" />
     <ClInclude Include="Shapes\BasicShapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />

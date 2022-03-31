@@ -31,10 +31,16 @@ namespace CollSys {
 	}
 
 	void AbstractShape::write(std::ostream& stream) const {
-		stream << this->my_type << ' ' << this->name;
+		Transformable::write(stream);
+		stream << ' ' << this->name;
 	}
 
-	bool AbstractShape::read(glib::linebuffer& buff) {
+	void AbstractShape::read(std::istream& stream) {
+		Transformable::read(stream);
+		stream >> this->name;
+	}
+
+	bool AbstractShape::fromConsole(glib::linebuffer& buff) {
 		buff >> name;
 		if (buff.eol()) {
 			std::cout << glib::consoleStyle::error <<

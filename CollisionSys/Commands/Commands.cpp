@@ -12,7 +12,9 @@
 
 using cStyle = glib::consoleStyle;
 
-namespace CollSys {
+namespace CollSys::Commands {
+	static const glib::string file_ext = ".shps";
+
 	// -------------------- HELP --------------------
 
 	Help::Help(Sandbox& sandbox) :
@@ -30,15 +32,15 @@ namespace CollSys {
 		return true;
 	}
 
-	// -------------------- LIST SHAPES --------------------
+	// -------------------- LIST SHAPE TYPES --------------------
 
-	ListShapes::ListShapes(Sandbox& sandbox) :
+	ListShapeTypes::ListShapeTypes(Sandbox& sandbox) :
 		Command(sandbox)
 	{
 		this->desc = "Kilistazza a lehetseges sikidom tipusokat.";
 	}
 
-	bool ListShapes::execute(glib::linebuffer& input) const {
+	bool ListShapeTypes::execute(glib::linebuffer& input) const {
 		Sandbox::ShapeReg& shape_reg = this->reciever.getShapeReg();
 		for (auto& sr : shape_reg) {
 			std::cout << sr.first << std::endl;
@@ -46,10 +48,26 @@ namespace CollSys {
 		return true;
 	}
 
+	// -------------------- LIST SHAPES --------------------
+
+	ListShapes::ListShapes(Sandbox& sandbox) :
+		Command(sandbox)
+	{
+		this->desc = "Kilistazza a letrehozott sikidomokat.";
+	}
+
+	bool ListShapes::execute(glib::linebuffer& input) const {
+		Sandbox::ShapeList& shape_reg = this->reciever.getShapeList();
+		for (auto shape : shape_reg) {
+			std::cout << shape->getName() << " (" << shape->getType() << ") " << std::endl;
+		}
+		return true;
+	}
+
 	// -------------------- CREATE --------------------
 
 	Create::Create(Sandbox& sandbox) :
-		Command(sandbox)
+		CreatorCommand(sandbox)
 	{
 		this->desc =
 			"Letrehoz egy sikidomot.\n"
@@ -67,29 +85,21 @@ namespace CollSys {
 		if (!this->postInputCheck(input)) {
 			return false;
 		}
-		auto it = sreg.get(shape_key);
-		if (it == sreg.end()) {
-			std::cout << cStyle::error << "Nem letezik \"" << shape_key << "\" sikidom." << cStyle::none << std::endl;
-			return false;
-		}
-		AbstractShape* shape = it->second(shape_key);
-		if (!shape->read(input)) {
+		AbstractShape* shape = this->createShape(shape_key);
+		if (!shape) { return false; }
+		if (!shape->fromConsole(input)) {
 			std::cout << cStyle::error << "Hiba a sikidom beolvasasakor." << cStyle::none << std::endl;
 			delete shape;
 			return false;
 		}
-		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
-		for (auto s : shapes) {
-			if (s->getName() == shape->getName()) {
-				std::cout << cStyle::error << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::none << std::endl;
-				delete shape;
-				return false;
-			}
+		if (this->validateShape(shape)) {
+			this->reciever.getShapeList().push_back(shape);
+			std::cout << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
+			return true;
 		}
-		shapes.push_back(shape);
-		std::cout << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
-		
-		return true;
+		else {
+			return false;
+		}
 	}
 
 	// -------------------- MOVE --------------------
@@ -227,7 +237,8 @@ namespace CollSys {
 	bool SaveAs::execute(glib::linebuffer& input) const {
 		glib::string file_path;
 		input >> file_path;
-		file_path += ".shps";
+		file_path += file_ext;
+		unsigned int scount = 0;
 
 		if (!this->postInputCheck(input)) {
 			return false;
@@ -239,11 +250,80 @@ namespace CollSys {
 		}
 		std::ofstream file(file_path.c_str());
 		for (auto shape : this->reciever.getShapeList()) {
-			file << "new ";
-			shape->write(file);
-			file << std::endl;
+			file << "new " << shape->getType() << ' ' << *shape << std::endl;
+			scount++;
 		}
+		std::cout << scount << " sikidom elmentve a " << file_path << " fajlba." << std::endl;
 		return true;
+	}
+
+	// -------------------- LOAD --------------------
+
+	Load::Load(Sandbox& sandbox) :
+		CreatorCommand(sandbox)
+	{
+		this->desc = "Betolt egy file-t (.shps formatumu).";
+		this->params = "<file neve>";
+	}
+
+	bool Load::execute(glib::linebuffer& input) const {
+		glib::string file_path;
+		input >> file_path;
+
+		if (!this->postInputCheck(input)) {
+			return false;
+		}
+		glib::string extension = glib::string(file_path.c_str() + file_path.length() - 5);
+		if (extension != file_ext) {
+			std::cout << cStyle::error << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::none << std::endl;
+			return false;
+		}
+		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
+		if (!exists) {
+			std::cout << cStyle::error << "A(z) " << file_path << " file nem letezik." << cStyle::none << std::endl;
+			return false;
+		}
+		std::ifstream file(file_path.c_str());
+		if (!file.is_open()) {
+			std::cout << cStyle::error << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::none << std::endl;
+			return false;
+		}
+		this->deleteExistingShapes();
+		this->readShapes(file);
+
+		return true;
+	}
+
+	void Load::readShapes(std::ifstream& file) const {
+		glib::string temp, shape_key;
+		unsigned int shape_count = 0, loaded_count = 0;
+		do {
+			file >> temp;
+			if (!file.eof() && temp == "new") {
+				file >> shape_key;
+				AbstractShape* shape = this->createShape(shape_key);
+				if (!shape) { break; }
+				file >> *shape;
+				if (this->validateShape(shape)) {
+					this->reciever.getShapeList().push_back(shape);
+					std::cout << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
+					loaded_count++;
+				}
+				shape_count++;
+			}
+			else if (!temp.empty()) {
+				std::cout << cStyle::warn << "Ervenytelen token: " << temp << cStyle::none << std::endl;
+			}
+		} while (!file.eof());
+		std::cout << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
+	}
+
+	void Load::deleteExistingShapes() const {
+		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
+		for (auto shape : shapes) {
+			delete shape;
+		}
+		shapes.clear();
 	}
 
 	// -------------------- OPENWIN --------------------
@@ -256,6 +336,7 @@ namespace CollSys {
 
 	bool Openwin::execute(glib::linebuffer& input) const {
 		this->reciever.openWindow();
+		std::cout << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
 		return true;
 	}
 

@@ -6,6 +6,7 @@
 #include "Transformable.h"
 #include "general/string.h"
 #include "general/linebuffer.h"
+#include "iocapable.h"
 
 namespace CollSys {
 	// Contact osztály előre deklarálása.
@@ -38,9 +39,7 @@ namespace CollSys {
 
 		const glib::string& getType();
 
-		virtual void write(std::ostream& stream) const;
-
-		virtual bool read(glib::linebuffer& buff);
+		virtual bool fromConsole(glib::linebuffer& buff);
 
 		/** @returns Az objektum neve */
 		const glib::string& getName();
@@ -63,6 +62,10 @@ namespace CollSys {
 		* @return - A legmesszebb pont koordinátája
 		*/
 		virtual glib::vec2d objSpaceSupport(const glib::vec2d& direction) const = 0;
+
+		virtual void write(std::ostream& stream) const override;
+
+		virtual void read(std::istream& stream) override;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};

@@ -9,11 +9,15 @@ namespace CollSys {
 	{
 	public:
 		Ellipse(const glib::string& type, double a = 0.5f, double b = 0.25f);
-
-		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
-	protected:
-		void build();
 	private:
 		double a, b;
+
+		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
+
+		void write(std::ostream& stream) const override;
+
+		void read(std::istream& stream) override;
+
+		void build();
 	};
 }

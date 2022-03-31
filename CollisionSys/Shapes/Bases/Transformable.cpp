@@ -84,6 +84,21 @@ namespace CollSys {
 		return this->transform;
 	}
 
+	void Transformable::write(std::ostream& stream) const {
+		stream <<
+			this->_position << ' ' <<
+			this->_rotation << ' ' <<
+			this->_scale;
+	}
+
+	void Transformable::read(std::istream& stream) {
+		stream >>
+			this->_position >>
+			this->_rotation >>
+			this->_scale;
+		this->transform_update = true;
+	}
+
 	void Transformable::recalculateTransform() const {
 		this->transform = sf::Transform();
 		this->transform

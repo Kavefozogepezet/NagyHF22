@@ -24,4 +24,14 @@ namespace CollSys {
 			this->shape[i] = this->r * d;
 		}
 	}
+
+	void Circle::write(std::ostream& stream) const {
+		AbstractShape::write(stream);
+		stream << ' ' << this->r;
+	}
+
+	void Circle::read(std::istream& stream) {
+		AbstractShape::read(stream);
+		stream >> this->r;
+	}
 }

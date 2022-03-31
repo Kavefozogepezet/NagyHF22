@@ -171,9 +171,9 @@ namespace glib {
 
 			do {
 				is_eof = stream.get(temp).eof();
-			} while (std::isspace(temp) && !is_eof);
+			} while (!is_eof && std::isspace(temp));
 
-			while (!(std::isspace(temp) || is_eof)) {
+			while (!is_eof && !std::isspace(temp)) {
 				str += temp;
 				is_eof = stream.get(temp).eof();
 			}

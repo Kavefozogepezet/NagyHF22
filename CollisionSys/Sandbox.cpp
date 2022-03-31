@@ -33,16 +33,18 @@ namespace CollSys {
 		this->s_registry.add("ellipse", lambdaMaker<Ellipse>());
 		this->s_registry.add("point", lambdaMaker<Point>());
 
-		this->cmd_registry.add("help", new Help(*this));
-		this->cmd_registry.add("openwin", new Openwin(*this));
-		this->cmd_registry.add("shapetypes", new ListShapes(*this));
-		this->cmd_registry.add("create", new Create(*this));
-		this->cmd_registry.add("move", new Move(*this));
-		this->cmd_registry.add("rotate", new Rotate(*this));
-		this->cmd_registry.add("scale", new Scale(*this));
-		this->cmd_registry.add("contacts", new CheckContacts(*this));
-		this->cmd_registry.add("saveas", new SaveAs(*this));
-		this->cmd_registry.add("exit", new Exit(*this));
+		this->cmd_registry.add("help", new Commands::Help(*this));
+		this->cmd_registry.add("openwin", new Commands::Openwin(*this));
+		this->cmd_registry.add("shapetypes", new Commands::ListShapeTypes(*this));
+		this->cmd_registry.add("shapes", new Commands::ListShapes(*this));
+		this->cmd_registry.add("create", new Commands::Create(*this));
+		this->cmd_registry.add("move", new Commands::Move(*this));
+		this->cmd_registry.add("rotate", new Commands::Rotate(*this));
+		this->cmd_registry.add("scale", new Commands::Scale(*this));
+		this->cmd_registry.add("contacts", new Commands::CheckContacts(*this));
+		this->cmd_registry.add("saveas", new Commands::SaveAs(*this));
+		this->cmd_registry.add("load", new Commands::Load(*this));
+		this->cmd_registry.add("exit", new Commands::Exit(*this));
 	}
 
 	Sandbox::~Sandbox() {

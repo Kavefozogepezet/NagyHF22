@@ -2,10 +2,11 @@
 
 #include "SFML/Graphics/Transform.hpp"
 
-#include "../../general/vec2.h"
+#include "general/vec2.h"
+#include "iocapable.h"
 
 namespace CollSys {
-	class Transformable
+	class Transformable : public IOCapable
 	{
 	public:
 		Transformable();
@@ -33,6 +34,10 @@ namespace CollSys {
 		double getRotation() const;
 
 		const sf::Transform& getTransform() const;
+	protected:
+		virtual void write(std::ostream& stream) const override;
+
+		virtual void read(std::istream& stream) override;
 	private:
 		glib::vec2d _position, _scale;
 		double _rotation;

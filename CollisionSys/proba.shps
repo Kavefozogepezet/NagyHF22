@@ -1,0 +1,6 @@
+new polygon -0.46 -0.54 0 0.0936983 0.0828982 p1 
+new ellipse -0.44 0.64 24 0.692534 0.72139 e1 
+new point 0 0 0 1 1 peti 
+new circle 0.36 -0.4 0 0.564673 0.564673 cicero 0.5 
+new polygon 0.44 0.52 46 0.270819 0.282103 polka 
+new ellipse -0.14 -0.04 -118 1 1 eleonora 

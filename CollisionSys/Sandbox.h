@@ -14,7 +14,7 @@ namespace CollSys {
 	public:
 		using LambdaType = std::function<AbstractShape* (const glib::string&)>;
 
-		using CmdReg = glib::registry<glib::string, Command*>;
+		using CmdReg = glib::registry<glib::string, const Commands::Command* const>;
 		using ShapeReg = glib::registry<glib::string, LambdaType>;
 		using ShapeList = glib::list<AbstractShape*>;
 	public:

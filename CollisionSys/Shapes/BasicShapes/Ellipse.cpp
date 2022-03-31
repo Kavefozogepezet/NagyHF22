@@ -25,6 +25,16 @@ namespace CollSys {
 		return glib::vec2d(x, y);
 	}
 
+	void Ellipse::write(std::ostream& stream) const {
+		AbstractShape::write(stream);
+		stream << ' ' << this->a << ' ' << this->b;
+	}
+
+	void Ellipse::read(std::istream& stream) {
+		AbstractShape::read(stream);
+		stream >> this->a >> this->b;
+	}
+
 	void Ellipse::build() {
 		this->shape.resize(33);
 		for (size_t i = 0; i < 33; i++) {

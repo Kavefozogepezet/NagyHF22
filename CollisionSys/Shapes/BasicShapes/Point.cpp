@@ -23,6 +23,16 @@ namespace CollSys {
 		return this->shape[0];
 	}
 
+	void Point::write(std::ostream& stream) const {
+		AbstractShape::write(stream);
+		stream << ' ' << this->shape[0].x << ' ' << this->shape[0].y;
+	}
+
+	void Point::read(std::istream& stream) {
+		AbstractShape::read(stream);
+		stream >> this->shape[0].x >> this->shape[0].y;
+	}
+
 	void Point::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		states.transform *= this->getTransform();
 		sf::VertexArray temp;

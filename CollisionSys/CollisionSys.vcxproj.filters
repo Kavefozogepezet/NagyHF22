@@ -57,6 +57,9 @@
     <ClCompile Include="general\consoleStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shapes\Bases\iocapable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shapes\Bases\AbstractShape.h">
@@ -414,6 +417,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="general\consoleStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shapes\Bases\iocapable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

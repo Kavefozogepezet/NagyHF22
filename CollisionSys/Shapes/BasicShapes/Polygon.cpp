@@ -39,6 +39,24 @@ namespace CollSys {
 		return point;
 	}
 
+	void Polygon::write(std::ostream& stream) const {
+		AbstractShape::write(stream);
+		stream << ' ' << this->shape.size();
+		for (auto p : this->shape) {
+			stream << ' ' << p;
+		}
+	}
+
+	void Polygon::read(std::istream& stream) {
+		AbstractShape::read(stream);
+		unsigned int size;
+		stream >> size;
+		this->shape.resize(size);
+		for (auto& p : this->shape) {
+			stream >> p;
+		}
+	}
+
 	void Polygon::build(const std::initializer_list<glib::vec2d>& points) {
 		this->shape.resize(points.size());
 

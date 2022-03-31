@@ -129,9 +129,13 @@ namespace glib {
 
 		/** @returns Forward iterator a lista első elemén. */
 		inline forwardIt begin() { return forwardIt(this->data); }
+		/** @returns const Forward iterator a lista első elemén. */
+		inline const forwardIt begin() const { return forwardIt(this->data); }
 
 		/** @returns Forward iterator a lista utolsó eleme után. */
 		inline forwardIt end() { return forwardIt(this->data + this->m_size); }
+		/** @returns const Forward iterator a lista utolsó eleme után. */
+		inline const forwardIt end() const { return forwardIt(this->data + this->m_size); }
 
 		/** @returns Reverse iterator a lista első eleme előtt. */
 		inline reverseIt rbegin() { return reverseIt(this->data + this->m_size - 1); }

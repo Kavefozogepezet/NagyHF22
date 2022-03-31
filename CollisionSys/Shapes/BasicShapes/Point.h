@@ -12,6 +12,10 @@ namespace CollSys {
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 
+		void write(std::ostream& stream) const override;
+
+		void read(std::istream& stream) override;
+
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 }

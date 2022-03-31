@@ -244,7 +244,13 @@ namespace glib {
 
 	template <typename Base>
 	std::ostream& operator << (std::ostream& stream, const vec2<Base>& vec) {
-		stream << "{ " << vec.x << ", " << vec.y << " }";
+		stream << vec.x << ' ' << vec.y;
+		return stream;
+	}
+
+	template <typename Base>
+	std::istream& operator >> (std::istream& stream, vec2<Base>& vec) {
+		stream >> vec.x >> vec.y;
 		return stream;
 	}
 

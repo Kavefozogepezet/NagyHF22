@@ -2,13 +2,20 @@
 
 #include "Base/Command.h"
 
-namespace CollSys {
+namespace CollSys::Commands {
 	// -------------------- general --------------------
 
 	class Help : public Command
 	{
 	public:
 		Help(Sandbox& sandbox);
+		bool execute(glib::linebuffer& input) const;
+	};
+
+	class ListShapeTypes : public Command
+	{
+	public:
+		ListShapeTypes(Sandbox& sandbox);
 		bool execute(glib::linebuffer& input) const;
 	};
 
@@ -33,14 +40,14 @@ namespace CollSys {
 		bool execute(glib::linebuffer& input) const;
 	};
 
-	// -------------------- transform --------------------
-
-	class Create : public Command
+	class Create : public CreatorCommand
 	{
 	public:
 		Create(Sandbox& sandbox);
 		bool execute(glib::linebuffer& input) const;
 	};
+
+	// -------------------- transform --------------------
 
 	class Move : public TransformCommand
 	{
@@ -81,4 +88,12 @@ namespace CollSys {
 		bool execute(glib::linebuffer& input) const;
 	};
 
+	class Load : public CreatorCommand {
+	public:
+		Load(Sandbox& sandbox);
+		bool execute(glib::linebuffer& input) const;
+	private:
+		void readShapes(std::ifstream& file) const ;
+		void deleteExistingShapes() const;
+	};
 }
