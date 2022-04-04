@@ -181,6 +181,7 @@
     <Library Include="libs\SFML-2.5.1\lib\vorbisfile.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="documentation\specifikacio.docx" />
     <None Include="libs\SFML-2.5.1\bin\openal32.dll" />
     <None Include="libs\SFML-2.5.1\bin\sfml-audio-2.dll" />
     <None Include="libs\SFML-2.5.1\bin\sfml-audio-d-2.dll" />

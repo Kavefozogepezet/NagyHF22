@@ -504,5 +504,6 @@
     <None Include="libs\SFML-2.5.1\bin\sfml-system-d-2.dll" />
     <None Include="libs\SFML-2.5.1\bin\sfml-window-2.dll" />
     <None Include="libs\SFML-2.5.1\bin\sfml-window-d-2.dll" />
+    <None Include="documentation\specifikacio.docx" />
   </ItemGroup>
 </Project>
