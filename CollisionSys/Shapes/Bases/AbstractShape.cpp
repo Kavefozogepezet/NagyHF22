@@ -40,9 +40,8 @@ namespace CollSys {
 		stream >> this->name;
 	}
 
-	bool AbstractShape::fromConsole(glib::linebuffer& buff) {
-		buff >> name;
-		if (buff.eol()) {
+	bool AbstractShape::fromConsole(std::stringstream& buff) {
+		if (buff >> name) {
 			std::cout << glib::consoleStyle::error <<
 				"Nem adott nevet a sikidomnak." <<
 				glib::consoleStyle::none << std::endl;

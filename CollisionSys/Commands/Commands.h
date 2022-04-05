@@ -9,42 +9,42 @@ namespace CollSys::Commands {
 	{
 	public:
 		Help(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class ListShapeTypes : public Command
 	{
 	public:
 		ListShapeTypes(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class ListShapes : public Command
 	{
 	public:
 		ListShapes(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Openwin : public Command
 	{
 	public:
 		Openwin(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Exit : public Command
 	{
 	public:
 		Exit(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Create : public CreatorCommand
 	{
 	public:
 		Create(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	// -------------------- transform --------------------
@@ -53,21 +53,21 @@ namespace CollSys::Commands {
 	{
 	public:
 		Move(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Rotate : public TransformCommand
 	{
 	public:
 		Rotate(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Scale : public TransformCommand
 	{
 	public:
 		Scale(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	// -------------------- contact --------------------
@@ -76,7 +76,7 @@ namespace CollSys::Commands {
 	{
 	public:
 		CheckContacts(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	// -------------------- fileio --------------------
@@ -85,13 +85,13 @@ namespace CollSys::Commands {
 	{
 	public:
 		SaveAs(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	};
 
 	class Load : public CreatorCommand {
 	public:
 		Load(Sandbox& sandbox);
-		bool execute(glib::linebuffer& input) const;
+		bool execute(std::stringstream& input) const;
 	private:
 		void readShapes(std::ifstream& file) const ;
 		void deleteExistingShapes() const;

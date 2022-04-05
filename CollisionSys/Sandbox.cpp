@@ -1,8 +1,10 @@
 #include "Sandbox.h"
 
+#include <iostream>
+#include <sstream>
+
 #include "GJK.h"
 #include "general/string.h"
-#include "general/linebuffer.h"
 #include "general/consoleStyle.h"
 
 #include "debug/memtrace.h"
@@ -168,11 +170,15 @@ namespace CollSys {
 	void Sandbox::consoleUpdate() {
 		std::cout << ">>> ";
 
-		glib::linebuffer lbuff;
-		std::cin >> lbuff;
+		glib::string line;
+		std::getline(std::cin, line);
+		std::stringstream lbuff(line);
 
 		glib::string cmd;
-		lbuff >> cmd;
+		if (!(lbuff >> cmd)) {
+			std::cout << cStyle::warn << "Nem adott meg parancsot. A parancsok listajat megtekintheti a help parancsal." << cStyle::none << std::endl;
+			return;
+		}
 
 		bool cmd_found = false;
 
@@ -180,19 +186,17 @@ namespace CollSys {
 		if (it != this->cmd_registry.end()) {
 			it->second->execute(lbuff);
 			glib::string str;
-			lbuff >> str;
-			if (!lbuff.eol()) {
-				std::cout << cStyle::warn << "A parancs nem olvasta vegig a sort, ezek a parameterek elvesztek : " << cStyle::none;
+			if (lbuff >> str) {
+				std::cout << cStyle::warn << "A parancs nem olvasta vegig a sort, ezek a parameterek elvesztek :" << cStyle::none;
 				do {
-					std::cout << str << " ";
-					lbuff >> str;
-				} while (!lbuff.eol());
+					std::cout << " " << str;
+				} while (lbuff >> str);
 				std::cout << std::endl;
 			}
 		}
 		else {
 			std::cout << cStyle::error << "A \"" << cmd <<
-				"\" parancs nem letezik. Hasznalja a help parancsot tobb informacioert" <<
+				"\" parancs nem letezik. A parancsok listajat megtekintheti a help parancsal." <<
 				cStyle::none << std::endl;
 		}
 		std::cout << std::endl;

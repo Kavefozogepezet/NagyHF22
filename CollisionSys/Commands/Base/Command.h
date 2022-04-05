@@ -1,7 +1,8 @@
 #pragma once
 
+#include <sstream>
+
 #include "general/string.h"
-#include "general/linebuffer.h"
 
 namespace CollSys {
 	class Sandbox;
@@ -16,11 +17,11 @@ namespace CollSys::Commands {
 
 		virtual ~Command() = default;
 
-		virtual bool execute(glib::linebuffer& input) const = 0;
+		virtual bool execute(std::stringstream& input) const = 0;
 
 		friend std::ostream& operator << (std::ostream& stream, const Command& cmd);
 	protected:
-		bool postInputCheck(glib::linebuffer& input) const;
+		bool postInputCheck(std::stringstream& input) const;
 
 		Sandbox& reciever;
 		glib::string desc, params;

@@ -15,9 +15,9 @@ namespace CollSys::Commands {
 		params()
 	{}
 
-	bool Command::postInputCheck(glib::linebuffer& input) const {
-		if (input.eol()) {
-			std::cout << cStyle::error << "Nem adott meg eleg parametert." << std::endl <<
+	bool Command::postInputCheck(std::stringstream& input) const {
+		if (!input) {
+			std::cout << cStyle::error << "Nem megfelelo a parameterezes." << std::endl <<
 				"A paramcs parameterlistaja: " << this->params << cStyle::none << std::endl;
 			return false;
 		}

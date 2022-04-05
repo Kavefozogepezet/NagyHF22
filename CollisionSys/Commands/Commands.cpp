@@ -23,7 +23,7 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a vegrehajthato parancsokat.";
 	}
 
-	bool Help::execute(glib::linebuffer& input) const {
+	bool Help::execute(std::stringstream& input) const {
 		cStyle list_entry = cStyle().fg(cStyle::BLACK).bg(cStyle::LIGHT_GRAY);
 		for (auto c : this->reciever.getCmdReg()) {
 			std::cout << list_entry << ' ' << c.first << ' ' << cStyle::none << ':' << std::endl <<
@@ -40,7 +40,7 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a peldanyosithato sikidom tipusokat.";
 	}
 
-	bool ListShapeTypes::execute(glib::linebuffer& input) const {
+	bool ListShapeTypes::execute(std::stringstream& input) const {
 		Sandbox::ShapeReg& shape_reg = this->reciever.getShapeReg();
 		for (auto& sr : shape_reg) {
 			std::cout << sr.first << std::endl;
@@ -56,7 +56,7 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a letrehozott sikidomokat.";
 	}
 
-	bool ListShapes::execute(glib::linebuffer& input) const {
+	bool ListShapes::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shape_reg = this->reciever.getShapeList();
 		for (auto shape : shape_reg) {
 			std::cout << shape->getName() << " (" << shape->getType() << ") " << std::endl;
@@ -77,7 +77,7 @@ namespace CollSys::Commands {
 			"<sikidom tipusa> <sikidom neve> <egyeb parameterek>";
 	}
 
-	bool Create::execute(glib::linebuffer& input) const {
+	bool Create::execute(std::stringstream& input) const {
 		glib::string shape_key, shape_name;
 		Sandbox::ShapeReg& sreg = this->reciever.getShapeReg();
 
@@ -114,10 +114,10 @@ namespace CollSys::Commands {
 			"<sikidom neve> <x elmozdulas> <y elmozdulas>";
 	}
 
-	bool Move::execute(glib::linebuffer& input) const {
+	bool Move::execute(std::stringstream& input) const {
 		glib::vec2d vec;
 		glib::string name;
-		input >> name >> vec.x >> vec.y;
+		input >> name >> vec;
 
 		if (!this->postInputCheck(input)) {
 			return false;
@@ -147,7 +147,7 @@ namespace CollSys::Commands {
 			"rotate <sikidom neve> <szog fokban>";
 	}
 
-	bool Rotate::execute(glib::linebuffer& input) const {
+	bool Rotate::execute(std::stringstream& input) const {
 		glib::string name;
 		double angle;
 		input >> name >> angle;
@@ -180,10 +180,10 @@ namespace CollSys::Commands {
 			"<sikidom neve> <x szorzo> <y szorzo>";
 	}
 
-	bool Scale::execute(glib::linebuffer& input) const {
+	bool Scale::execute(std::stringstream& input) const {
 		glib::string name;
 		glib::vec2d vec;
-		input >> name >> vec.x >> vec.y;
+		input >> name >> vec;
 
 		if (!this->postInputCheck(input)) {
 			return false;
@@ -205,7 +205,7 @@ namespace CollSys::Commands {
 		this->desc = "Megkeresi es kiirja az erintkezo sikidomokat.";
 	}
 
-	bool CheckContacts::execute(glib::linebuffer& input) const {
+	bool CheckContacts::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		cStyle contact_style = cStyle().fg(cStyle::GREEN);
 		for (auto it1 = shapes.begin(); it1 != shapes.end(); ++it1) {
@@ -234,7 +234,7 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool SaveAs::execute(glib::linebuffer& input) const {
+	bool SaveAs::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
 		file_path += file_ext;
@@ -266,7 +266,7 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool Load::execute(glib::linebuffer& input) const {
+	bool Load::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
 
@@ -297,24 +297,31 @@ namespace CollSys::Commands {
 	void Load::readShapes(std::ifstream& file) const {
 		glib::string temp, shape_key;
 		unsigned int shape_count = 0, loaded_count = 0;
-		do {
-			file >> temp;
-			if (!file.eof() && temp == "new") {
+		while (file >> temp) {
+			if (temp == "new") {
 				file >> shape_key;
 				AbstractShape* shape = this->createShape(shape_key);
-				if (!shape) { break; }
+				if (!shape) {
+					break;
+				}
 				file >> *shape;
 				if (this->validateShape(shape)) {
 					this->reciever.getShapeList().push_back(shape);
 					std::cout << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
 					loaded_count++;
 				}
+				else {
+					delete shape;
+				}
 				shape_count++;
 			}
 			else if (!temp.empty()) {
 				std::cout << cStyle::warn << "Ervenytelen token: " << temp << cStyle::none << std::endl;
 			}
-		} while (!file.eof());
+		}
+		if (file.rdstate() == std::iostream::failbit) {
+			std::cout << cStyle::error << "Hiba a beolvasas soran." << cStyle::none << std::endl;
+		}
 		std::cout << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
 	}
 
@@ -334,7 +341,7 @@ namespace CollSys::Commands {
 		this->desc = "Megnyit egy uj ablakot, ahol a sikidomok grafikusan abrazolva jelennek meg.";
 	}
 
-	bool Openwin::execute(glib::linebuffer& input) const {
+	bool Openwin::execute(std::stringstream& input) const {
 		this->reciever.openWindow();
 		std::cout << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
 		return true;
@@ -348,7 +355,7 @@ namespace CollSys::Commands {
 		this->desc = "Kilep a programbol.";
 	}
 
-	bool Exit::execute(glib::linebuffer& input) const {
+	bool Exit::execute(std::stringstream& input) const {
 		this->reciever.stop();
 		return true;
 	}

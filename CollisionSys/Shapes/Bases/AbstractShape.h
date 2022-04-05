@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include <SFML/Graphics.hpp>
+#include <sstream>
 
 #include "general/vec2.h"
 #include "Transformable.h"
 #include "general/string.h"
-#include "general/linebuffer.h"
 #include "iocapable.h"
 
 namespace CollSys {
@@ -39,7 +39,7 @@ namespace CollSys {
 
 		const glib::string& getType();
 
-		virtual bool fromConsole(glib::linebuffer& buff);
+		virtual bool fromConsole(std::stringstream& buff);
 
 		/** @returns Az objektum neve */
 		const glib::string& getName();

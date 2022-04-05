@@ -12,8 +12,6 @@
 #include "general/list.h"
 #include "general/vec2.h"
 
-#include "general/linebuffer.h"
-
 #include "GJK.h"
 
 const float speed = 0.02f;
@@ -242,18 +240,6 @@ void array_test() {
     }
     */
     printVertexArray(va);
-}
-
-void linebuff_test() {
-    glib::linebuffer lbuff;
-    std::cin >> lbuff;
-
-    char c1, c2;
-    glib::string str;
-    lbuff.get(c1);
-
-    lbuff >> c2 >> str;
-    std::cout << c1 << " " << c2 << " " << str << std::endl;
 }
 
 class A
