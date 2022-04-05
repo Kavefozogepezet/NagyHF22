@@ -37,7 +37,7 @@ namespace CollSys::Commands {
 	ListShapeTypes::ListShapeTypes(Sandbox& sandbox) :
 		Command(sandbox)
 	{
-		this->desc = "Kilistazza a lehetseges sikidom tipusokat.";
+		this->desc = "Kilistazza a peldanyosithato sikidom tipusokat.";
 	}
 
 	bool ListShapeTypes::execute(glib::linebuffer& input) const {
