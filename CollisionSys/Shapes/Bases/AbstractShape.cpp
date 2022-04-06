@@ -42,12 +42,14 @@ namespace CollSys {
 
 	bool AbstractShape::fromConsole(std::stringstream& buff) {
 		if (buff >> name) {
+			return true;
+		}
+		else {
 			std::cout << glib::consoleStyle::error <<
 				"Nem adott nevet a sikidomnak." <<
 				glib::consoleStyle::none << std::endl;
 			return false;
 		}
-		return true;
 	}
 
 	const glib::string& AbstractShape::getName() {
