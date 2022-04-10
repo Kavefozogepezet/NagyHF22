@@ -1,6 +1,7 @@
-new polygon 0 0 0 1 1 polipapper 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
-new ellipse 0 0 0 1 1 eleonora 0.5 0.25
-new ellipse 0 0 0 1 1 ella 0.5 0.25
-new circle 0 0 0 1 1 sitalexferguson 0.5
-new polygon 0 0 0 1 1 paul 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
-new polygon 0 0 0 0.5 0.5 enyem 5 -1 1 0 1.25 1 1 1.25 -1 -1.25 -1
+new polygon -0.48 -0.54 50 0.259986 0.249587 polipapper 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
+new ellipse 0.66 0.12 24 0.203506 1 eleonora 0.5 0.25
+new ellipse -0.18 0.72 0 0.72139 0.692534 ella 0.5 0.25
+new circle -0.06 -0.1 62 0.564673 0.564673 sitalexferguson 0.5
+new polygon 0.62 0.7 0 0.165934 0.165934 paul 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
+new polygon 0.52 -0.5 0 0.187707 0.212161 enyem 5 -1 1 0 1.25 1 1 1.25 -1 -1.25 -1
+new bezier -0.42 0.58 0 0.293858 0.270819 beton 3 -0.5 -0.7 0 -0.3 1.5 0 -1 1 1.7 -0.1 -2.7 3 0 -3.9 0 0 0.24 -1.84 0.06 2.04 -0.3 1.8 -1 -1

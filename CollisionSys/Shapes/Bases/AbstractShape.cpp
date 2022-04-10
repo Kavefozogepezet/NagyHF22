@@ -41,7 +41,7 @@ namespace CollSys {
 	}
 
 	bool AbstractShape::fromConsole(std::stringstream& buff) {
-		if (buff >> name) {
+		if (buff >> this->name) {
 			return true;
 		}
 		else {

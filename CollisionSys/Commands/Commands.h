@@ -47,6 +47,13 @@ namespace CollSys::Commands {
 		bool execute(std::stringstream& input) const;
 	};
 
+	class Destroy : public Command
+	{
+	public:
+		Destroy(Sandbox& sandbox);
+		bool execute(std::stringstream& input) const;
+	};
+
 	// -------------------- transform --------------------
 
 	class Move : public TransformCommand

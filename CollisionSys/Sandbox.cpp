@@ -34,12 +34,14 @@ namespace CollSys {
 		this->s_registry.add("circle", lambdaMaker<Circle>());
 		this->s_registry.add("ellipse", lambdaMaker<Ellipse>());
 		this->s_registry.add("point", lambdaMaker<Point>());
+		this->s_registry.add("bezier", lambdaMaker<BezierCurve>());
 
 		this->cmd_registry.add("help", new Commands::Help(*this));
 		this->cmd_registry.add("openwin", new Commands::Openwin(*this));
 		this->cmd_registry.add("shapetypes", new Commands::ListShapeTypes(*this));
 		this->cmd_registry.add("shapes", new Commands::ListShapes(*this));
 		this->cmd_registry.add("create", new Commands::Create(*this));
+		this->cmd_registry.add("destroy", new Commands::Destroy(*this));
 		this->cmd_registry.add("move", new Commands::Move(*this));
 		this->cmd_registry.add("rotate", new Commands::Rotate(*this));
 		this->cmd_registry.add("scale", new Commands::Scale(*this));

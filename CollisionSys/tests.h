@@ -127,44 +127,20 @@ void ContactPass(glib::list<CollSys::AbstractShape*>& objs) {
 void main_test() {
     sf::RenderWindow win(sf::VideoMode(800, 800), "Test");
     win.setFramerateLimit(30);
-    sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
+    sf::View view({ 0.0f, 0.0f }, { 4.0f, 4.0f });
     win.setView(view);
 
-    glib::list<CollSys::AbstractShape*> objs;
+    CollSys::BezierCurve t1("");
 
-    CollSys::Ellipse t1("");
-    CollSys::Circle t2("", 0.4);
-    CollSys::Polygon t3("");
-    CollSys::Polygon t4("", {
-        { -1.0, 0.0 },
-        { 0.0, 0.5 },
-        { 1.0, 0.1 },
-        { 0.5, -0.5 }
-    });
-    
+    sf::CircleShape sup_point(0.05f);
+    sup_point.setOrigin(0.05f, 0.05f);
+    sup_point.setFillColor(sf::Color::Red);
 
-    /*
-    t1.setPosition({ -0.4, 0.0 }).setScale({ 0.4f, 0.4f }).setRotation(30.0f);
-    t2.setScale({ 0.4f, 0.4f });
-    */
-    objs.push_back(&t1);
-    objs.push_back(&t2);
-    objs.push_back(&t3);
-    objs.push_back(&t4);
+    sf::VertexArray va(sf::LineStrip, 2);
+    va[0].color = va[1].color = sf::Color::Green;
+    va[0].position = { 0.0f, 0.0f };
 
-    sf::VertexArray simplex(sf::LineStrip, 2), Mdiff(sf::LineStrip, 0);
-    calcFirstSimplex(t3, t4, simplex);
-
-    sf::CircleShape centre(0.005f);
-    centre.setOrigin(0.005f, 0.005f);
-    centre.setFillColor(sf::Color::Red);
-    /*
-    sf::CircleShape centre2(0.005f);
-    centre2.setOrigin(0.005f, 0.005f);
-    centre2.setFillColor(sf::Color::Green);
-    objs.push_back(&centre2);
-    */
-    CollSys::AbstractShape* selected = nullptr;
+    glib::vec2d dir = { 1.0, 0.0 };
 
     while (win.isOpen()) {
         sf::Event event;
@@ -173,48 +149,18 @@ void main_test() {
             if (event.type == sf::Event::Closed) {
                 win.close();
             }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(win);
-                    glib::vec2d worldPos = glib::VectorCast<double>(win.mapPixelToCoords(pixelPos));
-                    CollSys::Point point("click", worldPos);
-
-                    for (auto obj : objs) {
-                        CollSys::GJKSolver point_test(*obj, point);
-                        if (point_test.isContact()) {
-                            selected = obj;
-                            break;
-                        }
-                    }
-                }
-                else if (event.mouseButton.button == sf::Mouse::Right) {
-                    selected = nullptr;
-                }
-            }
         }
-        if (selected) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { selected->rotate(angular); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { selected->rotate(-angular); }
+        glib::vec2d p = t1.support(dir);
+        va[1].position = glib::VectorCast(dir);
+        sup_point.setPosition(glib::VectorCast(p));
+        dir.rotate(2);
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { selected->move(-speed, 0.0f); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { selected->move(0.0f, -speed); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { selected->move(0.0f, speed); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { selected->move(speed, 0.0f); }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) { selected->scale(1.0, 0.96); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) { selected->scale(1.0, 1.04); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) { selected->scale(0.96, 1.0); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) { selected->scale(1.04, 1.0); }
-        }
-
-        ContactPass(objs);
-        if (selected) {
-            selected->setColor(sf::Color::Yellow);
-        }
         win.clear(sf::Color::Black);
-        for (auto obj : objs) {
-            win.draw(*obj);
-        }
+
+        win.draw(t1);
+        win.draw(va);
+        win.draw(sup_point);
+
         win.display();
     }
     win.close();
@@ -266,7 +212,7 @@ void misc_test() {
 
 #ifndef COLLSYS_MAIN
 int main() {
-    misc_test();
+    main_test();
     return 0;
 }
 #endif

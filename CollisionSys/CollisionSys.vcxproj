@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Shapes\Bases\AbstractShape.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\BezierCurve.cpp" />
     <ClCompile Include="Commands\Base\Command.cpp" />
     <ClCompile Include="Commands\Commands.cpp" />
     <ClCompile Include="general\consoleStyle.cpp" />
@@ -22,12 +24,12 @@
     <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Circle.cpp" />
     <ClCompile Include="GJK.cpp" />
-    <ClCompile Include="Shapes\Bases\AbstractShape.cpp" />
     <ClCompile Include="CollisionSys.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Polygon.cpp" />
     <ClCompile Include="Shapes\Bases\Transformable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Shapes\BasicShapes\BezierCurve.h" />
     <ClInclude Include="Commands\Base\Command.h" />
     <ClInclude Include="Commands\Commands.h" />
     <ClInclude Include="general\consoleStyle.h" />

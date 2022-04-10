@@ -9,9 +9,6 @@
 #include "iocapable.h"
 
 namespace CollSys {
-	// Contact osztály előre deklarálása.
-	class Contact;
-
 	/*
 	* @brief Ez az absztrakt osztály deklarálja azt az alap funkcionalitást amely szükséges a GJK algoritmushoz.
 	*/
@@ -53,6 +50,7 @@ namespace CollSys {
 		/** @brief A síkidom neve */
 		glib::string name;
 		
+		/** @brief A síkidom típusának az a string tekintendő, amivel regisztrálva van.*/
 		glib::string my_type;
 
 		/*
@@ -67,6 +65,10 @@ namespace CollSys {
 
 		virtual void read(std::istream& stream) override;
 
+		/*
+		* @brief grafikus megjelenítéshez szükséges, csak akkor override-olandó ha a leszármazott síkidom
+		* speciális megjelenítést igényel
+		*/
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 }

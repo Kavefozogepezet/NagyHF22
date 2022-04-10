@@ -102,6 +102,38 @@ namespace CollSys::Commands {
 		}
 	}
 
+	// -------------------- CREATE --------------------
+
+	Destroy::Destroy(Sandbox& sandbox) :
+		Command(sandbox)
+	{
+		this->desc =
+			"Torli a megadott nevu sikidomot.\n"
+			"A destroy parancs utan irja a torolni kivant sikidom nevet.";
+		this->params =
+			"<sikidom neve>";
+	}
+
+	bool Destroy::execute(std::stringstream& input) const {
+		glib::string name;
+		input >> name;
+		
+		if (!this->postInputCheck(input)) {
+			return false;
+		}
+		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
+		for (auto it = shapes.begin(); it != shapes.end(); it++) {
+			if ((*it)->getName() == name) {
+				delete *it;
+				shapes.erase(it);
+				std::cout << "A(z) \"" << name << "\" nevu sikidom torolve." << std::endl;
+				return true;
+			}
+		}
+		std::cout << cStyle::error << "Nincs \"" << name << "\" nevu sikidom." << cStyle::none << std::endl;
+		return false;
+	}
+
 	// -------------------- MOVE --------------------
 
 	Move::Move(Sandbox& sandbox) :

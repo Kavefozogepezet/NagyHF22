@@ -1,6 +1,6 @@
-new polygon -0.46 -0.54 0 0.0936983 0.0828982 p1 
-new ellipse -0.44 0.64 24 0.692534 0.72139 e1 
-new point 0 0 0 1 1 peti 
-new circle 0.36 -0.4 0 0.564673 0.564673 cicero 0.5 
-new polygon 0.44 0.52 46 0.270819 0.282103 polka 
-new ellipse -0.14 -0.04 -118 1 1 eleonora 
+new polygon -0.48 -0.54 50 0.259986 0.249587 polipapper 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
+new ellipse 0 0 0 1 1 eleonora 0.5 0.25
+new ellipse 0 0 0 1 1 ella 0.5 0.25
+new circle 0 0 0 1 1 sitalexferguson 0.5
+new polygon 0.62 0.7 0 0.165934 0.165934 paul 5 -1 1 1 1 1.53 -0.4 0.8 -1.74 -1 -1
+new polygon 0 0 0 0.5 0.5 enyem 5 -1 1 0 1.25 1 1 1.25 -1 -1.25 -1

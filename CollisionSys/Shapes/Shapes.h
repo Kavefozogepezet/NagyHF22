@@ -6,3 +6,4 @@
 #include "BasicShapes/Point.h"
 #include "BasicShapes/Circle.h"
 #include "BasicShapes/Ellipse.h"
+#include "BasicShapes/BezierCurve.h"

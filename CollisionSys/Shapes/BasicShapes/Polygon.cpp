@@ -42,14 +42,14 @@ namespace CollSys {
 	void Polygon::write(std::ostream& stream) const {
 		AbstractShape::write(stream);
 		stream << ' ' << this->shape.size();
-		for (auto p : this->shape) {
+		for (auto& p : this->shape) {
 			stream << ' ' << p;
 		}
 	}
 
 	void Polygon::read(std::istream& stream) {
 		AbstractShape::read(stream);
-		unsigned int size;
+		size_t size;
 		stream >> size;
 		this->shape.resize(size);
 		for (auto& p : this->shape) {
