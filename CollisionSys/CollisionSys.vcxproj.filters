@@ -48,7 +48,7 @@
     <ClCompile Include="Commands\Commands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="general\consoleStyle.cpp">
+    <ClCompile Include="graphics\consoleStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shapes\Bases\iocapable.cpp">
@@ -61,6 +61,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shapes\Bases\AbstractShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shapes\BasicShapes\RegularPolygon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\displays\ConsoleDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\displays\WindowDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -404,7 +416,7 @@
     <ClInclude Include="Sandbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tests.h">
+    <ClInclude Include="tests\tests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="general\registry.h">
@@ -416,13 +428,31 @@
     <ClInclude Include="Commands\Commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="general\consoleStyle.h">
+    <ClInclude Include="graphics\consoleStyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shapes\Bases\iocapable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shapes\BasicShapes\BezierCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shapes\BasicShapes\RegularPolygon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\displays\ConsoleDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\displays\display.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\displays\WindowDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\mdif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

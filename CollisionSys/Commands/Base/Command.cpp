@@ -3,12 +3,12 @@
 #include "debug/memtrace.h"
 
 #include "general/string.h"
-#include "general/consoleStyle.h"
+#include "graphics/consoleStyle.h"
 #include "Sandbox.h"
 
-using cStyle = glib::consoleStyle;
-
 namespace CollSys::Commands {
+	using cStyle = consoleStyle;
+
 	Command::Command(Sandbox& sandbox) :
 		reciever(sandbox),
 		desc(),
@@ -17,8 +17,8 @@ namespace CollSys::Commands {
 
 	bool Command::postInputCheck(std::stringstream& input) const {
 		if (!input) {
-			std::cout << cStyle::error << "Nem megfelelo a parameterezes." << std::endl <<
-				"A paramcs parameterlistaja: " << this->params << cStyle::none << std::endl;
+			cStyle::error() << "Nem megfelelo a parameterezes." << std::endl <<
+				"A paramcs parameterlistaja: " << this->params << cStyle::endl;
 			return false;
 		}
 		return true;
@@ -27,7 +27,7 @@ namespace CollSys::Commands {
 	std::ostream& operator << (std::ostream& stream, const Command& cmd) {
 		stream << cmd.desc;
 		if (!cmd.params.empty()) {
-			std::cout << std::endl << "parameterek: " << cmd.params;
+			stream << std::endl << "parameterek: " << cmd.params;
 		}
 		return stream;
 	}
@@ -45,7 +45,7 @@ namespace CollSys::Commands {
 				return s;
 			}
 		}
-		std::cout << cStyle::error << "Nincs " << name << " nevu sikidom" << cStyle::none << std::endl;
+		cStyle::error() << "Nincs " << name << " nevu sikidom" << cStyle::endl;
 		return nullptr;
 	}
 
@@ -57,7 +57,7 @@ namespace CollSys::Commands {
 		Sandbox::ShapeReg& sreg = this->reciever.getShapeReg();
 		auto it = sreg.get(key);
 		if (it == sreg.end()) {
-			std::cout << cStyle::error << "Nem letezik \"" << key << "\" sikidom." << cStyle::none << std::endl;
+			cStyle::error() << "Nem letezik \"" << key << "\" sikidom." << cStyle::endl;
 			return nullptr;
 		}
 		return it->second(key);
@@ -67,7 +67,7 @@ namespace CollSys::Commands {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto s : shapes) {
 			if (s->getName() == shape->getName()) {
-				std::cout << cStyle::error << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::none << std::endl;
+				cStyle::error() << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::endl;
 				return false;
 			}
 		}

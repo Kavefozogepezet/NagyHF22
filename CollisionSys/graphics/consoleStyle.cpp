@@ -1,18 +1,22 @@
 #include "consoleStyle.h"
 
-namespace glib {
+namespace CollSys {
 	consoleStyle
-		consoleStyle::none = consoleStyle("0"),
+		consoleStyle::basic = consoleStyle("0"),
 		consoleStyle::warn = consoleStyle("93"),
 		consoleStyle::error = consoleStyle("91");
 
+	std::ostream& consoleStyle::writeWith(const consoleStyle& style) {
+		return std::cout << style;
+	}
+
 	consoleStyle::consoleStyle() : style() {}
 
-	consoleStyle::consoleStyle(string args) : style(args) {}
+	consoleStyle::consoleStyle(glib::string args) : style(args) {}
 
 	consoleStyle::consoleStyle(const consoleStyle& other) : style(other.style) {}
 
-	consoleStyle& consoleStyle::add(string arg) {
+	consoleStyle& consoleStyle::add(glib::string arg) {
 		if (this->style.length() > 0) {
 			this->style += ";";
 		}
@@ -59,6 +63,10 @@ namespace glib {
 		_itoa_s(g, col_str[1], 4, 10);
 		_itoa_s(b, col_str[2], 4, 10);
 		return this->add("48").add("2").add(col_str[0]).add(col_str[1]).add(col_str[2]);
+	}
+
+	std::ostream& consoleStyle::operator () () const {
+		return consoleStyle::writeWith(*this);
 	}
 
 	std::ostream& operator<<(std::ostream& stream, const consoleStyle& cs) {

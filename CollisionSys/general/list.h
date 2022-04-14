@@ -48,6 +48,7 @@ namespace glib {
 
 		listIterator& operator = (const listIterator& other) {
 			this->item_ptr = other.item_ptr;
+			return *this;
 		}
 
 		/** @returns Aktuális elem által tárolt adatra mutató ptr.*/
@@ -137,9 +138,15 @@ namespace glib {
 		using forwardIt = forwardListIt<list<Type>>;
 		using reverseIt = reverseListIt<list<Type>>;
 	public:
-		list() {
+		list() :
+			head((NodeType*)malloc(2 * sizeof(NodeType))),
+			tail(this->head + 1),
+			m_size(0)
+		{
+			/*
 			this->head = (NodeType*) malloc(2 * sizeof(NodeType));
 			this->tail = head + 1;
+			*/
 			NodeType::connect(this->head, this->tail);
 			this->head->p = this->tail->n =  nullptr;
 		}
@@ -168,6 +175,9 @@ namespace glib {
 		void clear() {
 			this->erase(forwardIt(this->head->next()), forwardIt(this->tail));
 		}
+
+		/** @return lista mérete */
+		size_t size() const { return this->m_size; }
 
 		/*
 		* @brief A lista végére illeszt egy elemet.
@@ -206,6 +216,7 @@ namespace glib {
 				* new_node = new NodeType(data, left, right);
 			left->n = new_node;
 			right->p = new_node;
+			this->m_size++;
 			return iterator(new_node);
 		}
 
@@ -219,6 +230,7 @@ namespace glib {
 				* right = pos.getPtr()->next(),
 				* left = pos.getPtr()->prev();
 			delete pos.getPtr();
+			this->m_size--;
 			NodeType::connect(left, right);
 			return iterator(right);
 		}
@@ -240,11 +252,13 @@ namespace glib {
 				NodeType* temp = ff.getPtr();
 				++ff;
 				delete temp;
+				this->m_size--;
 			}
 			NodeType::connect(left, right);
 			return iterator(last);
 		}
 	private:
 		NodeType* head,* tail;
+		size_t m_size;
 	};
 }

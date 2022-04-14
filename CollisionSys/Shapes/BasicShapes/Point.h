@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Bases/AbstractShape.h"
+#include "Shapes/Bases/AbstractShape.h"
 
 namespace CollSys {
 	class Point : public AbstractShape
@@ -9,6 +9,8 @@ namespace CollSys {
 		Point(const glib::string& type, double X = 0.0, double Y = 0.0);
 
 		Point(const glib::string& type, const glib::vec2d& point);
+	
+		bool fromConsole(std::stringstream& buf) override;
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 

@@ -1,42 +1,73 @@
 ﻿#include "BezierCurve.h"
 
-//#define SUP_TEST
+#include "graphics/consoleStyle.h"
 
 namespace CollSys {
+	using cStyle = consoleStyle;
+
+	BezierCurve::Segment::Segment(glib::vec2d p0, glib::vec2d p1, glib::vec2d p2, glib::vec2d p3) :
+		a(p3 + 3.0 * p1 - 3.0 * p2 - p0),
+		b(3.0 * p2 - 6.0 * p1 + 3.0 * p0),
+		c(3.0 * p1 - 3.0 * p0),
+		d(p0)
+	{}
+
 	BezierCurve::BezierCurve(const glib::string& type) :
 		AbstractShape(type),
-		segments()
+		segments(1)
 	{
 		this->name = "Bezier";
 		
-		glib::vec2d l[10] = {
-		{-1, 1},
-		{-0.5, 1},
-
-		{0, 0.9},
-		{0, 0},
-		{0, -1.3},
-
-		{-0.9, -1.6},
-		{-1, -1},
-		{-1.1, -0.4},
-
-		{-1.18, 0.88},
-		{-1, 1}
+		glib::vec2d l[4] = {
+			{ -1,  0 },
+			{  0, -1 },
+			{  0,  1 },
+			{ -1,  0 }
 		};
-		
-		this->segments.resize(3);
 
 		for (size_t i = 0; i < this->segments.size(); i++) {
 			glib::vec2d* p = l + i * 3;
-
-			glib::vec2d
-				a = p[3] + 3.0 * p[1] - 3.0 * p[2] - p[0],
-				b = 3.0 * p[2] - 6.0 * p[1] + 3.0 * p[0],
-				c = 3.0 * p[1] - 3.0 * p[0];
-			this->segments[i] = { a, b, c, p[0] };
+			this->segments[i] = Segment(p[0], p[1], p[2], p[3]);
 		}
 		this->build();
+	}
+
+	bool BezierCurve::fromConsole(std::stringstream& buf) {
+		if (!AbstractShape::fromConsole(buf)) {
+			return false;
+		}
+		//return true;
+		glib::VertexList vlist;
+		glib::vec2d temp1, temp2, temp3;
+
+		while (buf >> temp1 >> temp2 >> temp3) {
+			vlist.push_back(temp1);
+			vlist.push_back(temp2);
+			vlist.push_back(temp3);
+		}
+		// TODO convex check
+
+		size_t
+			segc = vlist.size() / 3,
+			segidx = 0;
+
+		if (segc < 1) {
+			cStyle::error() << "Legalabb egy szegmenst adjon meg." << cStyle::endl;
+			return false;
+		}
+
+		this->segments.resize(segc);
+		vlist.push_back(*vlist.begin());
+
+		for (auto it = vlist.begin(); it != vlist.end(); it++) {
+			glib::vec2d&
+				a = *(it++), b = *(it++),
+				c = *(it++), d = *it;
+			this->segments[segidx++] = Segment(a, b, c, d); // szegmens egymás utáni 4 vektorból
+		}
+		this->build();
+
+		return true;
 	}
 
 	glib::vec2d BezierCurve::getPoint(const Segment& segment, double t) {
@@ -50,7 +81,7 @@ namespace CollSys {
 		glib::vec2d furthest = BezierCurve::getPoint(this->segments[0], 0.0);
 
 		for (auto& seg : this->segments) {
-			// a görbe egyenletének deriválthának zérushelyeit számoljuk ki
+			// a görbe egyenletének deriváltjának zérushelyeit számoljuk ki
 			// ezek az egyenlet együtthatói
 			double
 				eq_b = 2.0 * seg.b * dir,
@@ -63,33 +94,21 @@ namespace CollSys {
 			if (eq_a) { // az egyenlet másodfokú
 				eq_res = (-eq_b - eq_sqrt) / (2 * eq_a);
 			}
-			else if(eq_b) { // elsőfokó
-				eq_res = (seg.c * dir) / (2.0 * seg.b * dir);
+			else if (eq_b) { // elsőfokó
+				eq_res = -(seg.c * dir) / (2.0 * seg.b * dir);
 			}
-			else if(!eq_c) { // nulladfokú, de 0 = 0 => a szegmens összes pontja megfelelő lenne
+			else if (!eq_c) { // nulladfokú, de 0 = 0 => a szegmens összes pontja megfelelő lenne
 				eq_res = 0.0; // vegyük a szegmens elejét
 			}
-			else { // nincs megoldás
+			else { // nincs megoldás ezen a szegmensen
 				continue;
 			}
-			/*
-			glib::vec2d p = BezierCurve::getPoint(seg, eq_res);
-			if (eq_res >= 0.0 && eq_res <= 1.0) {
-				furthest = p;
-				break;
-			}
-			*/
-			
 			eq_res = std::clamp(eq_res, 0.0, 1.0);
-			//std::cout << "t: " << eq_res;
 			glib::vec2d p = BezierCurve::getPoint(seg, eq_res);
 
-			if(p * dir > furthest * dir) {
+			if (p * dir > furthest * dir) {
 				furthest = p;
-				//std::cout << " leghosszabb " << p << " " << p * dir;
 			}
-			//std::cout << std::endl;
-			
 		}
 		return furthest;
 	}
@@ -110,10 +129,10 @@ namespace CollSys {
 		for (auto& seg : this->segments) {
 			stream >> seg.a >> seg.b >> seg.c >> seg.d;
 		}
+		this->build();
 	}
 
 	void BezierCurve::build() {
-#ifndef SUP_TEST 
 		const size_t res = 16;
 		this->shape.resize(this->segments.size() * res);
 
@@ -125,20 +144,5 @@ namespace CollSys {
 			}
 			segc++;
 		}
-#else
-		const size_t res = 64;
-		this->shape.resize(res);
-		double angle = 360.0 / static_cast<double>(res);
-		glib::vec2d dir(1.0, 0.0);
-
-		for (size_t i = 0; i < res; i++) {
-			this->shape[i] = this->objSpaceSupport(dir);
-			//std::cout << this->shape[i];
-			dir.rotate(angle);
-		}
-		std::cout << std::endl;
-#endif
 	}
 }
-
-#undef SUP_TEST

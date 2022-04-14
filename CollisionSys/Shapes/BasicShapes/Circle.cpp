@@ -1,14 +1,31 @@
 #include "Circle.h"
 
-#include "../../debug/memtrace.h"
+#include "debug/memtrace.h"
+#include "graphics/consoleStyle.h"
 
 namespace CollSys {
+	using cStyle = consoleStyle;
+
 	Circle::Circle(const glib::string& type, double radius) :
 		AbstractShape(type),
 		r(radius)
 	{
-		this->name = "Circle";
+		this->name = "circle";
 		this->build();
+	}
+
+	bool Circle::fromConsole(std::stringstream& buf) {
+		if (!AbstractShape::fromConsole(buf)) {
+			return false;
+		}
+		if (buf >> this->r) {
+			this->build();
+			return true;
+		}
+		else {
+			cStyle::error() << "Rossz parameterezes" << cStyle::endl;
+			return false;
+		}
 	}
 
 	glib::vec2d Circle::objSpaceSupport(const glib::vec2d& dir) const {
@@ -33,5 +50,6 @@ namespace CollSys {
 	void Circle::read(std::istream& stream) {
 		AbstractShape::read(stream);
 		stream >> this->r;
+		this->build();
 	}
 }

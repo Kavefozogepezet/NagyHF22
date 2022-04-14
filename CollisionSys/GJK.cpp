@@ -3,65 +3,16 @@
 #include "debug/memtrace.h"
 
 namespace CollSys {
-	Contact::Contact (
-		AbstractShape& shape1,
-		AbstractShape& shape2,
-		const glib::vec2d& contactPoint,
-		const glib::vec2d& contactnormal
-	) :
-		actor1(shape1),
-		actor2(shape2),
-		point(contactPoint),
-		normal(contactnormal)
-	{}
-
-	Contact::Contact(
-		AbstractShape& shape1,
-		AbstractShape& shape2
-	) :
-		actor1(shape1),
-		actor2(shape2),
-		point(0.0, 0.0),
-		normal(0.0, 0.0)
-	{}
-
-	Contact::Contact(const Contact & other) :
-		actor1(other.actor1),
-		actor2(other.actor2),
-		point(other.point),
-		normal(other.normal)
-	{}
-
-	const AbstractShape& Contact::operator [] (size_t idx) {
-		switch (idx) {
-		case 0:
-			return actor1;
-			break;
-		case 1:
-			return actor2;
-			break;
-		default:
-			throw std::out_of_range("Invalid Contact subscript. The index can only be 0 or 1.");
-		}
-	}
-
 	GJKSolver::GJKSolver(AbstractShape& shape1, AbstractShape& shape2) :
 		s1(shape1),
 		s2(shape2),
 		is_contact(false),
-		contact(s1, s2),
-		simplex(2),
-		polytope()
+		simplex(2)
 	{
 		this->checkOverlap();
-		if (this->is_contact) {
-			this->calcContact();
-		}
 	}
 
 	bool GJKSolver::isContact() { return this->is_contact; }
-
-	const Contact& GJKSolver::getContact() { return this->contact; }
 
 	bool GJKSolver::getSupportPoint(const glib::vec2d& direction, glib::vec2d& point) {
 		point = s1.support(direction) - s2.support(-direction);
@@ -124,15 +75,7 @@ namespace CollSys {
 			}
 		} while (foundValidPoint && !foundTriangle);
 
-		if (foundTriangle) {
-			this->is_contact = true;
-
-			this->polytope.push_back(this->simplex[0]);
-			this->polytope.push_back(this->simplex[1]);
-			this->polytope.push_back(next_point);
-		}
+		this->is_contact = foundTriangle;
 	}
-
-	void GJKSolver::calcContact() {}
 }
 

@@ -7,6 +7,8 @@
 #include "Commands/Commands.h"
 #include "general/list.h"
 #include "general/registry.h"
+#include "graphics/displays/ConsoleDisplay.h"
+#include "graphics/displays/WindowDisplay.h"
 
 namespace CollSys {
 	class Sandbox
@@ -28,15 +30,12 @@ namespace CollSys {
 
 	public:
 		Sandbox();
-
 		~Sandbox();
 
 		void run();
-
 		void stop();
 
 		void openWindow();
-
 		void closeWindow();
 
 		CmdReg& getCmdReg();
@@ -46,21 +45,14 @@ namespace CollSys {
 	private:
 		CmdReg cmd_registry;
 		ShapeReg s_registry;
-
 		ShapeList shapes;
 
+		ConsoleDisplay cdisp;
+		WindowDisplay wdisp;
+
 		AbstractShape* selected;
-
+		
 		bool is_running;
-
-		bool is_win_open;
-		sf::RenderWindow* window;
-
-		void winUpdate();
-
-		void consoleUpdate();
-
-		void contactCheck();
 	};
 
 	int cs_main(int argc, char** argv);

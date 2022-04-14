@@ -7,12 +7,12 @@
 #include "debug/memtrace.h"
 
 #include "Sandbox.h"
-#include "general/consoleStyle.h"
+#include "graphics/consoleStyle.h"
 #include "GJK.h"
 
-using cStyle = glib::consoleStyle;
-
 namespace CollSys::Commands {
+	using cStyle = consoleStyle;
+
 	static const glib::string file_ext = ".shps";
 
 	// -------------------- HELP --------------------
@@ -26,7 +26,7 @@ namespace CollSys::Commands {
 	bool Help::execute(std::stringstream& input) const {
 		cStyle list_entry = cStyle().fg(cStyle::BLACK).bg(cStyle::LIGHT_GRAY);
 		for (auto c : this->reciever.getCmdReg()) {
-			std::cout << list_entry << ' ' << c.first << ' ' << cStyle::none << ':' << std::endl <<
+			list_entry() << ' ' << c.first << ' ' << cStyle::nostyle << ':' << std::endl <<
 				*c.second << std::endl;
 		}
 		return true;
@@ -43,7 +43,7 @@ namespace CollSys::Commands {
 	bool ListShapeTypes::execute(std::stringstream& input) const {
 		Sandbox::ShapeReg& shape_reg = this->reciever.getShapeReg();
 		for (auto& sr : shape_reg) {
-			std::cout << sr.first << std::endl;
+			cStyle::basic() << sr.first << std::endl;
 		}
 		return true;
 	}
@@ -59,7 +59,7 @@ namespace CollSys::Commands {
 	bool ListShapes::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shape_reg = this->reciever.getShapeList();
 		for (auto shape : shape_reg) {
-			std::cout << shape->getName() << " (" << shape->getType() << ") " << std::endl;
+			cStyle::basic() << shape->getName() << " (" << shape->getType() << ") " << std::endl;
 		}
 		return true;
 	}
@@ -88,13 +88,13 @@ namespace CollSys::Commands {
 		AbstractShape* shape = this->createShape(shape_key);
 		if (!shape) { return false; }
 		if (!shape->fromConsole(input)) {
-			std::cout << cStyle::error << "Hiba a sikidom beolvasasakor." << cStyle::none << std::endl;
+			cStyle::error() << "Hiba a sikidom beolvasasakor." << cStyle::endl;
 			delete shape;
 			return false;
 		}
 		if (this->validateShape(shape)) {
 			this->reciever.getShapeList().push_back(shape);
-			std::cout << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
+			cStyle::basic() << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
 			return true;
 		}
 		else {
@@ -126,11 +126,11 @@ namespace CollSys::Commands {
 			if ((*it)->getName() == name) {
 				delete *it;
 				shapes.erase(it);
-				std::cout << "A(z) \"" << name << "\" nevu sikidom torolve." << std::endl;
+				cStyle::basic() << "A(z) \"" << name << "\" nevu sikidom torolve." << std::endl;
 				return true;
 			}
 		}
-		std::cout << cStyle::error << "Nincs \"" << name << "\" nevu sikidom." << cStyle::none << std::endl;
+		cStyle::error() << "Nincs \"" << name << "\" nevu sikidom." << cStyle::endl;
 		return false;
 	}
 
@@ -159,11 +159,11 @@ namespace CollSys::Commands {
 			return false;
 		}
 		if (!vec.x && !vec.y) {
-			std::cout << cStyle::warn << "A mozgatas vektora { 0, 0 }. Lehetseges, hogy helytelenul adta meg a komponenseket." << cStyle::none << std::endl;
+			cStyle::warn() << "A mozgatas vektora { 0, 0 }. Lehetseges, hogy helytelenul adta meg a komponenseket." << cStyle::endl;
 			return false;
 		}
 		shape->move(vec);
-		std::cout << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << std::endl;
+		cStyle::basic() << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << std::endl;
 		return true;
 	}
 
@@ -192,11 +192,11 @@ namespace CollSys::Commands {
 			return false;
 		}
 		if (!angle) {
-			std::cout << cStyle::warn << "A forgatas szoge 0 fok. Lehetseges, hogy helytelenul adta meg a szoget." << cStyle::none << std::endl;
+			cStyle::warn() << "A forgatas szoge 0 fok. Lehetseges, hogy helytelenul adta meg a szoget." << cStyle::endl;
 			return false;
 		}
 		shape->rotate(angle);
-		std::cout << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << std::endl;
+		cStyle::basic() << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << std::endl;
 		return true;
 	}
 
@@ -225,7 +225,7 @@ namespace CollSys::Commands {
 			return false;
 		}
 		shape->scale(vec);
-		std::cout << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << std::endl;
+		cStyle::basic() << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << std::endl;
 		return true;
 	}
 
@@ -249,8 +249,8 @@ namespace CollSys::Commands {
 				if (gjk_test.isContact()) {
 					shape1->setColor(sf::Color::Red);
 					shape2->setColor(sf::Color::Red);
-					std::cout << contact_style << "Ez a ket objektum erintkezik: " <<
-						shape1->getName() << "; " << shape2->getName() << cStyle::none << std::endl << std::endl;
+					contact_style() << "Ez a ket objektum erintkezik: " <<
+						shape1->getName() << "; " << shape2->getName() << cStyle::endl;
 				}
 			}
 		}
@@ -277,7 +277,7 @@ namespace CollSys::Commands {
 		}
 		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
 		if (exists) {
-			std::cout << cStyle::error << "A(z) \"" << file_path << "\" nevu file mar letezik." << cStyle::none << std::endl;
+			cStyle::error() << "A(z) \"" << file_path << "\" nevu file mar letezik." << cStyle::endl;
 			return false;
 		}
 		std::ofstream file(file_path.c_str());
@@ -285,7 +285,7 @@ namespace CollSys::Commands {
 			file << "new " << shape->getType() << ' ' << *shape << std::endl;
 			scount++;
 		}
-		std::cout << scount << " sikidom elmentve a " << file_path << " fajlba." << std::endl;
+		cStyle::basic() << scount << " sikidom elmentve a " << file_path << " fajlba." << std::endl;
 		return true;
 	}
 
@@ -307,17 +307,17 @@ namespace CollSys::Commands {
 		}
 		glib::string extension = glib::string(file_path.c_str() + file_path.length() - 5);
 		if (extension != file_ext) {
-			std::cout << cStyle::error << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::none << std::endl;
+			cStyle::error() << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::endl;
 			return false;
 		}
 		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
 		if (!exists) {
-			std::cout << cStyle::error << "A(z) " << file_path << " file nem letezik." << cStyle::none << std::endl;
+			cStyle::error() << "A(z) " << file_path << " file nem letezik." << cStyle::endl;
 			return false;
 		}
 		std::ifstream file(file_path.c_str());
 		if (!file.is_open()) {
-			std::cout << cStyle::error << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::none << std::endl;
+			cStyle::error() << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::endl;
 			return false;
 		}
 		this->deleteExistingShapes();
@@ -339,7 +339,7 @@ namespace CollSys::Commands {
 				file >> *shape;
 				if (this->validateShape(shape)) {
 					this->reciever.getShapeList().push_back(shape);
-					std::cout << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
+					cStyle::basic() << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
 					loaded_count++;
 				}
 				else {
@@ -348,13 +348,13 @@ namespace CollSys::Commands {
 				shape_count++;
 			}
 			else if (!temp.empty()) {
-				std::cout << cStyle::warn << "Ervenytelen token: " << temp << cStyle::none << std::endl;
+				cStyle::warn() << "Ervenytelen token: " << temp << cStyle::basic << std::endl;
 			}
 		}
 		if (file.rdstate() == std::iostream::failbit) {
-			std::cout << cStyle::error << "Hiba a beolvasas soran." << cStyle::none << std::endl;
+			cStyle::error() << "Hiba a beolvasas soran." << cStyle::endl;
 		}
-		std::cout << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
+		cStyle::basic() << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
 	}
 
 	void Load::deleteExistingShapes() const {
@@ -375,7 +375,7 @@ namespace CollSys::Commands {
 
 	bool Openwin::execute(std::stringstream& input) const {
 		this->reciever.openWindow();
-		std::cout << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
+		cStyle::basic() << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
 		return true;
 	}
 

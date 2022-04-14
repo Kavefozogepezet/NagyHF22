@@ -5,9 +5,10 @@
 
 #include "debug/memtrace.h"
 
-#include "tests.h"
+#include "tests/tests.h"
 #include "Sandbox.h"
 
+#ifdef COLLSYS_LIB
 void CollSys::sandboxInit(CollSys::Sandbox& sandbox) {
 	/*
 	auto& sList = sandbox.getShapeList();
@@ -17,3 +18,4 @@ void CollSys::sandboxInit(CollSys::Sandbox& sandbox) {
 	sandbox.openWindow();
 	*/
 }
+#endif

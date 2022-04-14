@@ -1,8 +1,11 @@
 #include "Polygon.h"
 
-#include "../../debug/memtrace.h"
+#include "debug/memtrace.h"
+#include "graphics/consoleStyle.h"
 
 namespace CollSys {
+	using cStyle = consoleStyle;
+
 	Polygon::Polygon(const glib::string& type) :
 		AbstractShape(type)
 	{
@@ -22,6 +25,35 @@ namespace CollSys {
 		this->name = "Polygon";
 		this->build(points);
 	}
+
+	bool Polygon::fromConsole(std::stringstream& buf) {
+		if (!AbstractShape::fromConsole(buf)) {
+			return false;
+		}
+		glib::VertexList vlist;
+		glib::vec2d temp;
+
+		while (buf >> temp) {
+			vlist.push_back(temp);
+		}
+		// TODO convex check
+
+		if (vlist.size() < 3) {
+			cStyle::error() << "Minimum haromszoget adjon meg." << cStyle::endl;
+			return false;
+		}
+
+		this->shape.resize(vlist.size());
+		auto itl = vlist.begin();
+		for (
+			auto its = this->shape.begin();
+			its != this->shape.end();
+			its++, itl++) {
+			(*its) = (*itl);
+		}
+		return true;
+	}
+
 
 	glib::vec2d Polygon::objSpaceSupport(const glib::vec2d& dir) const {
 		double max_distance = this->shape[0] * dir;

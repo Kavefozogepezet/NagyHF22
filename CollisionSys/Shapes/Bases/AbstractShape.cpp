@@ -1,7 +1,8 @@
 #include "AbstractShape.h"
 
 #include "debug/memtrace.h"
-#include "general/consoleStyle.h"
+#include "graphics/consoleStyle.h"
+#include "graphics/Text.h"
 
 namespace CollSys {
 	AbstractShape::AbstractShape(const glib::string& type) :
@@ -45,9 +46,9 @@ namespace CollSys {
 			return true;
 		}
 		else {
-			std::cout << glib::consoleStyle::error <<
+			consoleStyle::error() <<
 				"Nem adott nevet a sikidomnak." <<
-				glib::consoleStyle::none << std::endl;
+				consoleStyle::endl;
 			return false;
 		}
 	}
@@ -60,6 +61,15 @@ namespace CollSys {
 		states.transform *= this->getTransform();
 		sf::VertexArray temp;
 		glib::OutlineCast(temp, this->shape, this->displayColor);
+
+		Text text(this->name);
+		sf::FloatRect rect = text.getGlobalBounds();
+		sf::Vector2f pos =
+			glib::VectorCast(this->getPosition()) -
+			sf::Vector2f(rect.width / 2.0f, rect.height / 2.0f);
+		text.setPosition(pos);
+
 		target.draw(temp, states);
+		target.draw(text);
 	}
 }

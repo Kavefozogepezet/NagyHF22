@@ -2,13 +2,15 @@
 
 #pragma once
 
-#include "../Bases/AbstractShape.h"
+#include "Shapes/Bases/AbstractShape.h"
 
 namespace CollSys {
 	class Ellipse : public AbstractShape
 	{
 	public:
 		Ellipse(const glib::string& type, double a = 0.5f, double b = 0.25f);
+	
+		bool fromConsole(std::stringstream& buf) override;
 	private:
 		double a, b;
 

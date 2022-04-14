@@ -1,16 +1,32 @@
 #include "Ellipse.h"
 
-#include "../../debug/memtrace.h"
-
+#include "debug/memtrace.h"
+#include "graphics/consoleStyle.h"
 
 namespace CollSys {
+	using cStyle = consoleStyle;
+
 	Ellipse::Ellipse(const glib::string& type, double a, double b) :
 		AbstractShape(type),
 		a(a),
 		b(b)
 	{
-		this->name = "Ellipse";
+		this->name = "ellipse";
 		this->build();
+	}
+
+	bool Ellipse::fromConsole(std::stringstream& buf) {
+		if (!AbstractShape::fromConsole(buf)) {
+			return false;
+		}
+		if (buf >> this->a >> this->b) {
+			this->build();
+			return true;
+		}
+		else {
+			cStyle::error() << "Rossz parameterezes" << cStyle::endl;
+			return false;
+		}
 	}
 
 	glib::vec2d Ellipse::objSpaceSupport(const glib::vec2d& dir) const {
@@ -33,6 +49,7 @@ namespace CollSys {
 	void Ellipse::read(std::istream& stream) {
 		AbstractShape::read(stream);
 		stream >> this->a >> this->b;
+		this->build();
 	}
 
 	void Ellipse::build() {
@@ -40,7 +57,7 @@ namespace CollSys {
 		for (size_t i = 0; i < 33; i++) {
 			double angle = 2.0f * M_PI * static_cast<double>(i) / 32.0f;
 			glib::vec2d d(std::cos(angle), std::sin(angle));
-			glib::vec2d p = this->support(d);
+			glib::vec2d p = this->objSpaceSupport(d);
 			this->shape[i] = p;
 		}
 	}

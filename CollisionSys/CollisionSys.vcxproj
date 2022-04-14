@@ -11,11 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="graphics\displays\ConsoleDisplay.cpp" />
+    <ClCompile Include="graphics\Text.cpp" />
+    <ClCompile Include="Shapes\BasicShapes\RegularPolygon.cpp" />
     <ClCompile Include="Shapes\Bases\AbstractShape.cpp" />
     <ClCompile Include="Shapes\BasicShapes\BezierCurve.cpp" />
     <ClCompile Include="Commands\Base\Command.cpp" />
     <ClCompile Include="Commands\Commands.cpp" />
-    <ClCompile Include="general\consoleStyle.cpp" />
+    <ClCompile Include="graphics\consoleStyle.cpp" />
     <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="general\string.cpp" />
     <ClCompile Include="Sandbox.cpp" />
@@ -27,12 +30,17 @@
     <ClCompile Include="CollisionSys.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Polygon.cpp" />
     <ClCompile Include="Shapes\Bases\Transformable.cpp" />
+    <ClCompile Include="graphics\displays\WindowDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphics\displays\ConsoleDisplay.h" />
+    <ClInclude Include="graphics\displays\display.h" />
+    <ClInclude Include="graphics\Text.h" />
+    <ClInclude Include="Shapes\BasicShapes\RegularPolygon.h" />
     <ClInclude Include="Shapes\BasicShapes\BezierCurve.h" />
     <ClInclude Include="Commands\Base\Command.h" />
     <ClInclude Include="Commands\Commands.h" />
-    <ClInclude Include="general\consoleStyle.h" />
+    <ClInclude Include="graphics\consoleStyle.h" />
     <ClInclude Include="debug\gtest_lite.h" />
     <ClInclude Include="debug\memtrace.h" />
     <ClInclude Include="general\array.h" />
@@ -148,7 +156,9 @@
     <ClInclude Include="Shapes\BasicShapes\Polygon.h" />
     <ClInclude Include="Shapes\Bases\Transformable.h" />
     <ClInclude Include="Shapes\Shapes.h" />
-    <ClInclude Include="tests.h" />
+    <ClInclude Include="tests\mdif.h" />
+    <ClInclude Include="tests\tests.h" />
+    <ClInclude Include="graphics\displays\WindowDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\SFML-2.5.1\lib\flac.lib" />

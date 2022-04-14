@@ -1,7 +1,6 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include <iostream>
 
 #include "debug/memtrace.h"
 #include "debug/gtest_lite.h"
@@ -13,6 +12,8 @@
 #include "general/vec2.h"
 
 #include "GJK.h"
+
+#include "mdif.h"
 
 const float speed = 0.02f;
 const float angular = 2.0f;
@@ -212,7 +213,7 @@ void misc_test() {
 
 #ifndef COLLSYS_MAIN
 int main() {
-    main_test();
+    mdif::test();
     return 0;
 }
 #endif

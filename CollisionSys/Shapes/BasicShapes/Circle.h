@@ -1,12 +1,14 @@
 #pragma once
 
-#include "../Bases/AbstractShape.h"
+#include "Shapes/Bases/AbstractShape.h"
 
 namespace CollSys {
 	class Circle : public AbstractShape
 	{
 	public:
 		Circle(const glib::string& type, double radius = 0.5f);
+	
+		bool fromConsole(std::stringstream& buf) override;
 	private:
 		double r;
 

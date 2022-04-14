@@ -2,13 +2,26 @@
 
 #include <iostream>
 
-#include "string.h"
+#include "general/string.h"
 
-namespace glib {
+namespace CollSys {
 	class consoleStyle
 	{
 	public:
-		static consoleStyle none, warn, error;
+		static consoleStyle basic, warn, error;
+
+		static std::ostream& writeWith(const consoleStyle& style);
+
+		static std::ostream& __CLRCALL_OR_CDECL endl(std::ostream& stream) {
+			stream << consoleStyle::basic;
+			stream << std::endl;
+			return stream;
+		}
+
+		static std::ostream& __CLRCALL_OR_CDECL nostyle(std::ostream& stream) {
+			stream << consoleStyle::basic;
+			return stream;
+		}
 	public:
 		enum ColorCode {
 			BLACK = 30,
@@ -32,10 +45,10 @@ namespace glib {
 		typedef unsigned char color8b;
 	public:
 		consoleStyle();
-		consoleStyle(string args);
+		consoleStyle(glib::string args);
 		consoleStyle(const consoleStyle& other);
 
-		consoleStyle& add(string arg);
+		consoleStyle& add(glib::string arg);
 
 		consoleStyle& fg(ColorCode color);
 		consoleStyle& fg(color8b color);
@@ -45,8 +58,10 @@ namespace glib {
 		consoleStyle& bg(color8b color);
 		consoleStyle& bg(color8b r, color8b g, color8b b);
 
+		std::ostream&  operator () () const;
+
 		friend std::ostream& operator << (std::ostream& stream, const consoleStyle& cs);
 	private:
-		string style;
+		glib::string style;
 	};
 }

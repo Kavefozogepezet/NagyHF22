@@ -210,22 +210,9 @@ namespace glib {
 
 namespace std {
 	istream& getline(istream& stream, glib::string& str) {
-		unsigned char temp;
-		bool changed = false;
-		auto state = stream.rdstate();
-		str.clear();
-
-		auto flags = stream.flags();
-		stream.unsetf(std::ios_base::skipws);
-
-		while (stream >> temp && temp != '\n') {
-			str += temp;
-			changed = true;
-		}
-		if (stream.eof()) { state |= stream.eofbit; }
-		if (!changed) { state |= stream.failbit; }
-		stream.clear(state);
-		stream.setf(flags);
+		std::string temp;
+		std::getline(stream, temp);
+		str = temp;
 		return stream;
 	}
 }
