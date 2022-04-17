@@ -26,6 +26,8 @@ namespace CollSys {
 		ShapeList::forwardIt selected;
 		sf::RenderWindow window;
 
+		void setView();
+
 		void colorShapes();
 
 		void handleEvents();

@@ -16,7 +16,7 @@ namespace CollSys {
 		AbstractShape(type),
 		segments(1)
 	{
-		this->name = "Bezier";
+		this->name = "bezier";
 		
 		glib::vec2d l[4] = {
 			{ -1,  0 },

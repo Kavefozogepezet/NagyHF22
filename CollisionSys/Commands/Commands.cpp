@@ -257,12 +257,12 @@ namespace CollSys::Commands {
 		return true;
 	}
 
-	// -------------------- SAVE --------------------
+	// -------------------- SAVE AS --------------------
 
 	SaveAs::SaveAs(Sandbox& sandbox) :
 		Command(sandbox)
 	{
-		this->desc = "Elmenti a letrehozott sikidomokat.";
+		this->desc = "File-ba menti a letrehozott sikidomokat.";
 		this->params = "<file neve>";
 	}
 
@@ -280,7 +280,7 @@ namespace CollSys::Commands {
 			cStyle::error() << "A(z) \"" << file_path << "\" nevu file mar letezik." << cStyle::endl;
 			return false;
 		}
-		std::ofstream file(file_path.c_str());
+		std::ofstream file(file_path);
 		for (auto shape : this->reciever.getShapeList()) {
 			file << "new " << shape->getType() << ' ' << *shape << std::endl;
 			scount++;
@@ -289,44 +289,54 @@ namespace CollSys::Commands {
 		return true;
 	}
 
-	// -------------------- LOAD --------------------
-
-	Load::Load(Sandbox& sandbox) :
-		CreatorCommand(sandbox)
+	// -------------------- SAVE --------------------
+	
+	Save::Save(Sandbox& sandbox) :
+		Command(sandbox)
 	{
-		this->desc = "Betolt egy file-t (.shps formatumu).";
+		this->desc = "File-ba menti a valtozasokat.";
 		this->params = "<file neve>";
 	}
 
-	bool Load::execute(std::stringstream& input) const {
+	bool Save::execute(std::stringstream& input) const {
+		const glib::string& file_path = this->reciever.getMyFile();
+		if (file_path == "") {
+			cStyle::error() << "Mentsen a saveas parancsal" << cStyle::endl;
+			return false;
+		}
+		std::ofstream file(file_path);
+		for (auto shape : this->reciever.getShapeList()) {
+			file << "new " << shape->getType() << ' ' << *shape << std::endl;
+		}
+		cStyle::basic() << "Sikidomok elmentve." << cStyle::endl;
+		return true;
+	}
+	
+	// -------------------- MERGE --------------------
+
+	Merge::Merge(Sandbox& sandbox) :
+		CreatorCommand(sandbox)
+	{
+		this->desc = "Beolvasa a megadott fajlban tarolt sikidomokat. (.shps formatumu fajlbol).";
+		this->params = "<file neve>";
+	}
+
+	bool Merge::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
 
 		if (!this->postInputCheck(input)) {
 			return false;
 		}
-		glib::string extension = glib::string(file_path.c_str() + file_path.length() - 5);
-		if (extension != file_ext) {
-			cStyle::error() << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::endl;
-			return false;
+		std::ifstream file;
+		if (this->openFile(file_path, file)) {
+			this->readShapes(file);
+			return true;
 		}
-		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
-		if (!exists) {
-			cStyle::error() << "A(z) " << file_path << " file nem letezik." << cStyle::endl;
-			return false;
-		}
-		std::ifstream file(file_path.c_str());
-		if (!file.is_open()) {
-			cStyle::error() << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::endl;
-			return false;
-		}
-		this->deleteExistingShapes();
-		this->readShapes(file);
-
-		return true;
+		return false;
 	}
 
-	void Load::readShapes(std::ifstream& file) const {
+	void Merge::readShapes(std::ifstream& file) const {
 		glib::string temp, shape_key;
 		unsigned int shape_count = 0, loaded_count = 0;
 		while (file >> temp) {
@@ -355,6 +365,51 @@ namespace CollSys::Commands {
 			cStyle::error() << "Hiba a beolvasas soran." << cStyle::endl;
 		}
 		cStyle::basic() << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
+	}
+
+	bool Merge::openFile(glib::string file_path, std::ifstream& stream) const {
+		glib::string extension = glib::string(file_path.c_str() + file_path.length() - 5);
+		if (extension != file_ext) {
+			cStyle::error() << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::endl;
+			return false;
+		}
+		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
+		if (!exists) {
+			cStyle::error() << "A(z) " << file_path << " file nem letezik." << cStyle::endl;
+			return false;
+		}
+		stream.open(file_path);
+		if (!stream.is_open()) {
+			cStyle::error() << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::endl;
+			return false;
+		}
+		return true;
+	}
+
+	// -------------------- LOAD --------------------
+
+	Load::Load(Sandbox& sandbox) :
+		Merge(sandbox)
+	{
+		this->desc = "Betolt egy file-t (.shps formatumu).";
+		this->params = "<file neve>";
+	}
+
+	bool Load::execute(std::stringstream& input) const {
+		glib::string file_path;
+		input >> file_path;
+
+		if (!this->postInputCheck(input)) {
+			return false;
+		}
+		std::ifstream file;
+		if (this->openFile(file_path, file)) {
+			this->deleteExistingShapes();
+			this->readShapes(file);
+			this->reciever.setMyFile(file_path);
+			return true;
+		}
+		return false;
 	}
 
 	void Load::deleteExistingShapes() const {

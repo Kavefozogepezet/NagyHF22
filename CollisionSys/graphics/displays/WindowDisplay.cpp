@@ -23,8 +23,11 @@ namespace CollSys {
 			"CollSys Sandbox"
 		);
 		this->window.setFramerateLimit(30);
+		this->setView();
+		/*
 		sf::View view({ 0.0f, 0.0f }, { 2.0f, 2.0f });
 		this->window.setView(view);
+		*/
 	}
 
 	void WindowDisplay::onDeactivation() {
@@ -34,6 +37,43 @@ namespace CollSys {
 	void WindowDisplay::onUpdate() {
 		this->handleEvents();
 		this->render();
+	}
+
+	void WindowDisplay::setView() {
+		Sandbox::ShapeList& shapes = this->m_parent.getShapeList();
+
+		auto it = shapes.begin();
+		AbstractShape& shape1 = **it;
+		glib::vec2d
+			tl = shape1.support(glib::vec2d(-1.0, 0.0)),
+			br = tl;
+
+		do {
+			AbstractShape& shape = **it;
+
+			glib::vec2d
+				supx1 = shape.support(glib::vec2d(-1.0, 0.0)),
+				supx2 = shape.support(glib::vec2d(1.0, 0.0)),
+				supy1 = shape.support(glib::vec2d(0.0, -1.0)),
+				supy2 = shape.support(glib::vec2d(0.0, 1.0));
+
+			tl = glib::vec2d(
+				std::min(tl.x, supx1.x),
+				std::min(tl.y, supy1.y)
+			);
+			br = glib::vec2d(
+				std::max(br.x, supx2.x),
+				std::max(br.y, supy2.y)
+			);
+		} while (++it != shapes.end());
+
+		sf::FloatRect viewRect(
+			static_cast<float>(tl.x),
+			static_cast<float>(tl.y),
+			static_cast<float>(br.x - tl.x),
+			static_cast<float>(br.y - tl.y)
+		);
+		this->window.setView(sf::View(viewRect));
 	}
 
 	void WindowDisplay::colorShapes() {

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <filesystem>
 
 #include "GJK.h"
 #include "general/string.h"
@@ -23,12 +24,13 @@ namespace CollSys {
 	double Sandbox::angular_speed = 2.0;
 
 	Sandbox::Sandbox() :
+		cmd_registry(),
 		s_registry(),
 		shapes(),
-		selected(nullptr),
-		is_running(true),
 		cdisp(*this, true),
-		wdisp(*this)
+		wdisp(*this),
+		is_running(true),
+		myfile()
 	{
 		this->s_registry.add("polygon", lambdaMaker<Polygon>());
 		this->s_registry.add("regular", lambdaMaker<RegularPolygon>());
@@ -48,6 +50,8 @@ namespace CollSys {
 		this->cmd_registry.add("scale", new Commands::Scale(*this));
 		this->cmd_registry.add("contacts", new Commands::CheckContacts(*this));
 		this->cmd_registry.add("saveas", new Commands::SaveAs(*this));
+		this->cmd_registry.add("save", new Commands::Save(*this));
+		this->cmd_registry.add("merge", new Commands::Merge(*this));
 		this->cmd_registry.add("load", new Commands::Load(*this));
 		this->cmd_registry.add("exit", new Commands::Exit(*this));
 	}
@@ -95,6 +99,17 @@ namespace CollSys {
 
 	Sandbox::ShapeList& Sandbox::getShapeList() {
 		return this->shapes;
+	}
+
+	const glib::string& Sandbox::getMyFile() const {
+		return this->myfile;
+	}
+
+	void Sandbox::setMyFile(const glib::string& path) {
+		bool exists = std::filesystem::exists(std::filesystem::path(path.c_str()));
+		if (exists) {
+			this->myfile = path;
+		}
 	}
 	
 #ifndef COLLSYS_LIB

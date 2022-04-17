@@ -40,8 +40,10 @@ namespace CollSys {
 
 		CmdReg& getCmdReg();
 		ShapeReg& getShapeReg();
-
 		ShapeList& getShapeList();
+
+		const glib::string& getMyFile() const;
+		void setMyFile(const glib::string& path);
 	private:
 		CmdReg cmd_registry;
 		ShapeReg s_registry;
@@ -49,10 +51,10 @@ namespace CollSys {
 
 		ConsoleDisplay cdisp;
 		WindowDisplay wdisp;
-
-		AbstractShape* selected;
 		
 		bool is_running;
+
+		glib::string myfile;
 	};
 
 	int cs_main(int argc, char** argv);

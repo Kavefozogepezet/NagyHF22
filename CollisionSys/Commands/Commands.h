@@ -95,12 +95,28 @@ namespace CollSys::Commands {
 		bool execute(std::stringstream& input) const;
 	};
 
-	class Load : public CreatorCommand {
+	class Save : public Command
+	{
+	public:
+		Save(Sandbox& sandbox);
+		bool execute(std::stringstream& input) const;
+	};
+
+	class Merge : public CreatorCommand
+	{
+	public:
+		Merge(Sandbox& sandbox);
+		virtual bool execute(std::stringstream& input) const;
+	protected:
+		void readShapes(std::ifstream& file) const;
+		bool openFile(glib::string path, std::ifstream& stream) const;
+	};
+
+	class Load : public Merge {
 	public:
 		Load(Sandbox& sandbox);
-		bool execute(std::stringstream& input) const;
+		bool execute(std::stringstream& input) const override;
 	private:
-		void readShapes(std::ifstream& file) const ;
 		void deleteExistingShapes() const;
 	};
 }
