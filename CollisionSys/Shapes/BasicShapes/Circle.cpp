@@ -2,6 +2,7 @@
 
 #include "debug/memtrace.h"
 #include "graphics/consoleStyle.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	using cStyle = consoleStyle;
@@ -14,18 +15,13 @@ namespace CollSys {
 		this->build();
 	}
 
-	bool Circle::fromConsole(std::stringstream& buf) {
-		if (!AbstractShape::fromConsole(buf)) {
-			return false;
+	void Circle::fromConsole(std::stringstream& buf) {
+		AbstractShape::fromConsole(buf);
+
+		if (!(buf >> this->r)) {
+			throw Commands::Error("Nem adott meg sugarat");
 		}
-		if (buf >> this->r) {
-			this->build();
-			return true;
-		}
-		else {
-			cStyle::error() << "Rossz parameterezes" << cStyle::endl;
-			return false;
-		}
+		this->build();
 	}
 
 	glib::vec2d Circle::objSpaceSupport(const glib::vec2d& dir) const {

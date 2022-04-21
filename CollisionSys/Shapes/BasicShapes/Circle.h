@@ -8,7 +8,7 @@ namespace CollSys {
 	public:
 		Circle(const glib::string& type, double radius = 0.5f);
 	
-		bool fromConsole(std::stringstream& buf) override;
+		void fromConsole(std::stringstream& buf) override;
 	private:
 		double r;
 

@@ -10,7 +10,7 @@ namespace CollSys {
 	public:
 		Ellipse(const glib::string& type, double a = 0.5f, double b = 0.25f);
 	
-		bool fromConsole(std::stringstream& buf) override;
+		void fromConsole(std::stringstream& buf) override;
 	private:
 		double a, b;
 

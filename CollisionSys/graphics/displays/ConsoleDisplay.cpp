@@ -26,7 +26,13 @@ namespace CollSys {
 
 		auto it = this->m_parent.getCmdReg().get(cmd);
 		if (it != this->m_parent.getCmdReg().end()) {
-			it->second->execute(lbuff);
+			try {
+				it->second->execute(lbuff);
+			}
+			catch (Commands::Error err) { // hiba volt a parancs vegrehajtasa soran
+				err.print();
+			}
+
 			glib::string str;
 			if (lbuff >> str) {
 				cStyle::warn() << "A parancs nem olvasta vegig a sort, ezek a parameterek elvesztek :";

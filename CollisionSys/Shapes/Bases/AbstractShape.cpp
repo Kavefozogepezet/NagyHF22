@@ -3,6 +3,7 @@
 #include "debug/memtrace.h"
 #include "graphics/consoleStyle.h"
 #include "graphics/Text.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	AbstractShape::AbstractShape(const glib::string& type) :
@@ -41,15 +42,9 @@ namespace CollSys {
 		stream >> this->name;
 	}
 
-	bool AbstractShape::fromConsole(std::stringstream& buff) {
-		if (buff >> this->name) {
-			return true;
-		}
-		else {
-			consoleStyle::error() <<
-				"Nem adott nevet a sikidomnak." <<
-				consoleStyle::endl;
-			return false;
+	void AbstractShape::fromConsole(std::stringstream& buff) {
+		if (!(buff >> this->name)) {
+			throw Commands::Error("Nem adott nevet a sikidomnak.");
 		}
 	}
 

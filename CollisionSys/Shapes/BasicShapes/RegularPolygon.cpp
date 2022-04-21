@@ -1,5 +1,7 @@
 #include "RegularPolygon.h"
+
 #include "graphics/consoleStyle.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	using cStyle = consoleStyle;
@@ -11,31 +13,21 @@ namespace CollSys {
 		this->build(3, 0.5);
 	}
 
-	bool RegularPolygon::fromConsole(std::stringstream& buff) {
-		if (AbstractShape::fromConsole(buff)) {
-			size_t pc;
-			double el;
-			if (!(buff >> pc >> el)) {
-				cStyle::error() << "Rossz parameterezes" << cStyle::endl;
-				return false;
-			}
+	void RegularPolygon::fromConsole(std::stringstream& buff) {
+		AbstractShape::fromConsole(buff);
 
-			if (pc < 3) {
-				cStyle::error() << "Minimum haromszoget adjon meg." << cStyle::endl;
-				return false;
-			}
-
-			if (el <= 0.0) {
-				cStyle::error() << "Az oldal hossza nem pozitiv szam volt." << cStyle::endl;
-				return false;
-			}
-
-			this->build(pc, el);
-			return true;
+		size_t pc;
+		double el;
+		if (!(buff >> pc >> el)) {
+			throw Commands::Error("Nem adott meg csucsszamot es elhosszat.");
 		}
-		else {
-			return false;
+		else if (pc < 3) {
+			throw Commands::Error("Minimum haromszoget adjon meg.");
 		}
+		else if (el <= 0.0) {
+			throw Commands::Error("Az oldal hossza nem pozitiv szam volt.");
+		}
+		this->build(pc, el);
 	}
 
 	void CollSys::RegularPolygon::build(size_t pointc, double edgelen) {

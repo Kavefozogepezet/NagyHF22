@@ -36,7 +36,7 @@ namespace CollSys {
 
 		const glib::string& getType();
 
-		virtual bool fromConsole(std::stringstream& buff);
+		virtual void fromConsole(std::stringstream& buff);
 
 		/** @returns Az objektum neve */
 		const glib::string& getName();

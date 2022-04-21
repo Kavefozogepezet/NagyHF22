@@ -10,7 +10,7 @@ namespace CollSys {
 
 		Point(const glib::string& type, const glib::vec2d& point);
 	
-		bool fromConsole(std::stringstream& buf) override;
+		void fromConsole(std::stringstream& buf) override;
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 

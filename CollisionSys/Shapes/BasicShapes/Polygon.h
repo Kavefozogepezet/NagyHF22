@@ -10,7 +10,7 @@ namespace CollSys {
 
 		Polygon(const glib::string& type, std::initializer_list<glib::vec2d> points);
 	
-		bool fromConsole(std::stringstream& buf) override;
+		void fromConsole(std::stringstream& buf) override;
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;
 

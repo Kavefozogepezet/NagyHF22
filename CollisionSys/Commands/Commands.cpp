@@ -1,4 +1,4 @@
-#include "Commands.h"
+﻿#include "Commands.h"
 
 #include <iostream>
 #include <fstream>
@@ -23,13 +23,12 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a vegrehajthato parancsokat.";
 	}
 
-	bool Help::execute(std::stringstream& input) const {
+	void Help::execute(std::stringstream& input) const {
 		cStyle list_entry = cStyle().fg(cStyle::BLACK).bg(cStyle::LIGHT_GRAY);
 		for (auto c : this->reciever.getCmdReg()) {
 			list_entry() << ' ' << c.first << ' ' << cStyle::nostyle << ':' << std::endl <<
 				*c.second << std::endl;
 		}
-		return true;
 	}
 
 	// -------------------- LIST SHAPE TYPES --------------------
@@ -40,12 +39,11 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a peldanyosithato sikidom tipusokat.";
 	}
 
-	bool ListShapeTypes::execute(std::stringstream& input) const {
+	void ListShapeTypes::execute(std::stringstream& input) const {
 		Sandbox::ShapeReg& shape_reg = this->reciever.getShapeReg();
 		for (auto& sr : shape_reg) {
 			cStyle::basic() << sr.first << std::endl;
 		}
-		return true;
 	}
 
 	// -------------------- LIST SHAPES --------------------
@@ -56,12 +54,11 @@ namespace CollSys::Commands {
 		this->desc = "Kilistazza a letrehozott sikidomokat.";
 	}
 
-	bool ListShapes::execute(std::stringstream& input) const {
+	void ListShapes::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shape_reg = this->reciever.getShapeList();
 		for (auto shape : shape_reg) {
 			cStyle::basic() << shape->getName() << " (" << shape->getType() << ") " << std::endl;
 		}
-		return true;
 	}
 
 	// -------------------- CREATE --------------------
@@ -77,29 +74,24 @@ namespace CollSys::Commands {
 			"<sikidom tipusa> <sikidom neve> <egyeb parameterek>";
 	}
 
-	bool Create::execute(std::stringstream& input) const {
+	void Create::execute(std::stringstream& input) const {
 		glib::string shape_key, shape_name;
 		Sandbox::ShapeReg& sreg = this->reciever.getShapeReg();
 
 		input >> shape_key;
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
+		this->postInputCheck(input);
+
 		AbstractShape* shape = this->createShape(shape_key);
-		if (!shape) { return false; }
-		if (!shape->fromConsole(input)) {
-			cStyle::error() << "Hiba a sikidom beolvasasakor." << cStyle::endl;
+
+		try { shape->fromConsole(input); }
+		catch (Error err) { // nem sikerült beolvasni a síkidomot
 			delete shape;
-			return false;
+			throw err;
 		}
-		if (this->validateShape(shape)) {
-			this->reciever.getShapeList().push_back(shape);
-			cStyle::basic() << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
-			return true;
-		}
-		else {
-			return false;
-		}
+
+		this->validateShape(shape);
+		this->reciever.getShapeList().push_back(shape);
+		cStyle::basic() << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
 	}
 
 	// -------------------- CREATE --------------------
@@ -114,24 +106,21 @@ namespace CollSys::Commands {
 			"<sikidom neve>";
 	}
 
-	bool Destroy::execute(std::stringstream& input) const {
+	void Destroy::execute(std::stringstream& input) const {
 		glib::string name;
 		input >> name;
-		
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
+		this->postInputCheck(input);
+
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto it = shapes.begin(); it != shapes.end(); it++) {
 			if ((*it)->getName() == name) {
 				delete *it;
 				shapes.erase(it);
 				cStyle::basic() << "A(z) \"" << name << "\" nevu sikidom torolve." << std::endl;
-				return true;
+				return;
 			}
 		}
-		cStyle::error() << "Nincs \"" << name << "\" nevu sikidom." << cStyle::endl;
-		return false;
+		throw Error("Nincs \"" + name + "\" nevu sikidom.");
 	}
 
 	// -------------------- MOVE --------------------
@@ -146,25 +135,15 @@ namespace CollSys::Commands {
 			"<sikidom neve> <x elmozdulas> <y elmozdulas>";
 	}
 
-	bool Move::execute(std::stringstream& input) const {
+	void Move::execute(std::stringstream& input) const {
 		glib::vec2d vec;
 		glib::string name;
 		input >> name >> vec;
+		this->postInputCheck(input);
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
 		AbstractShape* shape = this->getShape(name);
-		if (shape == nullptr) {
-			return false;
-		}
-		if (!vec.x && !vec.y) {
-			cStyle::warn() << "A mozgatas vektora { 0, 0 }. Lehetseges, hogy helytelenul adta meg a komponenseket." << cStyle::endl;
-			return false;
-		}
 		shape->move(vec);
 		cStyle::basic() << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << std::endl;
-		return true;
 	}
 
 	// -------------------- ROTATE --------------------
@@ -179,25 +158,15 @@ namespace CollSys::Commands {
 			"rotate <sikidom neve> <szog fokban>";
 	}
 
-	bool Rotate::execute(std::stringstream& input) const {
+	void Rotate::execute(std::stringstream& input) const {
 		glib::string name;
 		double angle;
 		input >> name >> angle;
+		this->postInputCheck(input);
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
 		AbstractShape* shape = this->getShape(name);
-		if (shape == nullptr) {
-			return false;
-		}
-		if (!angle) {
-			cStyle::warn() << "A forgatas szoge 0 fok. Lehetseges, hogy helytelenul adta meg a szoget." << cStyle::endl;
-			return false;
-		}
 		shape->rotate(angle);
 		cStyle::basic() << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << std::endl;
-		return true;
 	}
 
 	// -------------------- SCALE --------------------
@@ -207,26 +176,20 @@ namespace CollSys::Commands {
 	{
 		this->desc =
 			"Atmeretez egy sikidomot.\n"
-			"A scale parancs utan be kell irni a sikidom nevet, �s a meretenek x �s y szorz�jat.";
+			"A scale parancs utan be kell irni a sikidom nevet, és a meretenek x és y szorzójat.";
 		this->params =
 			"<sikidom neve> <x szorzo> <y szorzo>";
 	}
 
-	bool Scale::execute(std::stringstream& input) const {
+	void Scale::execute(std::stringstream& input) const {
 		glib::string name;
 		glib::vec2d vec;
 		input >> name >> vec;
+		this->postInputCheck(input);
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
 		AbstractShape* shape = this->getShape(name);
-		if (shape == nullptr) {
-			return false;
-		}
 		shape->scale(vec);
 		cStyle::basic() << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << std::endl;
-		return true;
 	}
 
 	// -------------------- CHECK CONTACTS --------------------
@@ -237,7 +200,7 @@ namespace CollSys::Commands {
 		this->desc = "Megkeresi es kiirja az erintkezo sikidomokat.";
 	}
 
-	bool CheckContacts::execute(std::stringstream& input) const {
+	void CheckContacts::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		cStyle contact_style = cStyle().fg(cStyle::GREEN);
 		for (auto it1 = shapes.begin(); it1 != shapes.end(); ++it1) {
@@ -254,7 +217,6 @@ namespace CollSys::Commands {
 				}
 			}
 		}
-		return true;
 	}
 
 	// -------------------- SAVE AS --------------------
@@ -266,19 +228,17 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool SaveAs::execute(std::stringstream& input) const {
+	void SaveAs::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
 		file_path += file_ext;
 		unsigned int scount = 0;
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
+		this->postInputCheck(input);
+
 		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
 		if (exists) {
-			cStyle::error() << "A(z) \"" << file_path << "\" nevu file mar letezik." << cStyle::endl;
-			return false;
+			throw Error("A(z) \"" + file_path + "\" nevu file mar letezik.");
 		}
 		std::ofstream file(file_path);
 		for (auto shape : this->reciever.getShapeList()) {
@@ -286,7 +246,6 @@ namespace CollSys::Commands {
 			scount++;
 		}
 		cStyle::basic() << scount << " sikidom elmentve a " << file_path << " fajlba." << std::endl;
-		return true;
 	}
 
 	// -------------------- SAVE --------------------
@@ -298,18 +257,16 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool Save::execute(std::stringstream& input) const {
+	void Save::execute(std::stringstream& input) const {
 		const glib::string& file_path = this->reciever.getMyFile();
 		if (file_path == "") {
-			cStyle::error() << "Mentsen a saveas parancsal" << cStyle::endl;
-			return false;
+			throw Error("Mentsen a saveas parancsal");
 		}
 		std::ofstream file(file_path);
 		for (auto shape : this->reciever.getShapeList()) {
 			file << "new " << shape->getType() << ' ' << *shape << std::endl;
 		}
 		cStyle::basic() << "Sikidomok elmentve." << cStyle::endl;
-		return true;
 	}
 	
 	// -------------------- MERGE --------------------
@@ -321,69 +278,71 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool Merge::execute(std::stringstream& input) const {
+	void Merge::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
+		this->postInputCheck(input);
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
-		std::ifstream file;
-		if (this->openFile(file_path, file)) {
-			this->readShapes(file);
-			return true;
-		}
-		return false;
+		std::ifstream file = this->openFile(file_path);
+		this->readShapes(file);
 	}
 
 	void Merge::readShapes(std::ifstream& file) const {
 		glib::string temp, shape_key;
-		unsigned int shape_count = 0, loaded_count = 0;
-		while (file >> temp) {
-			if (temp == "new") {
-				file >> shape_key;
-				AbstractShape* shape = this->createShape(shape_key);
-				if (!shape) {
-					break;
-				}
-				file >> *shape;
-				if (this->validateShape(shape)) {
+		unsigned int
+			shape_count = 0, // összes síkidom száma, egyenlő a "new" tokenek számával a fájlban
+			loaded_count = 0; // sikeresen beolvasott síkidomok száma
+
+		// az első "new" tokenig elvetünk mindent
+		while (file >> temp && temp != "new");
+
+		while (file) {
+			shape_count++;
+			// a következő "new" tokenig egy beolvassuk a paramétereket egy bufferbe
+			std::stringstream buf;
+			while (file >> temp && temp != "new") {
+				buf << temp << ' ';
+			}
+			// a bufferből kiolvassuk a síkidomot
+			buf >> shape_key;
+			AbstractShape* shape;
+			try { shape = this->createShape(shape_key); }
+			catch (Error err) { err.print(); continue; } // nem létezik a típus
+
+			if (buf >> *shape) { // folytatjuk, ha sikerül beolvasni
+				try {
+					this->validateShape(shape);
 					this->reciever.getShapeList().push_back(shape);
 					cStyle::basic() << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
 					loaded_count++;
 				}
-				else {
+				catch (Error err) {
+					err.print();
 					delete shape;
 				}
-				shape_count++;
 			}
-			else if (!temp.empty()) {
-				cStyle::warn() << "Ervenytelen token: " << temp << cStyle::basic << std::endl;
+			else {
+				delete shape;
 			}
-		}
-		if (file.rdstate() == std::iostream::failbit) {
-			cStyle::error() << "Hiba a beolvasas soran." << cStyle::endl;
 		}
 		cStyle::basic() << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
 	}
 
-	bool Merge::openFile(glib::string file_path, std::ifstream& stream) const {
+	std::ifstream Merge::openFile(glib::string file_path) const {
+		std::ifstream stream;
 		glib::string extension = glib::string(file_path.c_str() + file_path.length() - 5);
 		if (extension != file_ext) {
-			cStyle::error() << "A file kiterjesztese (" << extension << ") nem felismerheto." << cStyle::endl;
-			return false;
+			throw Error("A file kiterjesztese (" + extension + ") nem felismerheto.");
 		}
 		bool exists = std::filesystem::exists(std::filesystem::path(file_path.c_str()));
 		if (!exists) {
-			cStyle::error() << "A(z) " << file_path << " file nem letezik." << cStyle::endl;
-			return false;
+			throw Error("A(z) " + file_path + " file nem letezik.");
 		}
 		stream.open(file_path);
 		if (!stream.is_open()) {
-			cStyle::error() << "A(z) " << file_path << " file-t nem lehet megnyitni." << cStyle::endl;
-			return false;
+			throw Error("A(z) " + file_path + " file-t nem lehet megnyitni.");
 		}
-		return true;
+		return stream;
 	}
 
 	// -------------------- LOAD --------------------
@@ -395,21 +354,15 @@ namespace CollSys::Commands {
 		this->params = "<file neve>";
 	}
 
-	bool Load::execute(std::stringstream& input) const {
+	void Load::execute(std::stringstream& input) const {
 		glib::string file_path;
 		input >> file_path;
+		this->postInputCheck(input);
 
-		if (!this->postInputCheck(input)) {
-			return false;
-		}
-		std::ifstream file;
-		if (this->openFile(file_path, file)) {
-			this->deleteExistingShapes();
-			this->readShapes(file);
-			this->reciever.setMyFile(file_path);
-			return true;
-		}
-		return false;
+		std::ifstream file = this->openFile(file_path);
+		this->deleteExistingShapes();
+		this->readShapes(file);
+		this->reciever.setMyFile(file_path);
 	}
 
 	void Load::deleteExistingShapes() const {
@@ -428,10 +381,9 @@ namespace CollSys::Commands {
 		this->desc = "Megnyit egy uj ablakot, ahol a sikidomok grafikusan abrazolva jelennek meg.";
 	}
 
-	bool Openwin::execute(std::stringstream& input) const {
+	void Openwin::execute(std::stringstream& input) const {
 		this->reciever.openWindow();
 		cStyle::basic() << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
-		return true;
 	}
 
 	// -------------------- EXIT --------------------
@@ -442,8 +394,7 @@ namespace CollSys::Commands {
 		this->desc = "Kilep a programbol.";
 	}
 
-	bool Exit::execute(std::stringstream& input) const {
+	void Exit::execute(std::stringstream& input) const {
 		this->reciever.stop();
-		return true;
 	}
 }

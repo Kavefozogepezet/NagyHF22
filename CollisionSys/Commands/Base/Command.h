@@ -10,6 +10,18 @@ namespace CollSys {
 }
 
 namespace CollSys::Commands {
+	// -------------------- error during execution --------------------
+
+	class Error
+	{
+	public:
+		Error(const glib::string& desc);
+		glib::string desc;
+		void print();
+	};
+
+	// -------------------- alap osztályok --------------------
+
 	class Command
 	{
 	public:
@@ -17,11 +29,11 @@ namespace CollSys::Commands {
 
 		virtual ~Command() = default;
 
-		virtual bool execute(std::stringstream& input) const = 0;
+		virtual void execute(std::stringstream& input) const = 0;
 
 		friend std::ostream& operator << (std::ostream& stream, const Command& cmd);
 	protected:
-		bool postInputCheck(std::stringstream& input) const;
+		void postInputCheck(std::stringstream& input) const;
 
 		Sandbox& reciever;
 		glib::string desc, params;
@@ -45,6 +57,6 @@ namespace CollSys::Commands {
 	protected:
 		AbstractShape* createShape(const glib::string& key) const;
 
-		bool validateShape(AbstractShape* shape) const;
+		void validateShape(AbstractShape* shape) const;
 	};
 }

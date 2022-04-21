@@ -16,7 +16,7 @@ namespace CollSys {
 	public:
 		BezierCurve(const glib::string& type);
 
-		bool fromConsole(std::stringstream& buf);
+		void fromConsole(std::stringstream& buf);
 	private:
 		static glib::vec2d getPoint(const Segment& segment, double t);
 	private:

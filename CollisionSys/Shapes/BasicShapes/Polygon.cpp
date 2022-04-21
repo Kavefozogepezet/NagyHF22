@@ -2,6 +2,7 @@
 
 #include "debug/memtrace.h"
 #include "graphics/consoleStyle.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	using cStyle = consoleStyle;
@@ -26,10 +27,9 @@ namespace CollSys {
 		this->build(points);
 	}
 
-	bool Polygon::fromConsole(std::stringstream& buf) {
-		if (!AbstractShape::fromConsole(buf)) {
-			return false;
-		}
+	void Polygon::fromConsole(std::stringstream& buf) {
+		AbstractShape::fromConsole(buf);
+
 		glib::VertexList vlist;
 		glib::vec2d temp;
 
@@ -39,8 +39,7 @@ namespace CollSys {
 		// TODO convex check
 
 		if (vlist.size() < 3) {
-			cStyle::error() << "Minimum haromszoget adjon meg." << cStyle::endl;
-			return false;
+			throw Commands::Error("Minimum haromszoget adjon meg.");
 		}
 
 		this->shape.resize(vlist.size());
@@ -51,7 +50,6 @@ namespace CollSys {
 			its++, itl++) {
 			(*its) = (*itl);
 		}
-		return true;
 	}
 
 

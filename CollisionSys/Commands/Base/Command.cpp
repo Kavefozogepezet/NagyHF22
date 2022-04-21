@@ -9,19 +9,25 @@
 namespace CollSys::Commands {
 	using cStyle = consoleStyle;
 
+	Error::Error(const glib::string& desc) : desc(desc) {}
+
+	void Error::print() {
+		cStyle::error() << this->desc << cStyle::endl;
+	}
+
 	Command::Command(Sandbox& sandbox) :
 		reciever(sandbox),
 		desc(),
 		params()
 	{}
 
-	bool Command::postInputCheck(std::stringstream& input) const {
+	void Command::postInputCheck(std::stringstream& input) const {
 		if (!input) {
-			cStyle::error() << "Nem megfelelo a parameterezes." << std::endl <<
-				"A paramcs parameterlistaja: " << this->params << cStyle::endl;
-			return false;
+			throw Error("Nem megfelelo a parameterezes.\nA paramcs parameterlistaja: " + this->params);
+			//cStyle::error() << "Nem megfelelo a parameterezes." << std::endl <<
+			//	"A paramcs parameterlistaja: " << this->params << cStyle::endl;
+			//return false;
 		}
-		return true;
 	}
 
 	std::ostream& operator << (std::ostream& stream, const Command& cmd) {
@@ -45,8 +51,9 @@ namespace CollSys::Commands {
 				return s;
 			}
 		}
-		cStyle::error() << "Nincs " << name << " nevu sikidom" << cStyle::endl;
-		return nullptr;
+		throw Error("Nincs" + name + " nevu sikidom");
+		//cStyle::error() << "Nincs " << name << " nevu sikidom" << cStyle::endl;
+		//return nullptr;
 	}
 
 	CreatorCommand::CreatorCommand(Sandbox& sandbox) :
@@ -57,20 +64,23 @@ namespace CollSys::Commands {
 		Sandbox::ShapeReg& sreg = this->reciever.getShapeReg();
 		auto it = sreg.get(key);
 		if (it == sreg.end()) {
-			cStyle::error() << "Nem letezik \"" << key << "\" sikidom." << cStyle::endl;
-			return nullptr;
+			throw Error("Nem letezik \"" + key + "\" sikidom.");
+			//cStyle::error() << "Nem letezik \"" << key << "\" sikidom." << cStyle::endl;
+			//return nullptr;
 		}
 		return it->second(key);
 	}
 
-	bool CreatorCommand::validateShape(AbstractShape* shape) const {
+	void CreatorCommand::validateShape(AbstractShape* shape) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto s : shapes) {
 			if (s->getName() == shape->getName()) {
-				cStyle::error() << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::endl;
-				return false;
+				delete shape;
+				throw Error("Mar letezik \"" + shape->getName() + "\" nevu sikidom.");
+				//cStyle::error() << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::endl;
+				//return false;
 			}
 		}
-		return true;
+		//return true;
 	}
 }

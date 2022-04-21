@@ -2,6 +2,7 @@
 
 #include "debug/memtrace.h"
 #include "graphics/consoleStyle.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	using cStyle = consoleStyle;
@@ -22,17 +23,12 @@ namespace CollSys {
 		this->shape[0] = point;
 	}
 
-	bool Point::fromConsole(std::stringstream& buf) {
-		if (!AbstractShape::fromConsole(buf)) {
-			return false;
-		}
+	void Point::fromConsole(std::stringstream& buf) {
+		AbstractShape::fromConsole(buf);
+
 		glib::vec2d p;
-		if (buf >> this->shape[0]) {
-			return true;
-		}
-		else {
-			cStyle::error() << "Rossz parameterezes" << cStyle::endl;
-			return false;
+		if (!(buf >> this->shape[0])) {
+			throw Commands::Error("Nem adta meg a pontot");
 		}
 	}
 

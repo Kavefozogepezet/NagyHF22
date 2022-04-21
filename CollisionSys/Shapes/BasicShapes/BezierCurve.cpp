@@ -1,6 +1,7 @@
 ﻿#include "BezierCurve.h"
 
 #include "graphics/consoleStyle.h"
+#include "Commands/Base/Command.h"
 
 namespace CollSys {
 	using cStyle = consoleStyle;
@@ -32,11 +33,9 @@ namespace CollSys {
 		this->build();
 	}
 
-	bool BezierCurve::fromConsole(std::stringstream& buf) {
-		if (!AbstractShape::fromConsole(buf)) {
-			return false;
-		}
-		//return true;
+	void BezierCurve::fromConsole(std::stringstream& buf) {
+		AbstractShape::fromConsole(buf);
+		
 		glib::VertexList vlist;
 		glib::vec2d temp1, temp2, temp3;
 
@@ -52,8 +51,7 @@ namespace CollSys {
 			segidx = 0;
 
 		if (segc < 1) {
-			cStyle::error() << "Legalabb egy szegmenst adjon meg." << cStyle::endl;
-			return false;
+			throw Commands::Error("Legalabb egy szegmenst adjon meg.");
 		}
 
 		this->segments.resize(segc);
@@ -66,8 +64,6 @@ namespace CollSys {
 			this->segments[segidx++] = Segment(a, b, c, d); // szegmens egymás utáni 4 vektorból
 		}
 		this->build();
-
-		return true;
 	}
 
 	glib::vec2d BezierCurve::getPoint(const Segment& segment, double t) {
