@@ -14,7 +14,7 @@
     <ClCompile Include="graphics\displays\ConsoleDisplay.cpp" />
     <ClCompile Include="graphics\Text.cpp" />
     <ClCompile Include="Shapes\BasicShapes\RegularPolygon.cpp" />
-    <ClCompile Include="Shapes\Bases\AbstractShape.cpp" />
+    <ClCompile Include="Shapes\Bases\ConvexShape.cpp" />
     <ClCompile Include="Shapes\BasicShapes\BezierCurve.cpp" />
     <ClCompile Include="Commands\Base\Command.cpp" />
     <ClCompile Include="Commands\Commands.cpp" />
@@ -22,14 +22,13 @@
     <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="general\string.cpp" />
     <ClCompile Include="Sandbox.cpp" />
-    <ClCompile Include="Shapes\Bases\iocapable.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Point.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Circle.cpp" />
     <ClCompile Include="GJK.cpp" />
     <ClCompile Include="CollisionSys.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Polygon.cpp" />
-    <ClCompile Include="Shapes\Bases\Transformable.cpp" />
+    <ClCompile Include="Shapes\Bases\Shape.cpp" />
     <ClCompile Include="graphics\displays\WindowDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +48,6 @@
     <ClInclude Include="general\vec2.h" />
     <ClInclude Include="general\registry.h" />
     <ClInclude Include="Sandbox.h" />
-    <ClInclude Include="Shapes\Bases\iocapable.h" />
     <ClInclude Include="Shapes\BasicShapes\Point.h" />
     <ClInclude Include="Shapes\BasicShapes\Ellipse.h" />
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Audio.hpp" />
@@ -152,9 +150,9 @@
     <ClInclude Include="libs\SFML-2.5.1\include\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="Shapes\BasicShapes\Circle.h" />
     <ClInclude Include="GJK.h" />
-    <ClInclude Include="Shapes\Bases\AbstractShape.h" />
+    <ClInclude Include="Shapes\Bases\ConvexShape.h" />
     <ClInclude Include="Shapes\BasicShapes\Polygon.h" />
-    <ClInclude Include="Shapes\Bases\Transformable.h" />
+    <ClInclude Include="Shapes\Bases\Shape.h" />
     <ClInclude Include="Shapes\Shapes.h" />
     <ClInclude Include="tests\mdif.h" />
     <ClInclude Include="tests\tests.h" />

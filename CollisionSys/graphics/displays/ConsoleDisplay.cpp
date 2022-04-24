@@ -24,8 +24,8 @@ namespace CollSys {
 
 		bool cmd_found = false;
 
-		auto it = this->m_parent.getCmdReg().get(cmd);
-		if (it != this->m_parent.getCmdReg().end()) {
+		auto it = this->_parent.getCmdReg().get(cmd);
+		if (it != this->_parent.getCmdReg().end()) {
 			try {
 				it->second->execute(lbuff);
 			}

@@ -18,7 +18,7 @@
 const float speed = 0.02f;
 const float angular = 2.0f;
 
-void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& arr, size_t r = 512) {
+void calcMdiff(const CollSys::ConvexShape& s1, const CollSys::ConvexShape& s2, sf::VertexArray& arr, size_t r = 512) {
     glib::VertexArray temp(r);
     float angle = 360.0f / static_cast<float>(r);
     glib::vec2d dir(1.0, 0.0);
@@ -33,14 +33,14 @@ void calcMdiff(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s
 }
 
 bool calcSupPoint(
-    const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2,
+    const CollSys::ConvexShape& s1, const CollSys::ConvexShape& s2,
     const glib::vec2d& dir, glib::vec2d& point)
 {
     point = s1.support(dir) - s2.support(-dir);
     return (point * dir) > 0.0f;
 }
 
-void calcSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+void calcSimplex(const CollSys::ConvexShape& s1, const CollSys::ConvexShape& s2, sf::VertexArray& simplex) {
     if (simplex.getVertexCount() == 3 || simplex[0].color == sf::Color::Red) {
         return;
     }
@@ -79,7 +79,7 @@ void calcSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape&
     }
 }
 
-void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractShape& s2, sf::VertexArray& simplex) {
+void calcFirstSimplex(const CollSys::ConvexShape& s1, const CollSys::ConvexShape& s2, sf::VertexArray& simplex) {
     simplex.resize(2);
     simplex.setPrimitiveType(sf::LineStrip);
 
@@ -99,7 +99,7 @@ void calcFirstSimplex(const CollSys::AbstractShape& s1, const CollSys::AbstractS
     simplex[0].color = simplex[1].color = col;
 }
 
-void RenderPass(sf::RenderWindow& win, glib::list<CollSys::AbstractShape*>& objs, sf::VertexArray& debug) {
+void RenderPass(sf::RenderWindow& win, glib::list<CollSys::ConvexShape*>& objs, sf::VertexArray& debug) {
     win.clear(sf::Color::Black);
     for (auto obj : objs) {
         win.draw(*obj);
@@ -108,7 +108,7 @@ void RenderPass(sf::RenderWindow& win, glib::list<CollSys::AbstractShape*>& objs
     win.display();
 }
 
-void ContactPass(glib::list<CollSys::AbstractShape*>& objs) {
+void ContactPass(glib::list<CollSys::ConvexShape*>& objs) {
     for (auto obj : objs) {
         obj->setColor(sf::Color::White);
     }

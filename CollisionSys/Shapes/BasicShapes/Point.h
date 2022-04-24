@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Shapes/Bases/AbstractShape.h"
+#include "Shapes/Bases/ConvexShape.h"
 
 namespace CollSys {
-	class Point : public AbstractShape
+	class Point : public ConvexShape
 	{
 	public:
 		Point(const glib::string& type, double X = 0.0, double Y = 0.0);

@@ -8,7 +8,7 @@ namespace CollSys {
 	using cStyle = consoleStyle;
 
 	Polygon::Polygon(const glib::string& type) :
-		AbstractShape(type)
+		ConvexShape(type)
 	{
 		this->name = "Polygon";
 		this->build({
@@ -21,14 +21,14 @@ namespace CollSys {
 	}
 
 	Polygon::Polygon(const glib::string& type, std::initializer_list<glib::vec2d> points) :
-		AbstractShape(type)
+		ConvexShape(type)
 	{
 		this->name = "Polygon";
 		this->build(points);
 	}
 
 	void Polygon::fromConsole(std::stringstream& buf) {
-		AbstractShape::fromConsole(buf);
+		ConvexShape::fromConsole(buf);
 
 		glib::VertexList vlist;
 		glib::vec2d temp;
@@ -70,7 +70,7 @@ namespace CollSys {
 	}
 
 	void Polygon::write(std::ostream& stream) const {
-		AbstractShape::write(stream);
+		ConvexShape::write(stream);
 		stream << ' ' << this->shape.size();
 		for (auto& p : this->shape) {
 			stream << ' ' << p;
@@ -78,7 +78,7 @@ namespace CollSys {
 	}
 
 	void Polygon::read(std::istream& stream) {
-		AbstractShape::read(stream);
+		ConvexShape::read(stream);
 		size_t size;
 		stream >> size;
 		this->shape.resize(size);

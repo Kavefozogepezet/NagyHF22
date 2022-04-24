@@ -8,7 +8,7 @@ namespace CollSys {
 	using cStyle = consoleStyle;
 
 	Circle::Circle(const glib::string& type, double radius) :
-		AbstractShape(type),
+		ConvexShape(type),
 		r(radius)
 	{
 		this->name = "circle";
@@ -16,7 +16,7 @@ namespace CollSys {
 	}
 
 	void Circle::fromConsole(std::stringstream& buf) {
-		AbstractShape::fromConsole(buf);
+		ConvexShape::fromConsole(buf);
 
 		if (!(buf >> this->r)) {
 			throw Commands::Error("Nem adott meg sugarat");
@@ -39,12 +39,12 @@ namespace CollSys {
 	}
 
 	void Circle::write(std::ostream& stream) const {
-		AbstractShape::write(stream);
+		ConvexShape::write(stream);
 		stream << ' ' << this->r;
 	}
 
 	void Circle::read(std::istream& stream) {
-		AbstractShape::read(stream);
+		ConvexShape::read(stream);
 		stream >> this->r;
 		this->build();
 	}

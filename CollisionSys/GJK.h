@@ -7,11 +7,11 @@
 namespace CollSys {
 	class GJKSolver {
 	public:
-		GJKSolver(AbstractShape& shape1, AbstractShape& shape2);
+		GJKSolver(ConvexShape& shape1, ConvexShape& shape2);
 
 		bool isContact();
 	private:
-		AbstractShape& s1, & s2;
+		ConvexShape& s1, & s2;
 		bool is_contact;
 	private:
 		glib::VertexArray simplex;

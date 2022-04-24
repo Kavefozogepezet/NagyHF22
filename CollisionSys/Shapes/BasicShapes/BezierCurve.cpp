@@ -14,7 +14,7 @@ namespace CollSys {
 	{}
 
 	BezierCurve::BezierCurve(const glib::string& type) :
-		AbstractShape(type),
+		ConvexShape(type),
 		segments(1)
 	{
 		this->name = "bezier";
@@ -34,7 +34,7 @@ namespace CollSys {
 	}
 
 	void BezierCurve::fromConsole(std::stringstream& buf) {
-		AbstractShape::fromConsole(buf);
+		ConvexShape::fromConsole(buf);
 		
 		glib::VertexList vlist;
 		glib::vec2d temp1, temp2, temp3;
@@ -57,7 +57,7 @@ namespace CollSys {
 		this->segments.resize(segc);
 		vlist.push_back(*vlist.begin());
 
-		for (auto it = vlist.begin(); it != vlist.end(); it++) {
+		for (auto it = vlist.begin(); it != vlist.end(); it--) {
 			glib::vec2d&
 				a = *(it++), b = *(it++),
 				c = *(it++), d = *it;
@@ -66,7 +66,7 @@ namespace CollSys {
 		this->build();
 	}
 
-	glib::vec2d BezierCurve::getPoint(const Segment& segment, double t) {
+	glib::vec2d BezierCurve::getPoint(const Segment& segment, double t) const {
 		return
 			t * t * t * segment.a +
 			t * t * segment.b +
@@ -74,7 +74,7 @@ namespace CollSys {
 	}
 
 	glib::vec2d BezierCurve::objSpaceSupport(const glib::vec2d& dir) const {
-		glib::vec2d furthest = BezierCurve::getPoint(this->segments[0], 0.0);
+		glib::vec2d furthest = this->getPoint(this->segments[0], 0.0);
 
 		for (auto& seg : this->segments) {
 			// a görbe egyenletének deriváltjának zérushelyeit számoljuk ki
@@ -100,7 +100,7 @@ namespace CollSys {
 				continue;
 			}
 			eq_res = std::clamp(eq_res, 0.0, 1.0);
-			glib::vec2d p = BezierCurve::getPoint(seg, eq_res);
+			glib::vec2d p = this->getPoint(seg, eq_res);
 
 			if (p * dir > furthest * dir) {
 				furthest = p;
@@ -110,7 +110,7 @@ namespace CollSys {
 	}
 
 	void BezierCurve::write(std::ostream& stream) const {
-		AbstractShape::write(stream);
+		ConvexShape::write(stream);
 		stream << ' ' << this->segments.size();
 		for (auto& seg : segments) {
 			stream << ' ' << seg.a << ' ' << seg.b << ' ' << seg.c << ' ' << seg.d;
@@ -118,7 +118,7 @@ namespace CollSys {
 	}
 
 	void BezierCurve::read(std::istream& stream) {
-		AbstractShape::read(stream);
+		ConvexShape::read(stream);
 		size_t segc;
 		stream >> segc;
 		this->segments.resize(segc);

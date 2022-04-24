@@ -40,16 +40,16 @@ namespace CollSys {
 	}
 
 	void WindowDisplay::setView() {
-		Sandbox::ShapeList& shapes = this->m_parent.getShapeList();
+		Sandbox::ShapeList& shapes = this->_parent.getShapeList();
 
 		auto it = shapes.begin();
-		AbstractShape& shape1 = **it;
+		ConvexShape& shape1 = **it;
 		glib::vec2d
 			tl = shape1.support(glib::vec2d(-1.0, 0.0)),
 			br = tl;
 
 		do {
-			AbstractShape& shape = **it;
+			ConvexShape& shape = **it;
 
 			glib::vec2d
 				supx1 = shape.support(glib::vec2d(-1.0, 0.0)),
@@ -77,15 +77,15 @@ namespace CollSys {
 	}
 
 	void WindowDisplay::colorShapes() {
-		Sandbox::ShapeList& shapes = this->m_parent.getShapeList();
+		Sandbox::ShapeList& shapes = this->_parent.getShapeList();
 		for (auto shape : shapes) {
 			shape->setColor(sf::Color::White);
 		}
 		for (auto it1 = shapes.begin(); it1 != shapes.end(); ++it1) {
-			AbstractShape& shape1 = *(*it1);
+			ConvexShape& shape1 = *(*it1);
 			auto it2 = it1; it2++;
 			for (; it2 != shapes.end(); it2++) {
-				AbstractShape& shape2 = *(*it2);
+				ConvexShape& shape2 = *(*it2);
 				CollSys::GJKSolver gjk_test(shape1, shape2);
 				if (gjk_test.isContact()) {
 					shape1.setColor(sf::Color::Red);
@@ -96,7 +96,7 @@ namespace CollSys {
 	}
 
 	void WindowDisplay::handleEvents() {
-		Sandbox::ShapeList& shapes = this->m_parent.getShapeList();
+		Sandbox::ShapeList& shapes = this->_parent.getShapeList();
 		sf::Event event;
 
 		// event loop
@@ -104,7 +104,7 @@ namespace CollSys {
 		{
 			if (event.type == sf::Event::Closed) {
 				this->makeActive(false);
-				this->m_parent.closeWindow();
+				this->_parent.closeWindow();
 				return;
 			}
 			else if (event.type == sf::Event::MouseButtonPressed) {
@@ -115,7 +115,7 @@ namespace CollSys {
 					this->selected = shapes.end();
 
 					for (auto it = shapes.begin(); it != shapes.end(); it++) {
-						AbstractShape& shape = *(*it);
+						ConvexShape& shape = *(*it);
 						CollSys::GJKSolver point_test(shape, point);
 						if (point_test.isContact()) {
 							selected = it;
@@ -130,7 +130,7 @@ namespace CollSys {
 			else if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					this->makeActive(false);
-					this->m_parent.closeWindow();
+					this->_parent.closeWindow();
 				}
 				else if (event.key.code == sf::Keyboard::Tab) {
 					if (this->selected != shapes.end()) {
@@ -144,7 +144,7 @@ namespace CollSys {
 		}
 		// folyamatos user input
 		if (this->selected != shapes.end()) {
-			AbstractShape& shape = *(*this->selected);
+			ConvexShape& shape = *(*this->selected);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) { shape.rotate(angular_speed); }
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) { shape.rotate(-angular_speed); }
 
@@ -161,7 +161,7 @@ namespace CollSys {
 	}
 
 	void WindowDisplay::render() {
-		Sandbox::ShapeList& shapes = this->m_parent.getShapeList();
+		Sandbox::ShapeList& shapes = this->_parent.getShapeList();
 
 		// Contact checks
 		this->colorShapes();

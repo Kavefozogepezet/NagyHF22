@@ -81,7 +81,7 @@ namespace CollSys::Commands {
 		input >> shape_key;
 		this->postInputCheck(input);
 
-		AbstractShape* shape = this->createShape(shape_key);
+		ConvexShape* shape = this->createShape(shape_key);
 
 		try { shape->fromConsole(input); }
 		catch (Error err) { // nem sikerült beolvasni a síkidomot
@@ -141,7 +141,7 @@ namespace CollSys::Commands {
 		input >> name >> vec;
 		this->postInputCheck(input);
 
-		AbstractShape* shape = this->getShape(name);
+		ConvexShape* shape = this->getShape(name);
 		shape->move(vec);
 		cStyle::basic() << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << std::endl;
 	}
@@ -164,7 +164,7 @@ namespace CollSys::Commands {
 		input >> name >> angle;
 		this->postInputCheck(input);
 
-		AbstractShape* shape = this->getShape(name);
+		ConvexShape* shape = this->getShape(name);
 		shape->rotate(angle);
 		cStyle::basic() << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << std::endl;
 	}
@@ -187,7 +187,7 @@ namespace CollSys::Commands {
 		input >> name >> vec;
 		this->postInputCheck(input);
 
-		AbstractShape* shape = this->getShape(name);
+		ConvexShape* shape = this->getShape(name);
 		shape->scale(vec);
 		cStyle::basic() << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << std::endl;
 	}
@@ -204,10 +204,10 @@ namespace CollSys::Commands {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		cStyle contact_style = cStyle().fg(cStyle::GREEN);
 		for (auto it1 = shapes.begin(); it1 != shapes.end(); ++it1) {
-			AbstractShape* shape1 = *it1;
+			ConvexShape* shape1 = *it1;
 			auto it2 = it1; it2++;
 			for (; it2 != shapes.end(); it2++) {
-				AbstractShape* shape2 = *it2;
+				ConvexShape* shape2 = *it2;
 				CollSys::GJKSolver gjk_test(*shape1, *shape2);
 				if (gjk_test.isContact()) {
 					shape1->setColor(sf::Color::Red);
@@ -305,7 +305,7 @@ namespace CollSys::Commands {
 			}
 			// a bufferből kiolvassuk a síkidomot
 			buf >> shape_key;
-			AbstractShape* shape;
+			ConvexShape* shape;
 			try { shape = this->createShape(shape_key); }
 			catch (Error err) { err.print(); continue; } // nem létezik a típus
 

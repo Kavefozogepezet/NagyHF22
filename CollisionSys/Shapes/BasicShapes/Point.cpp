@@ -8,7 +8,7 @@ namespace CollSys {
 	using cStyle = consoleStyle;
 
 	Point::Point(const glib::string& type, double X, double Y) :
-		AbstractShape(type)
+		ConvexShape(type)
 	{
 		this->name = "Point";
 		this->shape.resize(1);
@@ -16,7 +16,7 @@ namespace CollSys {
 	}
 
 	Point::Point(const glib::string& type, const glib::vec2d& point) :
-		AbstractShape(type)
+		ConvexShape(type)
 	{
 		this->name = "Point";
 		this->shape.resize(1);
@@ -24,7 +24,7 @@ namespace CollSys {
 	}
 
 	void Point::fromConsole(std::stringstream& buf) {
-		AbstractShape::fromConsole(buf);
+		ConvexShape::fromConsole(buf);
 
 		glib::vec2d p;
 		if (!(buf >> this->shape[0])) {
@@ -37,12 +37,12 @@ namespace CollSys {
 	}
 
 	void Point::write(std::ostream& stream) const {
-		AbstractShape::write(stream);
+		ConvexShape::write(stream);
 		stream << ' ' << this->shape[0].x << ' ' << this->shape[0].y;
 	}
 
 	void Point::read(std::istream& stream) {
-		AbstractShape::read(stream);
+		ConvexShape::read(stream);
 		stream >> this->shape[0].x >> this->shape[0].y;
 	}
 

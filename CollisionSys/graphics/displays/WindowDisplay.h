@@ -6,7 +6,7 @@
 #include "general/list.h"
 
 namespace CollSys {
-	class AbstractShape;
+	class ConvexShape;
 
 	class WindowDisplay : public display
 	{
@@ -15,7 +15,7 @@ namespace CollSys {
 			linear_speed,
 			angular_speed;
 	private:
-		using ShapeList = glib::list<AbstractShape*>;
+		using ShapeList = glib::list<ConvexShape*>;
 	public:
 		WindowDisplay(Sandbox& parent, bool active = false);
 	protected:

@@ -42,7 +42,7 @@ namespace CollSys::Commands {
 		Command(sandbox)
 	{}
 
-	AbstractShape* TransformCommand::getShape(glib::string& name) const {
+	ConvexShape* TransformCommand::getShape(glib::string& name) const {
 		bool found_shape = false;
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto s : shapes) {
@@ -60,7 +60,7 @@ namespace CollSys::Commands {
 		Command(sandbox)
 	{}
 
-	AbstractShape* CreatorCommand::createShape(const glib::string & key) const {
+	ConvexShape* CreatorCommand::createShape(const glib::string & key) const {
 		Sandbox::ShapeReg& sreg = this->reciever.getShapeReg();
 		auto it = sreg.get(key);
 		if (it == sreg.end()) {
@@ -71,7 +71,7 @@ namespace CollSys::Commands {
 		return it->second(key);
 	}
 
-	void CreatorCommand::validateShape(AbstractShape* shape) const {
+	void CreatorCommand::validateShape(ConvexShape* shape) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
 		for (auto s : shapes) {
 			if (s->getName() == shape->getName()) {

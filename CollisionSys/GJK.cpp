@@ -3,7 +3,7 @@
 #include "debug/memtrace.h"
 
 namespace CollSys {
-	GJKSolver::GJKSolver(AbstractShape& shape1, AbstractShape& shape2) :
+	GJKSolver::GJKSolver(ConvexShape& shape1, ConvexShape& shape2) :
 		s1(shape1),
 		s2(shape2),
 		is_contact(false),

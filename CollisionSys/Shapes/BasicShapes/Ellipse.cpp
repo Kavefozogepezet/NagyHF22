@@ -8,7 +8,7 @@ namespace CollSys {
 	using cStyle = consoleStyle;
 
 	Ellipse::Ellipse(const glib::string& type, double a, double b) :
-		AbstractShape(type),
+		ConvexShape(type),
 		a(a),
 		b(b)
 	{
@@ -17,7 +17,7 @@ namespace CollSys {
 	}
 
 	void Ellipse::fromConsole(std::stringstream& buf) {
-		AbstractShape::fromConsole(buf);
+		ConvexShape::fromConsole(buf);
 
 		if (!(buf >> this->a >> this->b)) {
 			throw Commands::Error("Nem adott meg kis- és nagytengelyt");
@@ -38,12 +38,12 @@ namespace CollSys {
 	}
 
 	void Ellipse::write(std::ostream& stream) const {
-		AbstractShape::write(stream);
+		ConvexShape::write(stream);
 		stream << ' ' << this->a << ' ' << this->b;
 	}
 
 	void Ellipse::read(std::istream& stream) {
-		AbstractShape::read(stream);
+		ConvexShape::read(stream);
 		stream >> this->a >> this->b;
 		this->build();
 	}

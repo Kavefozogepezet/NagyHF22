@@ -6,7 +6,7 @@
 
 namespace CollSys {
 	class Sandbox;
-	class AbstractShape;
+	class ConvexShape;
 }
 
 namespace CollSys::Commands {
@@ -46,7 +46,7 @@ namespace CollSys::Commands {
 
 		virtual ~TransformCommand() = default;
 	protected:
-		AbstractShape* getShape(glib::string& name) const;
+		ConvexShape* getShape(glib::string& name) const;
 	};
 
 	class CreatorCommand : public Command {
@@ -55,8 +55,8 @@ namespace CollSys::Commands {
 
 		virtual ~CreatorCommand() = default;
 	protected:
-		AbstractShape* createShape(const glib::string& key) const;
+		ConvexShape* createShape(const glib::string& key) const;
 
-		void validateShape(AbstractShape* shape) const;
+		void validateShape(ConvexShape* shape) const;
 	};
 }

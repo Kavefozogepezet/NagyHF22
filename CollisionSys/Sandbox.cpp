@@ -20,9 +20,6 @@ namespace CollSys {
 		return 0;
 	}
 
-	double Sandbox::linear_speed = 0.02;
-	double Sandbox::angular_speed = 2.0;
-
 	Sandbox::Sandbox() :
 		cmd_registry(),
 		s_registry(),

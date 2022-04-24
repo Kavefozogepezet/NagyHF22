@@ -14,15 +14,12 @@ namespace CollSys {
 	class Sandbox
 	{
 	public:
-		using LambdaType = std::function<AbstractShape* (const glib::string&)>;
+		using LambdaType = std::function<ConvexShape* (const glib::string&)>;
 
 		using CmdReg = glib::registry<glib::string, const Commands::Command* const>;
 		using ShapeReg = glib::registry<glib::string, LambdaType>;
-		using ShapeList = glib::list<AbstractShape*>;
+		using ShapeList = glib::list<ConvexShape*>;
 	public:
-		static double linear_speed;
-		static double angular_speed;
-
 		template<typename Shape>
 		static LambdaType lambdaMaker() {
 			return [](const glib::string& type) { return new Shape(type); };

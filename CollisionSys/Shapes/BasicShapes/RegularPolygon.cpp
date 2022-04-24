@@ -14,7 +14,7 @@ namespace CollSys {
 	}
 
 	void RegularPolygon::fromConsole(std::stringstream& buff) {
-		AbstractShape::fromConsole(buff);
+		ConvexShape::fromConsole(buff);
 
 		size_t pc;
 		double el;

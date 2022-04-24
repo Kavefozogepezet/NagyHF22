@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Shapes/Bases/AbstractShape.h"
+#include "Shapes/Bases/ConvexShape.h"
 
 namespace CollSys {
-	class Polygon : public AbstractShape
+	class Polygon : public ConvexShape
 	{
 	public:
 		Polygon(const glib::string& type);
@@ -17,7 +17,7 @@ namespace CollSys {
 		void write(std::ostream& stream) const override;
 
 		void read(std::istream& stream) override;
-
+	private:
 		void build(const std::initializer_list<glib::vec2d>& points);
 	};
 }

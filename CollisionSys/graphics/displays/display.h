@@ -7,38 +7,38 @@ namespace CollSys {
 	{
 	public:
 		display(Sandbox& parent, bool active = false) :
-			m_parent(parent),
-			m_active(false)
+			_parent(parent),
+			_active(false)
 		{
 			this->makeActive(active);
 		}
 
 		void update() {
-			if (this->m_active) {
+			if (this->_active) {
 				this->onUpdate();
 			}
 		}
 
 		void makeActive(bool active) {
-			if (this->m_active && !active) {
+			if (this->_active && !active) {
 				this->onDeactivation();
 			}
-			else if (!this->m_active && active) {
+			else if (!this->_active && active) {
 				this->onActivation();
 			}
-			this->m_active = active;
+			this->_active = active;
 		}
 
 		bool isActive() {
-			return this->m_active;
+			return this->_active;
 		}
 	protected:
-		Sandbox& m_parent;
+		Sandbox& _parent;
 
 		virtual void onActivation() {};
 		virtual void onDeactivation() {};
 		virtual void onUpdate() {};
 	private:
-		bool m_active;
+		bool _active;
 	};
 }
