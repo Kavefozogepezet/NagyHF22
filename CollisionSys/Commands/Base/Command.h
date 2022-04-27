@@ -10,7 +10,7 @@ namespace CollSys {
 }
 
 namespace CollSys::Commands {
-	// -------------------- error during execution --------------------
+	// -------------------- hiba a végrehajtás során --------------------
 
 	class Error
 	{

@@ -42,7 +42,7 @@ namespace CollSys::Commands {
 	void ListShapeTypes::execute(std::stringstream& input) const {
 		Sandbox::ShapeReg& shape_reg = this->reciever.getShapeReg();
 		for (auto& sr : shape_reg) {
-			cStyle::basic() << sr.first << std::endl;
+			cStyle::basic() << "\t- " << sr.first << std::endl;
 		}
 	}
 
@@ -57,7 +57,7 @@ namespace CollSys::Commands {
 	void ListShapes::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shape_reg = this->reciever.getShapeList();
 		for (auto shape : shape_reg) {
-			cStyle::basic() << shape->getName() << " (" << shape->getType() << ") " << std::endl;
+			cStyle::basic() << "\t- " << shape->getName() << " (" << shape->getType() << ") " << std::endl;
 		}
 	}
 
@@ -91,7 +91,7 @@ namespace CollSys::Commands {
 
 		this->validateShape(shape);
 		this->reciever.getShapeList().push_back(shape);
-		cStyle::basic() << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << std::endl;
+		cStyle::success() << " A \"" << shape->getName() << "\" nevu " << shape_key << " tipusu sikidom elkeszult." << cStyle::endl;
 	}
 
 	// -------------------- CREATE --------------------
@@ -116,7 +116,7 @@ namespace CollSys::Commands {
 			if ((*it)->getName() == name) {
 				delete *it;
 				shapes.erase(it);
-				cStyle::basic() << "A(z) \"" << name << "\" nevu sikidom torolve." << std::endl;
+				cStyle::success() << "A(z) \"" << name << "\" nevu sikidom torolve." << cStyle::endl;
 				return;
 			}
 		}
@@ -143,7 +143,7 @@ namespace CollSys::Commands {
 
 		ConvexShape* shape = this->getShape(name);
 		shape->move(vec);
-		cStyle::basic() << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << std::endl;
+		cStyle::success() << "A " << shape->getName() << " sikidom elmozgatva a " << vec << " vektorral." << cStyle::endl;
 	}
 
 	// -------------------- ROTATE --------------------
@@ -166,7 +166,7 @@ namespace CollSys::Commands {
 
 		ConvexShape* shape = this->getShape(name);
 		shape->rotate(angle);
-		cStyle::basic() << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << std::endl;
+		cStyle::success() << "A " << shape->getName() << " sikidom elforgatva " << angle << " fokkal." << cStyle::endl;
 	}
 
 	// -------------------- SCALE --------------------
@@ -189,7 +189,7 @@ namespace CollSys::Commands {
 
 		ConvexShape* shape = this->getShape(name);
 		shape->scale(vec);
-		cStyle::basic() << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << std::endl;
+		cStyle::success() << "A " << shape->getName() << " sikidom atmeretezve a " << vec << " vektorral." << cStyle::endl;
 	}
 
 	// -------------------- CHECK CONTACTS --------------------
@@ -202,21 +202,58 @@ namespace CollSys::Commands {
 
 	void CheckContacts::execute(std::stringstream& input) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
-		cStyle contact_style = cStyle().fg(cStyle::GREEN);
 		for (auto it1 = shapes.begin(); it1 != shapes.end(); ++it1) {
 			ConvexShape* shape1 = *it1;
 			auto it2 = it1; it2++;
 			for (; it2 != shapes.end(); it2++) {
 				ConvexShape* shape2 = *it2;
-				CollSys::GJKSolver gjk_test(*shape1, *shape2);
+				GJKSolver gjk_test(*shape1, *shape2);
 				if (gjk_test.isContact()) {
 					shape1->setColor(sf::Color::Red);
 					shape2->setColor(sf::Color::Red);
-					contact_style() << "Ez a ket objektum erintkezik: " <<
+					cStyle::success() << "Ez a ket objektum erintkezik: " <<
 						shape1->getName() << "; " << shape2->getName() << cStyle::endl;
 				}
 			}
 		}
+	}
+
+	// -------------------- CHECK CONTACT --------------------
+
+	CheckContact::CheckContact(Sandbox& sandbox) :
+		Command(sandbox)
+	{
+		this->desc = "Kiirja, hogy a megadott ket sikidom erintkezik e.";
+		this->params = "<egyik sikidom neve> <masik sikidom neve>";
+	}
+
+	void CheckContact::execute(std::stringstream& input) const {
+		glib::string sname1, sname2;
+		input >> sname1 >> sname2;
+		this->postInputCheck(input);
+
+		if (sname1 == sname2) {
+			throw Error("Ket kulombozo sikidomot adjon meg.");
+		}
+
+		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
+		ConvexShape* s1 = nullptr, * s2 = nullptr;
+		for (auto shape : shapes) {
+			if (shape->getName() == sname1) {
+				s1 = shape;
+			}
+			else if (shape->getName() == sname2) {
+				s2 = shape;
+			}
+		}
+
+		if (!(s1 && s2)) {
+			throw Error("Letezo sikidomokat adjon meg.");
+		}
+
+		GJKSolver solver(*s1, *s2);
+		glib::string result = solver.isContact() ? " " : " nem ";
+		cStyle::success() << "A ket sikidom" << result << "erintkezik." << cStyle::endl;
 	}
 
 	// -------------------- SAVE AS --------------------
@@ -245,7 +282,8 @@ namespace CollSys::Commands {
 			file << "new " << shape->getType() << ' ' << *shape << std::endl;
 			scount++;
 		}
-		cStyle::basic() << scount << " sikidom elmentve a " << file_path << " fajlba." << std::endl;
+		cStyle::success() << scount << " sikidom elmentve a " << file_path << " fajlba." << cStyle::endl;
+		this->reciever.setMyFile(file_path);
 	}
 
 	// -------------------- SAVE --------------------
@@ -266,7 +304,7 @@ namespace CollSys::Commands {
 		for (auto shape : this->reciever.getShapeList()) {
 			file << "new " << shape->getType() << ' ' << *shape << std::endl;
 		}
-		cStyle::basic() << "Sikidomok elmentve." << cStyle::endl;
+		cStyle::success() << "Sikidomok elmentve." << cStyle::endl;
 	}
 	
 	// -------------------- MERGE --------------------
@@ -313,7 +351,7 @@ namespace CollSys::Commands {
 				try {
 					this->validateShape(shape);
 					this->reciever.getShapeList().push_back(shape);
-					cStyle::basic() << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << std::endl;
+					cStyle::success() << "Beolvasva: " << shape->getName() << " (" << shape->getType() << ")" << cStyle::endl;
 					loaded_count++;
 				}
 				catch (Error err) {
@@ -325,7 +363,7 @@ namespace CollSys::Commands {
 				delete shape;
 			}
 		}
-		cStyle::basic() << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << std::endl;
+		cStyle::basic() << "Sikeresen beolvasva " << loaded_count << '/' << shape_count << " sikidom." << cStyle::endl;
 	}
 
 	std::ifstream Merge::openFile(glib::string file_path) const {
@@ -383,7 +421,7 @@ namespace CollSys::Commands {
 
 	void Openwin::execute(std::stringstream& input) const {
 		this->reciever.openWindow();
-		cStyle::basic() << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << std::endl;
+		cStyle::warn() << "Amig az ablak nyitva van, ide nem tud parancsot beirni." << cStyle::endl;
 	}
 
 	// -------------------- EXIT --------------------

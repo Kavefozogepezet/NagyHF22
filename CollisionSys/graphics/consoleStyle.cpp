@@ -4,7 +4,8 @@ namespace CollSys {
 	consoleStyle
 		consoleStyle::basic = consoleStyle("0"),
 		consoleStyle::warn = consoleStyle("93"),
-		consoleStyle::error = consoleStyle("91");
+		consoleStyle::error = consoleStyle("91"),
+		consoleStyle::success = consoleStyle("32");
 
 	std::ostream& consoleStyle::writeWith(const consoleStyle& style) {
 		return std::cout << style;

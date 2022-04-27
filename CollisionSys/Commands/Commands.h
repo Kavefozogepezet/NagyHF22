@@ -90,6 +90,13 @@ namespace CollSys::Commands {
 		void execute(std::stringstream& input) const;
 	};
 
+	class CheckContact : public Command
+	{
+	public:
+		CheckContact(Sandbox& sandbox);
+		void execute(std::stringstream& input) const;
+	};
+
 	// -------------------- fileio --------------------
 
 	class SaveAs : public Command

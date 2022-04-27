@@ -13,7 +13,25 @@
 namespace CollSys {
 	using cStyle = consoleStyle;
 
-	int cs_main(int argc, char** argv) {
+	void readHeader() {
+		std::ifstream file("header.txt");
+
+		if (!file.is_open()) {
+			cStyle::error() <<
+				"+------------------------------+" << std::endl <<
+				"| A header file nem talalhato. |" << std::endl <<
+				"+------------------------------+" << cStyle::endl;
+		}
+
+		glib::string line;
+		while (file) {
+			std::getline(file, line);
+			std::cout << line << std::endl;
+		}
+	}
+
+	int csMain(int argc, char** argv) {
+		readHeader();
 		Sandbox sandbox;
 		sandboxInit(sandbox);
 		sandbox.run();
@@ -46,6 +64,7 @@ namespace CollSys {
 		this->cmd_registry.add("rotate", new Commands::Rotate(*this));
 		this->cmd_registry.add("scale", new Commands::Scale(*this));
 		this->cmd_registry.add("contacts", new Commands::CheckContacts(*this));
+		this->cmd_registry.add("contact", new Commands::CheckContact(*this));
 		this->cmd_registry.add("saveas", new Commands::SaveAs(*this));
 		this->cmd_registry.add("save", new Commands::Save(*this));
 		this->cmd_registry.add("merge", new Commands::Merge(*this));

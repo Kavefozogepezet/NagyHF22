@@ -24,9 +24,6 @@ namespace CollSys::Commands {
 	void Command::postInputCheck(std::stringstream& input) const {
 		if (!input) {
 			throw Error("Nem megfelelo a parameterezes.\nA paramcs parameterlistaja: " + this->params);
-			//cStyle::error() << "Nem megfelelo a parameterezes." << std::endl <<
-			//	"A paramcs parameterlistaja: " << this->params << cStyle::endl;
-			//return false;
 		}
 	}
 
@@ -52,8 +49,6 @@ namespace CollSys::Commands {
 			}
 		}
 		throw Error("Nincs" + name + " nevu sikidom");
-		//cStyle::error() << "Nincs " << name << " nevu sikidom" << cStyle::endl;
-		//return nullptr;
 	}
 
 	CreatorCommand::CreatorCommand(Sandbox& sandbox) :
@@ -65,8 +60,6 @@ namespace CollSys::Commands {
 		auto it = sreg.get(key);
 		if (it == sreg.end()) {
 			throw Error("Nem letezik \"" + key + "\" sikidom.");
-			//cStyle::error() << "Nem letezik \"" << key << "\" sikidom." << cStyle::endl;
-			//return nullptr;
 		}
 		return it->second(key);
 	}
@@ -77,10 +70,7 @@ namespace CollSys::Commands {
 			if (s->getName() == shape->getName()) {
 				delete shape;
 				throw Error("Mar letezik \"" + shape->getName() + "\" nevu sikidom.");
-				//cStyle::error() << "Mar letezik \"" << shape->getName() << "\" nevu sikidom." << cStyle::endl;
-				//return false;
 			}
 		}
-		//return true;
 	}
 }

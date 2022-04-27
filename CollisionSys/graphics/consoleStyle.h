@@ -8,7 +8,7 @@ namespace CollSys {
 	class consoleStyle
 	{
 	public:
-		static consoleStyle basic, warn, error;
+		static consoleStyle basic, warn, error, success;
 
 		static std::ostream& writeWith(const consoleStyle& style);
 

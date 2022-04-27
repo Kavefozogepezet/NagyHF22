@@ -54,14 +54,13 @@ namespace CollSys {
 		glib::string myfile;
 	};
 
-	int cs_main(int argc, char** argv);
+	int csMain(int argc, char** argv);
 
 	extern void sandboxInit(Sandbox& sandbox);
 }
 
 #ifdef COLLSYS_MAIN
 int main(int argc, char** argv) {
-	CollSys::cs_main(argc, argv);
-	return 0;
+	return CollSys::csMain(argc, argv);
 }
 #endif
