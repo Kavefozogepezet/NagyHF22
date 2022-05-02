@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Shapes/Bases/ConvexShape.h"
 
@@ -12,6 +12,7 @@ namespace CollSys {
 	private:
 		double r;
 
+		/** @brief Feltölti a síkidom körvonalának listáját a kört közelítő pontokkal. */
 		void build();
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;

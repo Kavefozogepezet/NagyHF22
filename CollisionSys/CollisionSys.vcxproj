@@ -154,7 +154,6 @@
     <ClInclude Include="Shapes\BasicShapes\Polygon.h" />
     <ClInclude Include="Shapes\Bases\Shape.h" />
     <ClInclude Include="Shapes\Shapes.h" />
-    <ClInclude Include="tests\mdif.h" />
     <ClInclude Include="tests\tests.h" />
     <ClInclude Include="graphics\displays\WindowDisplay.h" />
   </ItemGroup>

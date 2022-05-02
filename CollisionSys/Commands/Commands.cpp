@@ -25,6 +25,7 @@ namespace CollSys::Commands {
 
 	void Help::execute(std::stringstream& input) const {
 		cStyle list_entry = cStyle().fg(cStyle::BLACK).bg(cStyle::LIGHT_GRAY);
+		// Kilistázzuk az összes parancs leírását
 		for (auto c : this->reciever.getCmdReg()) {
 			list_entry() << ' ' << c.first << ' ' << cStyle::nostyle << ':' << std::endl <<
 				*c.second << std::endl;
@@ -356,7 +357,6 @@ namespace CollSys::Commands {
 				}
 				catch (Error err) {
 					err.print();
-					delete shape;
 				}
 			}
 			else {

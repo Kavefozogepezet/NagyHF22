@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #pragma once
 
@@ -14,6 +14,7 @@ namespace CollSys {
 	private:
 		double a, b;
 
+		/** @brief Feltölti a síkidom körvonalának listáját az ellipszist közelítő pontokkal. */
 		void build();
 	protected:
 		glib::vec2d objSpaceSupport(const glib::vec2d& direction) const override;

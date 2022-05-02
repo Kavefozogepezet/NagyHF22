@@ -1,4 +1,4 @@
-#include "Command.h"
+﻿#include "Command.h"
 
 #include "debug/memtrace.h"
 
@@ -42,12 +42,14 @@ namespace CollSys::Commands {
 	ConvexShape* TransformCommand::getShape(glib::string& name) const {
 		bool found_shape = false;
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
+		// A síkidomlistában azonos nevűt keresünk
 		for (auto s : shapes) {
 			if (s->getName() == name) {
 				found_shape = true;
 				return s;
 			}
 		}
+		// Ha nem találtunk, hibát dobunk
 		throw Error("Nincs" + name + " nevu sikidom");
 	}
 
@@ -66,10 +68,12 @@ namespace CollSys::Commands {
 
 	void CreatorCommand::validateShape(ConvexShape* shape) const {
 		Sandbox::ShapeList& shapes = this->reciever.getShapeList();
+		// A síkidomlistában azonos nevűt keresünk
 		for (auto s : shapes) {
 			if (s->getName() == shape->getName()) {
+				glib::string err_msg = "Mar letezik \"" + shape->getName() + "\" nevu sikidom.";
 				delete shape;
-				throw Error("Mar letezik \"" + shape->getName() + "\" nevu sikidom.");
+				throw Error(err_msg);
 			}
 		}
 	}

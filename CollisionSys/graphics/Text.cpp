@@ -11,7 +11,7 @@ namespace CollSys {
 	{
 		this->fontInit();
 		this->setFont(font);
-		this->setScale(0.002, 0.002);
+		this->setScale(0.002f, 0.002f);
 	}
 
 	Text::Text(const glib::string& str) :
@@ -20,7 +20,7 @@ namespace CollSys {
 		this->fontInit();
 		this->setFont(font);
 		this->setString(str.c_str());
-		this->setScale(0.002, 0.002);
+		this->setScale(0.002f, 0.002f);
 	}
 
 	void Text::fontInit() {

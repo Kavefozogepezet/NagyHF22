@@ -443,9 +443,6 @@
     <ClInclude Include="graphics\displays\WindowDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tests\mdif.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>

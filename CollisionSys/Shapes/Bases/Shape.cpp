@@ -1,4 +1,4 @@
-#include "Shape.h"
+﻿#include "Shape.h"
 
 #include "debug/memtrace.h"
 #include "Commands/Base/Command.h"
@@ -84,8 +84,9 @@ namespace CollSys {
 	}
 
 	const sf::Transform& Shape::getTransform() const {
-		if (this->transform_update) {
+		if (this->transform_update) { // ha a transform elavult, frissíteni kell
 			this->recalculateTransform();
+			this->transform_update = false;
 		}
 		return this->transform;
 	}
@@ -132,6 +133,7 @@ namespace CollSys {
 		sf::VertexArray temp;
 		glib::OutlineCast(temp, this->shape, this->displayColor);
 
+		// síkidom nevének előkészítése
 		Text text(this->name);
 		sf::FloatRect rect = text.getGlobalBounds();
 		sf::Vector2f pos =

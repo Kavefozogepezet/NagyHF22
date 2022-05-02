@@ -5,7 +5,7 @@
 
 namespace CollSys {
 	/*
-	* @brief Ez az absztrakt osztály deklarálja azt az alap funkcionalitást amely szükséges a GJK algoritmushoz.
+	* @brief Absztrakt osztály egy konvex síkidom modellezésére. Deklarálja az alap funkcionalitást amely szükséges a GJK algoritmushoz.
 	*/
 	class ConvexShape : public Shape
 	{
@@ -22,9 +22,10 @@ namespace CollSys {
 		*/
 		glib::vec2d support(const glib::vec2d& direction) const;
 
+		/** @returns A síkidom típusa */
 		const glib::string& getType();
 	protected:		
-		/** @brief A síkidom típusának az a string tekintendő, amivel regisztrálva van.*/
+		/** @brief A síkidom típusának az a string tekintendő, amivel regisztrálva van a sandbox objektumban.*/
 		glib::string my_type;
 
 		/*
