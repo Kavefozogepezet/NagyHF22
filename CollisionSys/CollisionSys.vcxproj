@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="graphics\displays\ConsoleDisplay.cpp" />
     <ClCompile Include="graphics\Text.cpp" />
     <ClCompile Include="Shapes\BasicShapes\RegularPolygon.cpp" />
@@ -19,7 +20,6 @@
     <ClCompile Include="Commands\Base\Command.cpp" />
     <ClCompile Include="Commands\Commands.cpp" />
     <ClCompile Include="graphics\consoleStyle.cpp" />
-    <ClCompile Include="debug\memtrace.cpp" />
     <ClCompile Include="general\string.cpp" />
     <ClCompile Include="Sandbox.cpp" />
     <ClCompile Include="Shapes\BasicShapes\Point.cpp" />
@@ -32,6 +32,7 @@
     <ClCompile Include="graphics\displays\WindowDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="debug\memtrace.h" />
     <ClInclude Include="graphics\displays\ConsoleDisplay.h" />
     <ClInclude Include="graphics\displays\display.h" />
     <ClInclude Include="graphics\Text.h" />
@@ -41,7 +42,6 @@
     <ClInclude Include="Commands\Commands.h" />
     <ClInclude Include="graphics\consoleStyle.h" />
     <ClInclude Include="debug\gtest_lite.h" />
-    <ClInclude Include="debug\memtrace.h" />
     <ClInclude Include="general\array.h" />
     <ClInclude Include="general\list.h" />
     <ClInclude Include="general\string.h" />

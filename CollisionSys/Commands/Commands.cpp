@@ -4,8 +4,6 @@
 #include <fstream>
 #include <filesystem>
 
-#include "debug/memtrace.h"
-
 #include "Sandbox.h"
 #include "graphics/consoleStyle.h"
 #include "GJK.h"

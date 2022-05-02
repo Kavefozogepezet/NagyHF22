@@ -3,9 +3,9 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
-#include <SFML/Graphics/VertexArray.hpp>
+#include "SFML/Graphics/VertexArray.hpp"
 
-#include "../debug/gtest_lite.h"
+#include "debug/gtest_lite.h"
 #include "array.h"
 #include "list.h"
 

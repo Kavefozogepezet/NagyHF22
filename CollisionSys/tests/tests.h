@@ -1,5 +1,3 @@
-
-#include "debug/memtrace.h"
 #include "debug/gtest_lite.h"
 
 namespace CSTests {

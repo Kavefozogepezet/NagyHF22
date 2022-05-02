@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
 
 #include "display.h"
 #include "general/list.h"

@@ -1,7 +1,5 @@
 ﻿#include "Command.h"
 
-#include "debug/memtrace.h"
-
 #include "general/string.h"
 #include "graphics/consoleStyle.h"
 #include "Sandbox.h"

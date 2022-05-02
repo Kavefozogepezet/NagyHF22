@@ -1,6 +1,5 @@
 #include "Circle.h"
 
-#include "debug/memtrace.h"
 #include "graphics/consoleStyle.h"
 #include "Commands/Base/Command.h"
 

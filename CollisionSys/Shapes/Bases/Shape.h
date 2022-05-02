@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
 #include <sstream>
 
 #include "general/vec2.h"

@@ -8,8 +8,6 @@
 #include "general/string.h"
 #include "graphics/consoleStyle.h"
 
-#include "debug/memtrace.h"
-
 namespace CollSys {
 	using cStyle = consoleStyle;
 

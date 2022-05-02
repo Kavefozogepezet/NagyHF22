@@ -30,9 +30,6 @@
     <ClCompile Include="Shapes\BasicShapes\Ellipse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="debug\memtrace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shapes\Bases\Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -70,6 +67,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="graphics\Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\memtrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -392,9 +392,6 @@
     <ClInclude Include="debug\gtest_lite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="debug\memtrace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="general\list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -444,6 +441,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debug\memtrace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

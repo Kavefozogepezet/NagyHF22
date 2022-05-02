@@ -4,8 +4,6 @@
 #include <cctype>
 #include <iostream>
 
-//#define _CRT_SECURE_NO_WARNINGS
-
 namespace glib {
 	class string {
 	public:

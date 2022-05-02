@@ -1,6 +1,5 @@
 ﻿#include "Shape.h"
 
-#include "debug/memtrace.h"
 #include "Commands/Base/Command.h"
 #include "graphics/consoleStyle.h"
 #include "graphics/Text.h"

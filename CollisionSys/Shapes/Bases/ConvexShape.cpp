@@ -1,7 +1,5 @@
 #include "ConvexShape.h"
 
-#include "debug/memtrace.h"
-
 namespace CollSys {
 	ConvexShape::ConvexShape(const glib::string& type) :
 		my_type(type)

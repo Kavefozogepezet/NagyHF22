@@ -1,7 +1,5 @@
 #include "GJK.h"
 
-#include "debug/memtrace.h"
-
 namespace CollSys {
 	GJKSolver::GJKSolver(ConvexShape& shape1, ConvexShape& shape2) :
 		s1(shape1),
