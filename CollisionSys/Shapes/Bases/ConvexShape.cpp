@@ -13,7 +13,11 @@ namespace CollSys {
 		}
 		glib::vec2d objSpaceDir = direction;
 		objSpaceDir.rotate(-this->getRotation()).scale(this->getScale());
-		return this->getTransform() * this->objSpaceSupport(objSpaceDir);
+		glib::vec2d sup = this->objSpaceSupport(objSpaceDir);
+		sup.scale(this->getScale()).rotate(this->getRotation());
+		sup += this->getPosition();
+		return sup;
+		//return this->getTransform() * this->objSpaceSupport(objSpaceDir);
 	}
 
 	const glib::string& ConvexShape::getType() {
