@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
+#include "sfmlinclude.h"
 
 #include "display.h"
 #include "general/list.h"
@@ -10,6 +10,7 @@ namespace CollSys {
 
 	class WindowDisplay : public display
 	{
+#ifndef CPORTA
 	public:
 		static double
 			linear_speed,
@@ -32,5 +33,9 @@ namespace CollSys {
 
 		void handleEvents();
 		void render();
+#else
+	public:
+		using display::display;
+#endif // !CPORTA
 	};
 }

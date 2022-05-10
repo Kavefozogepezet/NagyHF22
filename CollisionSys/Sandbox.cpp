@@ -53,7 +53,6 @@ namespace CollSys {
 		this->s_registry.add("bezier", lambdaMaker<BezierCurve>());
 
 		this->cmd_registry.add("help", new Commands::Help(*this));
-		this->cmd_registry.add("openwin", new Commands::Openwin(*this));
 		this->cmd_registry.add("shapetypes", new Commands::ListShapeTypes(*this));
 		this->cmd_registry.add("shapes", new Commands::ListShapes(*this));
 		this->cmd_registry.add("create", new Commands::Create(*this));
@@ -68,6 +67,9 @@ namespace CollSys {
 		this->cmd_registry.add("merge", new Commands::Merge(*this));
 		this->cmd_registry.add("load", new Commands::Load(*this));
 		this->cmd_registry.add("exit", new Commands::Exit(*this));
+#ifndef CPORTA
+		this->cmd_registry.add("openwin", new Commands::Openwin(*this));
+#endif
 	}
 
 	Sandbox::~Sandbox() {
@@ -94,8 +96,10 @@ namespace CollSys {
 	}
 
 	void Sandbox::openWindow() {
+#ifndef CPORTA
 		this->wdisp.makeActive(true);
 		this->cdisp.makeActive(false);
+#endif // !CPORTA
 	}
 
 	void Sandbox::closeWindow() {

@@ -14,6 +14,12 @@ namespace CollSys {
 
 		glib::string line;
 		std::getline(std::cin, line);
+
+		if (std::cin.eof()) {
+			this->_parent.stop();
+			return;
+		}
+
 		std::stringstream lbuff(line);
 
 		glib::string cmd;

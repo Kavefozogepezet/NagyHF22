@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "SFML/Graphics.hpp"
-
 #include "Shapes/Shapes.h"
 
 namespace CollSys {

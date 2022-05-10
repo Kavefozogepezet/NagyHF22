@@ -1,9 +1,10 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
+#include "sfmlinclude.h"
 
 #include "general/string.h"
 
+#ifndef CPORTA
 namespace CollSys {
 	class Text : public sf::Text
 	{
@@ -17,3 +18,4 @@ namespace CollSys {
 		static void fontInit();
 	};
 }
+#endif // !CPORTA

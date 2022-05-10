@@ -3,7 +3,7 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
-#include "SFML/Graphics/VertexArray.hpp"
+#include "sfmlinclude.h"
 
 #include "debug/gtest_lite.h"
 #include "array.h"
@@ -263,6 +263,7 @@ namespace glib {
 	typedef glib::list<vec2f> VertexListf;
 	typedef glib::list<vec2d> VertexList;
 
+#ifndef CPORTA
 	/*
 	* @brief Egy vec2<Base> típusú vektort átalakít sf:Vector2f típusúvá
 	* @param vec - Az átalakítandó vektor
@@ -312,6 +313,13 @@ namespace glib {
 		}
 	}
 
+	/*
+	* @brief Feltölt egy sfml formátumú vertex array-t egy glib formátumú tartalmával úgy,
+	* hogy az utplsó pontot összeköti az elsővel.
+	* @param dest - Ebbe másol
+	* @param src - Innen másol
+	* @param color - A pontok színe
+	*/
 	template <typename Base>
 	void OutlineCast(
 		sf::VertexArray& dest,
@@ -329,9 +337,16 @@ namespace glib {
 		dest[dest.getVertexCount() - 1].color = color;
 	}
 
+	/*
+	* @brief Egy glib::vec2d-re alkalmaz egy sfml transformot.
+	* @param transform - A transform amit alkalmaz
+	* @param vec - A vektor
+	* @returns A transzformált vektor
+	*/
 	template <typename Base>
 	vec2<Base> operator * (const sf::Transform& transform, vec2<Base> vec) {
 		sf::Vector2f temp = transform * VectorCast(vec);
 		return VectorCast<Base>(temp);
 	}
+#endif // !CPORTA
 }

@@ -1,11 +1,10 @@
 #include "WindowDisplay.h"
 
-#include <SFML/Graphics.hpp>
-
 #include "Sandbox.h"
 #include "GJK.h"
 #include "graphics/Text.h"
 
+#ifndef CPORTA
 namespace CollSys {
 	double
 		WindowDisplay::linear_speed = 0.02,
@@ -41,6 +40,11 @@ namespace CollSys {
 
 	void WindowDisplay::setView() {
 		Sandbox::ShapeList& shapes = this->_parent.getShapeList();
+
+		if (shapes.empty()) {
+			this->window.setView(sf::View({ 0, 0 }, { 1, 1 }));
+			return;
+		}
 
 		auto it = shapes.begin();
 		ConvexShape& shape1 = **it;
@@ -178,3 +182,4 @@ namespace CollSys {
 		this->window.display();
 	}
 }
+#endif // !CPORTA

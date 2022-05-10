@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "SFML/Graphics.hpp"
+#include "sfmlinclude.h"
 #include <sstream>
 
 #include "general/vec2.h"
@@ -11,7 +11,10 @@ namespace CollSys {
 	* @brief Absztrakt osztály egy síkidomot modellezésére, mely grafikusan megjeleníthető,
 	* mozgatható, nagyítható, forgatható. Leszármazottjai fájlba menthetők, fájlból és konzolról beolvashatók.
 	*/
-	class Shape : public sf::Drawable
+	class Shape
+#ifndef CPORTA
+		: public sf::Drawable
+#endif // !CPORTA
 	{
 	public:
 		Shape();
@@ -93,6 +96,8 @@ namespace CollSys {
 		const glib::vec2d& getScale() const;
 		/** @ returns A síkidom forgatása */
 		double getRotation() const;
+
+#ifndef CPORTA
 		/** @returns A síkidom transform-ja */
 		const sf::Transform& getTransform() const;
 
@@ -101,6 +106,7 @@ namespace CollSys {
 		* @param color - Ilyen színû lesz a síkidom.
 		*/
 		void setColor(sf::Color color);
+#endif // !CPORTA
 
 		/** @returns Az objektum neve */
 		const glib::string& getName();
@@ -133,23 +139,27 @@ namespace CollSys {
 		/** @brief Elsõ sorban a változó a síkidom megjelenítésére szolgál, közelíti a síkidom körvonalait.*/
 		glib::VertexArray shape;
 
-		/** @brief A síkidom ezzel a színnel lesz a képernyõre rajzolva.*/
-		sf::Color displayColor;
-
 		/** @brief A síkidom neve */
 		glib::string name;
+
+#ifndef CPORTA
+		/** @brief A síkidom ezzel a színnel lesz a képernyõre rajzolva.*/
+		sf::Color displayColor;
 
 		/*
 		* @brief grafikus megjelenítéshez szükséges, csak akkor override-olandó ha a leszármazott síkidom
 		* speciális megjelenítést igényel.
 		*/
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+#endif // !CPORTA	
 	private:
 		glib::vec2d _position, _scale;
 		double _rotation;
 
 		mutable bool transform_update;
+#ifndef CPORTA
 		mutable sf::Transform transform;
+#endif // !CPORTA
 
 		/** @brief Az aktuális pozícióból, nagyításból, és forgatásból frissíti a transform változót. */
 		void recalculateTransform() const;

@@ -17,7 +17,8 @@ namespace CollSys {
 		void write(std::ostream& stream) const override;
 
 		void read(std::istream& stream) override;
-
+#ifndef CPORTA
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+#endif
 	};
 }

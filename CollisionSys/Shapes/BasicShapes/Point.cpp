@@ -45,10 +45,12 @@ namespace CollSys {
 		stream >> this->shape[0].x >> this->shape[0].y;
 	}
 
+#ifndef CPORTA
 	void Point::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		states.transform *= this->getTransform();
 		sf::VertexArray temp;
 		glib::VertexArrayCast(temp, this->shape, this->displayColor, sf::Points);
 		target.draw(temp, states);
 	}
+#endif
 }

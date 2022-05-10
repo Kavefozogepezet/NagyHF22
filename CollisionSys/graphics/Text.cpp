@@ -2,6 +2,7 @@
 
 #include "graphics/consoleStyle.h"
 
+#ifndef CPORTA
 namespace CollSys {
 	bool Text::font_init = false;
 	sf::Font Text::font = sf::Font();
@@ -33,3 +34,4 @@ namespace CollSys {
 		}
 	}
 }
+#endif

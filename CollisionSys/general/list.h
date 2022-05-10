@@ -20,9 +20,9 @@ namespace glib {
 		{}
 
 		/** @retruns Lista előző eleme*/
-		inline listNode<T>* prev() const { return this->p; }
+		listNode<T>* prev() const { return this->p; }
 		/** @returns Lista következő eleme*/
-		inline listNode<T>* next() const { return this->n; }
+		listNode<T>* next() const { return this->n; }
 	private:
 		listNode* p, * n;
 
@@ -169,7 +169,7 @@ namespace glib {
 		inline reverseIt rend() { return reverseIt(this->head); }
 
 		/** @returns true: a lista üres; false: nem üres. */
-		bool empty() const { return this->head->next() == this->tail(); }
+		bool empty() const { return this->head->next() == this->tail; }
 
 		/** @brief Törli a lista összes elemét. */
 		void clear() {

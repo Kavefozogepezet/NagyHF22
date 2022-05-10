@@ -7,11 +7,14 @@
 namespace CollSys {
 	Shape::Shape() :
 		shape(),
-		displayColor(sf::Color::White),
 		name(),
+#ifndef CPORTA
+		displayColor(sf::Color::White),
+#endif // !CPORTA
 		_position(),
 		_scale({ 1.0, 1.0}),
-		_rotation(0.0)
+		_rotation(0.0),
+		transform_update(true)
 	{
 		this->recalculateTransform();
 	}
@@ -82,6 +85,7 @@ namespace CollSys {
 		return this->_rotation;
 	}
 
+#ifndef CPORTA
 	const sf::Transform& Shape::getTransform() const {
 		if (this->transform_update) { // ha a transform elavult, frissíteni kell
 			this->recalculateTransform();
@@ -93,6 +97,7 @@ namespace CollSys {
 	void Shape::setColor(sf::Color color) {
 		this->displayColor = color;
 	}
+#endif // !CPORTA
 
 	const glib::string& Shape::getName() {
 		return this->name;
@@ -120,13 +125,16 @@ namespace CollSys {
 	}
 
 	void Shape::recalculateTransform() const {
+#ifndef CPORTA
 		this->transform = sf::Transform();
 		this->transform
 			.translate(glib::VectorCast(this->_position))
 			.rotate(static_cast<float>(this->_rotation))
 			.scale(glib::VectorCast(this->_scale));
+#endif // !CPORTA
 	}
 
+#ifndef CPORTA
 	void Shape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		states.transform *= this->getTransform();
 		sf::VertexArray temp;
@@ -143,7 +151,7 @@ namespace CollSys {
 		target.draw(temp, states);
 		target.draw(text);
 	}
-
+#endif // !CPORTA
 
 	std::ostream& operator<<(std::ostream& stream, const Shape& obj) {
 		obj.write(stream);

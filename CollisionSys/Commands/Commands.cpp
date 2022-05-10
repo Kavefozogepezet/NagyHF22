@@ -208,8 +208,6 @@ namespace CollSys::Commands {
 				ConvexShape* shape2 = *it2;
 				GJKSolver gjk_test(*shape1, *shape2);
 				if (gjk_test.isContact()) {
-					shape1->setColor(sf::Color::Red);
-					shape2->setColor(sf::Color::Red);
 					cStyle::success() << "Ez a ket objektum erintkezik: " <<
 						shape1->getName() << "; " << shape2->getName() << cStyle::endl;
 				}
